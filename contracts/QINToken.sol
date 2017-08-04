@@ -8,11 +8,19 @@ import "./ConvertLib.sol";
  */
 contract QINToken is ERC20Token {
 
-	function QINToken() {
-		balances[tx.origin] = 10000;
+	string public name;
+	uint8 public decimals;
+	string public symbol;
+
+	function QINToken(uint256 _initialAmount, string _tokenName, uint8 _decimalUnits, string _tokenSymbol) {
+		totalSupply = _initialAmount;
+		balances[msg.sender] = _initialAmount;
+		name = _tokenName;
+		decimals = _decimalUnits;
+		symbol = _tokenSymbol;
 	}
 
 	function getBalanceInUSD(address addr) returns(uint){
-		return ConvertLib.convert(balanceOf(addr), 2);
+		return ConvertLib.convert(balanceOf(addr), 2); // TODO figure out conversion rate here
 	}
 }
