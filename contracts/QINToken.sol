@@ -8,19 +8,40 @@ import "./ConvertLib.sol";
  */
 contract QINToken is ERC20Token {
 
-	string public name;
-	uint8 public decimals;
-	string public symbol;
+	string public name = "QIN Token";
+	string public symbol = "QIN";
+	uint public decimals = 5;
+	totalSupply = "200000000";
 
-	function QINToken(uint256 _initialAmount, string _tokenName, uint8 _decimalUnits, string _tokenSymbol) {
-		totalSupply = _initialAmount;
-		balances[msg.sender] = _initialAmount;
-		name = _tokenName;
-		decimals = _decimalUnits;
-		symbol = _tokenSymbol;
+	// crowdsale info
+	uint public startBlock;
+	uint public endBlock;
+	uint public crowdsaleTokenSupply;
+	address public wallet; // address where ETH will be deposited
+	bool public halted = false; // for crowdsale emergencies
+
+	// TODO vars for allocations + locktimes?
+
+	function QINToken(address _wallet, uint _startBlock, uint _endBlock) {
+		wallet = _wallet;
+		startBlock = _startBlock;
+		endBlock = _endBlock;
 	}
 
 	function getBalanceInUSD(address addr) returns(uint){
 		return ConvertLib.convert(balanceOf(addr), 2); // TODO figure out conversion rate here
 	}
+
+	// functions to hale and unhalt crowdsale in case of emergency
+	function haltCrowdsale() {
+        if (msg.sender != founder) 
+        	throw;
+        halted = true;
+    }
+
+    function unhaltCrowdsale() {
+        if (msg.sender != founder)
+        	throw;
+        halted = false;
+    }
 }
