@@ -1,7 +1,11 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.15;
 
-library ConvertLib{
-	function convert(uint amount,uint conversionRate) returns (uint convertedAmount)
+/** @title ConvertLib
+ *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @notice source: truffle framework
+ */
+library ConvertLib {
+	function convert(uint amount, uint conversionRate) returns (uint convertedAmount)
 	{
 		return amount * conversionRate;
 	}
