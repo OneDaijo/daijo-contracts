@@ -1,4 +1,4 @@
-<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/wrf_logo.png" width = "211" height = "132">
+<img align = "middle" src = "https://github.com/WorldRapidFinance/wrf/blob/master/wrf_logo.png" width = "211" height = "132">
 
 # wrf
 
