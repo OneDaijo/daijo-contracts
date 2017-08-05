@@ -17,7 +17,7 @@ contract QINToken is ERC20Token {
 	uint public startBlock;
 	uint public endBlock;
 	uint public crowdsaleTokenSupply;
-	address public wallet; // address where ETH will be deposited
+	address public wallet; // address where raised ETH will be deposited
 	bool public halted = false; // for crowdsale emergencies
 
 	// TODO vars for allocations + locktimes?
@@ -32,7 +32,7 @@ contract QINToken is ERC20Token {
 		return ConvertLib.convert(balanceOf(addr), 2); // TODO figure out conversion rate here
 	}
 
-	// functions to hale and unhalt crowdsale in case of emergency
+	// functions to halt and unhalt crowdsale in case of emergency
 	function haltCrowdsale() {
         if (msg.sender != founder) 
         	throw;

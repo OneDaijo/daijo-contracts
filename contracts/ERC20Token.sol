@@ -23,7 +23,9 @@ contract ERC20 is ERC20Standard {
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
             return true;
-        } else { return false; }
+        } else { 
+            return false; 
+        }
     }
 
     function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
@@ -33,7 +35,9 @@ contract ERC20 is ERC20Standard {
             allowed[_from][msg.sender] -= _value;
             Transfer(_from, _to, _value);
             return true;
-        } else { return false; }
+        } else { 
+            return false; 
+        }
     }
 
     function approve(address _spender, uint256 _value) returns (bool success) {
