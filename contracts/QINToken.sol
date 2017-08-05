@@ -1,6 +1,7 @@
 pragma solidity ^0.4.15;
 
 import "./ConvertLib.sol";
+import "./ERC20Token";
 
 /** @title QIN Token 
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -11,7 +12,7 @@ contract QINToken is ERC20Token {
 	string public name = "QIN Token";
 	string public symbol = "QIN";
 	uint public decimals = 5;
-	totalSupply = "200000000";
+	totalSupply = 200000000;
 
 	// crowdsale info
 	uint public startBlock;
