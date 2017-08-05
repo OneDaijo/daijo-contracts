@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 import "./ConvertLib.sol";
-import "./ERC20Token";
+import "./ERC20Token.sol";
 
 /** @title QIN Token 
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
