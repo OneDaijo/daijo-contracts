@@ -7,7 +7,7 @@ import "./ERC20Standard.sol";
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  *  @notice functions check against integer over and underflow
  */
-contract ERC20 is ERC20Standard {
+contract ERC20Token is ERC20Standard {
 
     uint256 public totalSupply;
     mapping (address => uint256) balances;
