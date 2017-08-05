@@ -35,14 +35,12 @@ contract QINToken is ERC20Token {
 
     // functions to halt and unhalt crowdsale in case of emergency
     function haltCrowdsale() {
-        if (msg.sender != wallet) 
-            throw;
+        require(msg.sender == wallet);
         halted = true;
     }
 
     function unhaltCrowdsale() {
-        if (msg.sender != wallet)
-            throw;
+        require(msg.sender != wallet);
         halted = false;
     }
 }
