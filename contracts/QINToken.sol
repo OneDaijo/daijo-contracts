@@ -33,14 +33,18 @@ contract QINToken is ERC20Token {
         return ConvertLib.convert(balanceOf(addr), 2); // TODO figure out conversion rate here
     }
 
-    // functions to halt and unhalt crowdsale in case of emergency
-    function haltCrowdsale() {
+    // Ensures function is only run by the creator of the contract.
+    modifier requireCreator() {
         require(msg.sender == wallet);
+        _;
+    }
+
+    // functions to halt and unhalt crowdsale in case of emergency
+    function haltCrowdsale() requireCreator {
         halted = true;
     }
 
-    function unhaltCrowdsale() {
-        require(msg.sender != wallet);
+    function unhaltCrowdsale() requireCreator {
         halted = false;
     }
 }
