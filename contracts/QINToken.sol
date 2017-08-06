@@ -90,4 +90,3 @@ contract QINToken is ERC20Token {
         halted = false;
     }
 }
-
