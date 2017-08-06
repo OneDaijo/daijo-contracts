@@ -2,7 +2,7 @@
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
- 
+
 pragma solidity ^0.4.13;
 
 
