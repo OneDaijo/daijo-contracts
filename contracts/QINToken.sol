@@ -18,6 +18,7 @@ contract QINToken is ERC20Token {
     uint public startBlock;
     uint public endBlock;
     uint public crowdsaleTokenSupply;
+    uint public crowdsaleTokensRemaining;
 
     address public wallet; // address where raised ETH will be deposited
     bool public halted = false; // for crowdsale emergencies
@@ -27,6 +28,7 @@ contract QINToken is ERC20Token {
     function QINToken(address _wallet, uint _startBlock, uint _endBlock) {
         totalSupply = 200000000 * decimals;
         crowdsaleTokenSupply = 60000000 * decimals;
+        crowdsaleTokensRemaining = crowdsaleTokenSupply;
         wallet = _wallet;
         startBlock = _startBlock;
         endBlock = _endBlock;
@@ -39,7 +41,7 @@ contract QINToken is ERC20Token {
     modifier requireSale() {
         require(!halted);
         _;
-        if (crowdsaleTokenSupply == 0) {
+        if (crowdsaleTokensRemaining == 0) {
             halted = true;
         }
     }
@@ -50,15 +52,13 @@ contract QINToken is ERC20Token {
         // This works because QIN is denominated in 10^-18 like ETH
         uint qin_to_buy = wei_to_spend * qinPerEth;
 
-        if (qin_to_buy > crowdsaleTokenSupply) {
-            qin_to_buy = crowdsaleTokenSupply;
+        if (qin_to_buy > crowdsaleTokensRemaining) {
+            qin_to_buy = crowdsaleTokensRemaining;
             // Will technically round down the amount of wei if this doesn't divide evently, so the last person could get 1/2 a wei extra of QIN.  Maybe this logic could be improved, but whatevs.
             wei_to_spend = qin_to_buy / qinPerEth;
         }
 
-        crowdsaleTokenSupply -= qin_to_buy;
-        // Is totalSupply a constant or is it something we deplete as the reserved amount decreases?
-        totalSupply -= qin_to_buy;
+        crowdsaleTokensRemaining -= qin_to_buy;
 
         // TODO(mrice) don't modify balances directly (?)
         balances[msg.sender] += qin_to_buy;
