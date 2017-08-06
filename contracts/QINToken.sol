@@ -1,12 +1,14 @@
+/** @title QIN Token 
+ *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @notice source: https://github.com/ethereum/EIPs/issues/20
+ */
+
 pragma solidity ^0.4.13;
 
 import "./ConvertLib.sol";
 import "./ERC20Token.sol";
 
-/** @title QIN Token 
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
- *  @notice source: https://github.com/ethereum/EIPs/issues/20
- */
+
 contract QINToken is ERC20Token {
 
     string public name = "QIN Token";
@@ -34,7 +36,7 @@ contract QINToken is ERC20Token {
         endBlock = _endBlock;
     }
 
-    function getBalanceInUSD(address addr) returns(uint){
+    function getBalanceInUSD(address addr) returns(uint) {
         return ConvertLib.convert(balanceOf(addr), 2); // TODO figure out conversion rate here
     }
 
@@ -47,30 +49,29 @@ contract QINToken is ERC20Token {
     }
 
     function () payable requireSale {
-        uint wei_to_spend = msg.value;
+        uint weiToSpend = msg.value;
 
         // This works because QIN is denominated in 10^-18 like ETH
-        uint qin_to_buy = wei_to_spend * qinPerEth;
+        uint qinToBuy = weiToSpend * qinPerEth;
 
-        if (qin_to_buy > crowdsaleTokensRemaining) {
-            qin_to_buy = crowdsaleTokensRemaining;
+        if (qinToBuy > crowdsaleTokensRemaining) {
+            qinToBuy = crowdsaleTokensRemaining;
             // Will technically round down the amount of wei if this doesn't divide evently, so the last person could get 1/2 a wei extra of QIN.  Maybe this logic could be improved, but whatevs.
-            wei_to_spend = qin_to_buy / qinPerEth;
+            weiToSpend = qinToBuy / qinPerEth;
         }
 
-        crowdsaleTokensRemaining -= qin_to_buy;
+        crowdsaleTokensRemaining -= qinToBuy;
 
         // TODO(mrice) don't modify balances directly (?)
-        balances[msg.sender] += qin_to_buy;
+        balances[msg.sender] += qinToBuy;
 
         // All external calls are left until the end of the fucntion just to be safe :)
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
-
-        wallet.transfer(wei_to_spend);
+        wallet.transfer(weiToSpend);
 
         // Refund if we ran out of QIN to send them  
-        if (wei_to_spend < msg.value) {
-            msg.sender.transfer(msg.value - wei_to_spend);
+        if (weiToSpend < msg.value) {
+            msg.sender.transfer(msg.value - weiToSpend);
         }
     }
 
