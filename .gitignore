@@ -1,3 +1,5 @@
 .DS_Store
+.soliumignore
+.soliumrc.json
 # Any folder named build in the repo will be ingored by git
 build/
