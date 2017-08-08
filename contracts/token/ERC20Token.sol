@@ -1,14 +1,12 @@
+pragma solidity ^0.4.13;
+
+import "./ERC20Standard.sol";
+
 /** @title ERC20 Token Implementation
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  *  @notice functions check against integer over and underflow
  */
-
-pragma solidity ^0.4.13;
-
-import "./ERC20Standard.sol";
-
-
 contract ERC20Token is ERC20Standard {
 
     uint256 public totalSupply;
