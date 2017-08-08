@@ -1,11 +1,9 @@
+pragma solidity ^0.4.13;
+
 /** @title ERC20 Standard
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
-
-pragma solidity ^0.4.13;
-
-
 contract ERC20Standard {
     
     function totalSupply() constant returns (uint256 totalSupply) {}
