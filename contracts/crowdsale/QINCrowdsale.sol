@@ -1,8 +1,8 @@
 pragma solidity ^0.4.13;
 
-import './QINToken.sol';
-import './SafeMath.sol';
-import './Ownable.sol';
+import '../token/QINToken.sol';
+import '../libs/SafeMath.sol';
+import '../permissions/Ownable.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -73,7 +73,7 @@ contract QINCrowdsale is Ownable {
         uint256 weiToSpend = msg.value;
 
         // calculate token amount to be created
-        uint256 QINToBuy = weiAmount.mul(rate);
+        uint256 QINToBuy = weiToSpend.mul(rate);
 
         if (QINToBuy > crowdsaleTokensRemaining) {
             QINToBuy = crowdsaleTokensRemaining;
@@ -87,11 +87,11 @@ contract QINCrowdsale is Ownable {
         crowdsaleTokensRemaining = crowdsaleTokensRemaining.sub(QINToBuy);
 
         // update amount of wei raised
-        weiRaised = weiRaised.add(weiAmount);
+        weiRaised = weiRaised.add(weiToSpend);
 
         // send purchased QIN to the buyer
         sendQIN(msg.sender, QINToBuy);
-        QINPurchase(msg.sender, weiAmount, QINToBuy);
+        QINPurchase(msg.sender, weiToSpend, QINToBuy);
 
         // send ETH to the fund collection wallet
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.

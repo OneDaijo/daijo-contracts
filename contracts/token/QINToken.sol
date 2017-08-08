@@ -1,9 +1,10 @@
 pragma solidity ^0.4.13;
 
 import "./ERC20Token.sol";
-import "../permissions/Ownable.sol"
-import "../crowdsale/QINCrowdsale.sol"
-import "../libs/SafeMath.sol"
+import "./QINLocked.sol";
+import "../permissions/Ownable.sol";
+import "../crowdsale/QINCrowdsale.sol";
+import "../libs/SafeMath.sol";
 
 /** @title QIN Token 
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -18,6 +19,7 @@ contract QINToken is ERC20Token {
     uint public crowdsaleSupply = 60000000;
 
     QINCrowdsale public crowdsale;
+    QINLocked public lockedTokens;
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
@@ -25,8 +27,13 @@ contract QINToken is ERC20Token {
         balances[msg.sender] = initialSupply;
     }
 
-    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) onlyOwner {
+    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
     	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet, crowdsaleSupply);
     	balances[msg.sender] = balances[msg.sender].sub(crowdsaleSupply);
+    	// transfer tokens to contract
+    }
+
+    function freezeRemainingTokens() {
+    	// call transfer here
     }
 }
