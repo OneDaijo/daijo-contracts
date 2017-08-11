@@ -33,6 +33,9 @@ contract QINCrowdsale is Ownable {
     // whether or not the crowdsale is halted, for emergencies only
     bool public halted = false;
 
+    // whether QIN has been transferred to the crowdsale contract
+    bool public has_been_funded = false;
+
     /**
      * event for token purchase logging
      * @param purchaser who paid for and receives the tokens
@@ -41,24 +44,31 @@ contract QINCrowdsale is Ownable {
      */ 
     event QINPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
-    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet, uint256 _tokenSupply) {
+    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
         require(_startBlock >= block.number);
         require(_endBlock >= _startBlock);
         require(_rate > 0);
         require(_wallet != 0x0);
         require(_tokenSupply > 0);
 
-        crowdsaleTokenSupply = _tokenSupply;
+        // TODO(mrice) assumes the QINToken is the creator. Maybe we should take this in explicitly.
+        token = QINToken(msg.sender);
         startBlock = _startBlock;
         endBlock = _endBlock;
         rate = _rate; // qinpereth = 400
         wallet = _wallet;
+
     }
 
-    // creates the token to be sold. 
-    // override this method to have crowdsale of a specific mintable token.
-    function createTokenContract() internal returns (QINToken) {
-        return new QINToken();
+    // TODO: This assumes ERC23 - which should be added
+    function tokenFallback(address _from, uint _value, bytes _data) {
+        require(!has_been_funded);
+        // Crowdsale can only be paid by the QIN token itself (no refunds)
+        require(_from == address(token));
+
+        crowdsaleTokenSupply = _value;
+        crowdsaleTokensRemaining = _value;
+        has_been_funded = true;
     }
 
     // fallback function can be used to buy tokens
@@ -100,7 +110,7 @@ contract QINCrowdsale is Ownable {
 
     // send purchased QIN tokens to buyer's address, ensure only the owner can call this
     function sendQIN(address _to, uint256 _amount) onlyOwner {
-        balances[_to] = balances[_to].add(_amount);
+        token.transfer(_to, _amount);
     }
 
     // @return true if the transaction can buy tokens
