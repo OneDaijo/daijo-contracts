@@ -62,13 +62,26 @@ contract QINCrowdsale is Ownable {
 
     // TODO: This assumes ERC23 - which should be added
     function tokenFallback(address _from, uint _value, bytes _data) {
+        // Require that the paid token is supported
+        require(supportsToken(msg.sender));
+
+        // Ensures this function has only been run once
         require(!has_been_funded);
+
         // Crowdsale can only be paid by the QIN token itself (no refunds)
         require(_from == address(token));
+
+        // Ensure that QIN was actually transferred.  Not sure if this is really necessary, but for correctness' sake.
+        assert(token.balance(this) == _value);
 
         crowdsaleTokenSupply = _value;
         crowdsaleTokensRemaining = _value;
         has_been_funded = true;
+    }
+
+    function supportsToken(address _token) constant returns (bool) {
+        // The only ERC23 token that can be paid to this contract is QIN
+        return _token == address(token);
     }
 
     // fallback function can be used to buy tokens
@@ -99,13 +112,19 @@ contract QINCrowdsale is Ownable {
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
 
-        // send purchased QIN to the buyer
-        sendQIN(msg.sender, QINToBuy);
-        QINPurchase(msg.sender, weiToSpend, QINToBuy);
-
         // send ETH to the fund collection wallet
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
-        wallet.transfer(msg.value);
+        wallet.transfer(weiToSpend);
+
+        // send purchased QIN to the buyer
+        sendQIN(msg.sender, QINToBuy);
+
+        // Refund any unspend wei.
+        if (msg.value > weiToSpend) {
+            msg.sender.transfer(msg.value - weiToSpend);
+        }
+
+        QINPurchase(msg.sender, weiToSpend, QINToBuy);
     }
 
     // send purchased QIN tokens to buyer's address, ensure only the owner can call this
@@ -136,9 +155,9 @@ contract QINCrowdsale is Ownable {
     }
 
     // burn remaining funds if goal not met
-    // TODO: fix this chit, my logic is for sure off
+    // TODO: this would technically not burn them, but lock the tokens in this contract.  Maybe we should allow the tokens to be completely destroyed by giving this object special access to destroy tokens it owns in the QINToken Contract?
     function burnRemainder() onlyOwner {
-        require(hasEnded);
+        require(hasEnded());
         if (crowdsaleTokensRemaining > 0) {
             crowdsaleTokensRemaining = 0;
         }
