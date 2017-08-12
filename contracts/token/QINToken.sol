@@ -16,11 +16,15 @@ contract QINToken is ERC20Token, Ownable {
     string public name = "QIN Token";
     string public symbol = "QIN";
     uint public decimals = 18;
-    uint public initialSupply = 200000000;
+
+    uint public frozenSupply = 140000000;
     uint public crowdsaleSupply = 60000000;
+    uint public initialSupply = frozenSupply.add(crowdsaleSupply); // a check to make sure the math works out
 
     QINCrowdsale public crowdsale;
-    QINLocked public lockedTokens;
+    QINLocked public frozenQIN;
+
+    bool public crowdsaleExecuted = false;
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
@@ -28,14 +32,23 @@ contract QINToken is ERC20Token, Ownable {
         balances[msg.sender] = initialSupply;
     }
 
-    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) onlyOwner {
+    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet, uint _releaseTime) onlyOwner {
+    	require(!crowdsaleExecuted);
     	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet);
 
-        // msg.sender should still be the owner.
+        // msg.sender should still be the owner
         transfer(address(crowdsale), crowdsaleSupply);
+
+        // ensure the correct amount was sent to crowdsale, then freeze the rest
+        assert(balanceOf(msg.sender) == frozenSupply);
+
+        freezeRemainingTokens(_releaseTime, frozenSupply);
+        crowdsaleExecuted = true;
     }
 
-    function freezeRemainingTokens() {
-    	// call transfer here
+    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
+    	frozenQIN = new QINLocked(_releaseTime, _amountToFreeze);
+    	transfer(address(frozenQIN), _amountToFreeze);
+    	assert(balanceOf(msg.sender) == 0);
     }
 }
