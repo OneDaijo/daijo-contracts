@@ -1,10 +1,10 @@
 pragma solidity ^0.4.13;
 
-/** @title ERC20 Standard
+/** @title ERC20 Interface
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
-contract ERC20Standard {
+contract ERC20 {
     
     function totalSupply() constant returns (uint256 totalSupply) {}
     function balanceOf(address _owner) constant returns (uint256 balance) {}

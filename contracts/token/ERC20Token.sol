@@ -1,13 +1,16 @@
 pragma solidity ^0.4.13;
 
-import "./ERC20Standard.sol";
+import "./interfaces/ERC20.sol";
+import "../libs/SafeMath.sol";
 
 /** @title ERC20 Token Implementation
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  *  @notice functions check against integer over and underflow
+ *  TODO: make this use safemath instead
  */
-contract ERC20Token is ERC20Standard {
+contract ERC20Token is ERC20 {
+    using SafeMath for uint256;
 
     uint256 public totalSupply;
     mapping (address => uint256) balances;
