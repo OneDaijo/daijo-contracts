@@ -10,7 +10,7 @@ import "../libs/SafeMath.sol";
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
-contract QINToken is ERC20Token {
+contract QINToken is ERC20Token, Ownable {
     using SafeMath for uint256;
 
     string public name = "QIN Token";
@@ -28,10 +28,11 @@ contract QINToken is ERC20Token {
         balances[msg.sender] = initialSupply;
     }
 
-    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
+    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) onlyOwner {
     	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet);
-    	balances[msg.sender] = balances[msg.sender].sub(crowdsaleSupply);
-    	// transfer tokens to contract
+
+        // msg.sender should still be the owner.
+        transfer(address(crowdsale), crowdsaleSupply);
     }
 
     function freezeRemainingTokens() {
