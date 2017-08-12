@@ -35,7 +35,7 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     bool public halted = false;
 
     // whether QIN has been transferred to the crowdsale contract
-    bool public has_been_funded = false;
+    bool public hasBeenFunded = false;
 
     /**
      * event for token purchase logging
@@ -44,6 +44,12 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
      * @param amount amount of tokens purchased
      */ 
     event QINPurchase(address indexed purchaser, uint256 value, uint256 amount);
+
+    /**
+     * event that notifies clients about the amount burned
+     * @param value the value burned
+     */
+    event Burn(uint256 value);
 
     function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
         require(_startBlock >= block.number);
@@ -57,16 +63,15 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
         endBlock = _endBlock;
         rate = _rate; // qinpereth = 400
         wallet = _wallet;
-
     }
 
-    // TODO: This assumes ERC23 - which should be added
+    // TODO: This assumes ERC223 - which should be added
     function tokenFallback(address _from, uint _value, bytes _data) {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
         // Ensures this function has only been run once
-        require(!has_been_funded);
+        require(!hasBeenFunded);
 
         // Crowdsale can only be paid by the QIN token itself (no refunds)
         require(_from == address(token));
@@ -77,11 +82,11 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
 
         crowdsaleTokenSupply = _value;
         crowdsaleTokensRemaining = _value;
-        has_been_funded = true;
+        hasBeenFunded = true;
     }
 
     function supportsToken(address _token) constant returns (bool) {
-        // The only ERC23 token that can be paid to this contract is QIN
+        // The only ERC223 token that can be paid to this contract is QIN
         return _token == address(token);
     }
 
@@ -156,10 +161,11 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     }
 
     // burn remaining funds if goal not met
-    // TODO: this would technically not burn them, but lock the tokens in this contract.  Maybe we should allow the tokens to be completely destroyed by giving this object special access to destroy tokens it owns in the QINToken Contract?
     function burnRemainder() onlyOwner {
         require(hasEnded());
         if (crowdsaleTokensRemaining > 0) {
+            token.transfer(0x0, crowdsaleTokensRemaining);
+            Burn(crowdsaleTokensRemaining);
             crowdsaleTokensRemaining = 0;
         }
     }
