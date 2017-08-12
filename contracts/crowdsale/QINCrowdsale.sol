@@ -3,11 +3,12 @@ pragma solidity ^0.4.13;
 import '../token/QINToken.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
+import '../token/ERC223ReceivingContract.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is Ownable {
+contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     using SafeMath for uint256;
 
     // The token being sold
@@ -49,9 +50,8 @@ contract QINCrowdsale is Ownable {
         require(_endBlock >= _startBlock);
         require(_rate > 0);
         require(_wallet != 0x0);
-        require(_tokenSupply > 0);
 
-        // TODO(mrice) assumes the QINToken is the creator. Maybe we should take this in explicitly.
+        // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
         token = QINToken(msg.sender);
         startBlock = _startBlock;
         endBlock = _endBlock;
@@ -72,7 +72,8 @@ contract QINCrowdsale is Ownable {
         require(_from == address(token));
 
         // Ensure that QIN was actually transferred.  Not sure if this is really necessary, but for correctness' sake.
-        assert(token.balance(this) == _value);
+        require(_value > 0);
+        assert(token.balanceOf(this) == _value);
 
         crowdsaleTokenSupply = _value;
         crowdsaleTokensRemaining = _value;
@@ -86,7 +87,7 @@ contract QINCrowdsale is Ownable {
 
     // fallback function can be used to buy tokens
     function () payable {
-        buyQINTokens(msg.sender);
+        buyQINTokens();
     }
 
     // low level QIN token purchase function
