@@ -1,16 +1,15 @@
 pragma solidity ^0.4.13;
 
-import "./ERC20Token.sol";
-import "./QINLocked.sol";
+import "./ERC223Token.sol";
+import "./QINFrozen.sol";
 import "../permissions/Ownable.sol";
 import "../crowdsale/QINCrowdsale.sol";
 import "../libs/SafeMath.sol";
 
 /** @title QIN Token 
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
- *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
-contract QINToken is ERC20Token, Ownable {
+contract QINToken is ERC223Token, Ownable {
     using SafeMath for uint256;
 
     string public name = "QIN Token";
@@ -22,7 +21,7 @@ contract QINToken is ERC20Token, Ownable {
     uint public initialSupply = frozenSupply.add(crowdsaleSupply); // a check to make sure the math works out
 
     QINCrowdsale public crowdsale;
-    QINLocked public frozenQIN;
+    QINFrozen public frozenQIN;
 
     bool public crowdsaleExecuted = false;
 
@@ -47,7 +46,7 @@ contract QINToken is ERC20Token, Ownable {
     }
 
     function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
-    	frozenQIN = new QINLocked(_releaseTime, _amountToFreeze);
+    	frozenQIN = new QINFrozen(_releaseTime, _amountToFreeze);
     	transfer(address(frozenQIN), _amountToFreeze);
     	assert(balanceOf(msg.sender) == 0);
     }

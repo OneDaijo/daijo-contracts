@@ -3,7 +3,7 @@ pragma solidity ^0.4.13;
 import '../token/QINToken.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
-import '../token/ERC223ReceivingContract.sol';
+import '../token/interfaces/ERC223ReceivingContract.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
