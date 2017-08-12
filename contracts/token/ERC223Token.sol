@@ -11,8 +11,17 @@ import "../libs/SafeMath.sol";
  */
 contract ERC223Token is ERC223, ERC20Token {
    
-    // does not override standard ERC20 transfer function, therefore is backwards compatible
-    // if you want ERC223 transfer function, be sure to call with the bytes arg
+    // note: overrides the transfer function in ERC20Token
+    //       included for backwards compatibility
+    function transfer(address _to, uint _value) returns (bool success) { 
+        bytes memory empty;
+        if(isContract(_to)) {
+            return transferToContract(_to, _value, empty);
+        } else {
+            return transferToAddress(_to, _value, empty);
+        }
+    }
+
     function transfer(address _to, uint _value, bytes _data) returns (bool success) {
         if(isContract(_to)) {
             return transferToContract(_to, _value, _data);
