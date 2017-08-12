@@ -11,6 +11,7 @@ import "../libs/SafeMath.sol";
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
 contract QINToken is ERC20Token {
+    using SafeMath for uint256;
 
     string public name = "QIN Token";
     string public symbol = "QIN";
@@ -28,7 +29,7 @@ contract QINToken is ERC20Token {
     }
 
     function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
-    	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet, crowdsaleSupply);
+    	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet);
     	balances[msg.sender] = balances[msg.sender].sub(crowdsaleSupply);
     	// transfer tokens to contract
     }
