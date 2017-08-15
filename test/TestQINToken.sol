@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/QINToken.sol";
+import "../contracts/token/QINToken.sol";
 
 /** @title QIN Token Test
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -10,19 +10,19 @@ import "../contracts/QINToken.sol";
 contract TestQINToken {
 
   function testInitialBalanceUsingDeployedContract() {
-    MetaCoin meta = QINToken(DeployedAddresses.QINToken());
+    QINToken qin = new QINToken();
 
-    uint expected = 10000;
+    uint expected = qin.frozenSupply() + qin.crowdsaleSupply();
 
-    Assert.equal(meta.getBalance(tx.origin), expected, "Owner should have 10000 QIN initially");
+    Assert.equal(qin.balanceOf(tx.origin), expected, "Owner should have fozenSupply + crowdsaleSupply initially");
   }
 
   function testInitialBalanceWithNewQINToken() {
     QINToken qin = new QINToken();
 
-    uint expected = 10000;
+    address expected = tx.origin;
 
-    Assert.equal(qin.getBalance(tx.origin), expected, "Owner should have 10000 QIN initially");
+    Assert.equal(qin.owner(), expected, "sender should be initial owner");
   }
 
 }
