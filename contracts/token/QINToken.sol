@@ -35,6 +35,9 @@ contract QINToken is ERC223Token, Ownable {
     	require(!crowdsaleExecuted);
     	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet);
 
+        // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
+        crowdsale.transferOwnership(msg.sender);
+
         // msg.sender should still be the owner
         transfer(address(crowdsale), crowdsaleSupply);
 
@@ -48,6 +51,10 @@ contract QINToken is ERC223Token, Ownable {
     function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
     	frozenQIN = new QINFrozen(_releaseTime, _amountToFreeze);
     	transfer(address(frozenQIN), _amountToFreeze);
+
+        // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
+        frozenQIN.transferOwnership(msg.sender);
+
     	assert(balanceOf(msg.sender) == 0);
     }
 }
