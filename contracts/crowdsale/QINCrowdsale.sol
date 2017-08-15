@@ -134,7 +134,7 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     }
 
     // send purchased QIN tokens to buyer's address, ensure only the owner can call this
-    function sendQIN(address _to, uint256 _amount) onlyOwner {
+    function sendQIN(address _to, uint256 _amount) {
         token.transfer(_to, _amount);
     }
 
