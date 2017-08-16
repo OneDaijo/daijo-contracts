@@ -2,8 +2,8 @@ pragma solidity ^0.4.13;
 
  /** @title SafeMath Library
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
- *  @notice source: Zeppelin
- *  @dev Math operations with safety checks that throw on error
+ *  @notice source: OpenZeppelin
+ *  @dev math operations with safety checks that throw on error
  */
 library SafeMath {
   function mul(uint256 a, uint256 b) internal constant returns (uint256) {
