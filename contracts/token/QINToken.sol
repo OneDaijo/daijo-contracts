@@ -48,7 +48,7 @@ contract QINToken is ERC223Token, Ownable {
         crowdsaleExecuted = true;
     }
 
-    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
+    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) private onlyOwner {
     	frozenQIN = new QINFrozen(_releaseTime, _amountToFreeze);
     	transfer(address(frozenQIN), _amountToFreeze);
 
