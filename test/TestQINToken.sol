@@ -14,13 +14,13 @@ contract TestQINToken {
 
     uint expected = qin.frozenSupply() + qin.crowdsaleSupply();
 
-    Assert.equal(qin.balanceOf(tx.origin), expected, "Owner should have fozenSupply + crowdsaleSupply initially");
+    Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + crowdsaleSupply initially");
   }
 
   function testInitialBalanceWithNewQINToken() {
     QINToken qin = new QINToken();
 
-    address expected = tx.origin;
+    address expected = this;
 
     Assert.equal(qin.owner(), expected, "sender should be initial owner");
   }
