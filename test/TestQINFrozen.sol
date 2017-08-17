@@ -9,4 +9,13 @@ import "../contracts/token/QINFrozen.sol";
  */
 contract TestQINFrozen {
 
+    function testQINFrozenInit() {
+        uint releaseTime = now + 1000;
+        uint frozenBalance = 20000;
+        QINFrozen freeze = new QINFrozen(releaseTime, frozenBalance);
+
+        Assert.equal(freeze.releaseTime(), releaseTime, "Incorrect release time.");
+        Assert.equal(freeze.frozenBalance(), frozenBalance, "Incorrect frozen balance.");
+    }
+
 }
