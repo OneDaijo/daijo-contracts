@@ -9,7 +9,9 @@ import "../contracts/crowdsale/QINCrowdsale.sol";
 contract TestQINCrowdsale {
 
 	function testQINCrowdsaleInit() {
-		// QINCrowdsale tcs = new QINCrowdsale(1, 5, 10, 0x1234);
-		// Assert.equal(tcs.startBlock(), 1, "Incorrect startblock.");
+        uint startBlock = block.number + 1;
+        uint endBlock = block.number + 5;
+		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, 0x1234);
+		Assert.equal(tcs.startBlock(), startBlock, "Incorrect startblock.");
 	}
 }
