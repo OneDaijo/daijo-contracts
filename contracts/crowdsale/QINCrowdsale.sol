@@ -1,25 +1,28 @@
 pragma solidity ^0.4.13;
 
-import '../token/QINToken.sol';
+import '../token/ERC223Token.sol';
+import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
-import '../token/interfaces/ERC223ReceivingContract.sol';
+import '../permissions/Haltable.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is Ownable, ERC223ReceivingContract {
+contract QINCrowdsale is ERC223Token, Haltable {
     using SafeMath for uint256;
+
+/* QIN Token Crowdsale */
 
     // The token being sold
     QINToken public token;
 
+    // QINTokens will be sent from this address
+    address public wallet;
+
     // start and end block where investments are allowed (both inclusive)
     uint256 public startBlock;
     uint256 public endBlock;
-
-    // address where funds are collected
-    address public wallet;
 
     // how many token units a buyer gets per wei
     uint256 public rate;
@@ -30,9 +33,6 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     // total amount and amount remaining of QIN in the crowdsale
     uint256 public crowdsaleTokenSupply;
     uint256 public crowdsaleTokensRemaining;
-
-    // whether or not the crowdsale is halted, for emergencies only
-    bool public halted = false;
 
     // whether QIN has been transferred to the crowdsale contract
     bool public hasBeenFunded = false;
@@ -51,14 +51,14 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
      */
     event Burn(uint256 value);
 
-    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
+    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) onlyOwner {
         require(_startBlock >= block.number);
         require(_endBlock >= _startBlock);
         require(_rate > 0);
         require(_wallet != 0x0);
 
         // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
-        token = QINToken(msg.sender);
+        //token = QINToken(msg.sender);
         startBlock = _startBlock;
         endBlock = _endBlock;
         rate = _rate; // qinpereth = 400
@@ -101,7 +101,7 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
 
         uint256 weiToSpend = msg.value;
 
-        // calculate token amount to be created
+        // calculate token amount to be sent
         uint256 QINToBuy = weiToSpend.mul(rate);
 
         if (QINToBuy > crowdsaleTokensRemaining) {
@@ -133,7 +133,7 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
         QINPurchase(msg.sender, weiToSpend, QINToBuy);
     }
 
-    // send purchased QIN tokens to buyer's address, ensure only the owner can call this
+    // send purchased QIN tokens to buyer's address, ensure only the contract can call this
     function sendQIN(address _to, uint256 _amount) {
         token.transfer(_to, _amount);
     }
@@ -148,16 +148,6 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
         return block.number > endBlock || crowdsaleTokensRemaining == 0;
-    }
-
-    // halt the crowdsale in case of an emergency
-    function haltCrowdsale() onlyOwner {
-        halted = true;
-    }
-
-    // continue the crowdsale
-    function unhaltCrowdsale() onlyOwner {
-        halted = false;
     }
 
     // burn remaining funds if goal not met

@@ -9,7 +9,7 @@ import "../libs/SafeMath.sol";
 /** @title QIN Token 
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINToken is ERC223Token, Ownable {
+contract QINToken is ERC223Token {
     using SafeMath for uint256;
 
     string public name = "QIN Token";
@@ -27,9 +27,11 @@ contract QINToken is ERC223Token, Ownable {
 
     bool public crowdsaleExecuted = false;
 
+    /* Token Creation */
+
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
-        totalSupply = initialSupply;
+        uint totalSupply = initialSupply;
         balances[msg.sender] = initialSupply;
     }
 
