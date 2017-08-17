@@ -1,18 +1,18 @@
 pragma solidity ^0.4.13;
 
-import "./interfaces/ERC20.sol";
+import "./interfaces/ERC20Interface.sol";
+import "../permissions/Ownable.sol";
 import "../libs/SafeMath.sol";
 
 /** @title ERC20 Token Implementation
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
- *  @notice source: https://github.com/ethereum/EIPs/issues/20
+ *  @notice source: https://theethereum.wiki/w/index.php/ERC20_Token_Standard
  *  @notice functions check against integer over and underflow
  *  TODO: make this use safemath instead
  */
-contract ERC20Token is ERC20 {
+contract ERC20Token is ERC20Interface, Ownable {
     using SafeMath for uint256;
 
-    uint256 public totalSupply;
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
 
@@ -21,7 +21,9 @@ contract ERC20Token is ERC20 {
     }
 
     function transfer(address _to, uint256 _value) returns (bool success) {
-        if (balances[msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
+        if (balances[msg.sender] >= _value
+            && _value > 0
+            && balances[_to] + _value > balances[_to]) {
             balances[msg.sender] -= _value;
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
@@ -31,11 +33,18 @@ contract ERC20Token is ERC20 {
         }
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
-        if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
-            balances[_to] += _value;
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _value
+        ) returns (bool success) {
+        if (balances[_from] >= _value
+            && allowed[_from][msg.sender] >= _value
+            && _value > 0
+            && balances[_to] + _value > balances[_to]) {
             balances[_from] -= _value;
             allowed[_from][msg.sender] -= _value;
+            balances[_to] += _value;
             Transfer(_from, _to, _value);
             return true;
         } else { 

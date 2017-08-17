@@ -4,6 +4,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
 import "../permissions/Ownable.sol";
 import '../libs/SafeMath.sol';
 import "./QINToken.sol";
+import "./interfaces/ERC223ReceivingContract.sol";
 
 /** @title Frozen QIN Tokens
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -17,11 +18,19 @@ import "./QINToken.sol";
 
     // timestamp of when to release the QIN tokens
     uint public releaseTime;
+<<<<<<< HEAD
+=======
+    uint public balance;
+>>>>>>> test commit
 
     // whether or not QIN tokens have already been frozen
     bool public frozen = false;
 
+<<<<<<< HEAD
     function QINFrozen(uint _releaseTime) {
+=======
+    function QINFrozen(uint _releaseTime) public {
+>>>>>>> test commit
         require(_releaseTime > now);
         token = QINToken(msg.sender);
         releaseTime = _releaseTime;
@@ -34,8 +43,13 @@ import "./QINToken.sol";
         token.transfer(_wallet, frozenBalance());
     }
 
+<<<<<<< HEAD
     function frozenBalance() constant returns (uint balance) {
         return token.balanceOf(this);
+=======
+    function frozenBalance() constant returns (uint) {
+        return token.balance;
+>>>>>>> test commit
     }
 
     function tokenFallback(address _from, uint _value, bytes _data) {
