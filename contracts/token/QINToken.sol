@@ -14,10 +14,12 @@ contract QINToken is ERC223Token, Ownable {
 
     string public name = "QIN Token";
     string public symbol = "QIN";
-    uint public decimals = 18;
 
-    uint public frozenSupply = 140000000;
-    uint public crowdsaleSupply = 60000000;
+    // Multiplier to convert QIN to the smallest subdivision of QIN
+    uint public decimalMultiplier = 10**18;
+
+    uint public frozenSupply = decimalMultiplier.mul(140000000);
+    uint public crowdsaleSupply = decimalMultiplier.mul(60000000);
     uint public initialSupply = frozenSupply.add(crowdsaleSupply); // a check to make sure the math works out
 
     QINCrowdsale public crowdsale;
