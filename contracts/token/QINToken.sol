@@ -51,7 +51,7 @@ contract QINToken is ERC223Token, Ownable {
     }
 
     function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) private onlyOwner {
-    	frozenQIN = new QINFrozen(_releaseTime);
+        frozenQIN = new QINFrozen(_releaseTime);
 
         // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
         frozenQIN.transferOwnership(msg.sender);
