@@ -26,7 +26,7 @@ contract TestQINToken {
     function testTotalSupplyAfterConstruction() {
         QINToken qin = new QINToken();
 
-        Assert.equal(qin.totalSupply(), 200000000, "Total supply incorrect.");
+        Assert.equal(qin.totalSupply(), 200000000 * 10**18, "Total supply incorrect.");
     }
 
     function testCorrectAllowanceAmountAfterApproval() {
@@ -39,12 +39,13 @@ contract TestQINToken {
 
     function testCorrectBalancesAfterTransfer() {
         QINToken qin = new QINToken();
-        qin.transfer(0x1234, 200000000);
+        uint totalBalance = 200000000 * 10**18;
+        qin.transfer(0x1234, totalBalance);
         uint balance0 = qin.balanceOf(qin.owner());
         uint balance1 = qin.balanceOf(0x1234);
 
         Assert.equal(balance0, 0, "Incorrect sender balance.");
-        Assert.equal(balance1, 200000000, "Incorrect receiver balance.");
+        Assert.equal(balance1, totalBalance, "Incorrect receiver balance.");
     }
 
     // TODO fix this test, not sure why it doesn't work
