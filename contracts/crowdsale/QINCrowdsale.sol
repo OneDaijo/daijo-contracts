@@ -73,8 +73,8 @@ contract QINCrowdsale is Ownable, ERC223ReceivingContract {
         // Ensures this function has only been run once
         require(!hasBeenFunded);
 
-        // Crowdsale can only be paid by the QIN token itself (no refunds)
-        require(_from == address(token));
+        // Crowdsale can only be paid by the owner of the crowdsale.
+        require(_from == owner);
 
         // Ensure that QIN was actually transferred.  Not sure if this is really necessary, but for correctness' sake.
         require(_value > 0);
