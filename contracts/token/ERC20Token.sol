@@ -17,15 +17,11 @@ contract ERC20Token is ERC20Interface {
 
     uint _totalSupply;
 
-    function totalSupply() constant returns (uint256 totalSupply) {
-        totalSupply = _totalSupply;
-    }
-
-    function balanceOf(address _owner) constant returns (uint256 balance) {
+    function balanceOf(address _owner) public constant returns (uint256 balance) {
         return balances[_owner];
     }
 
-    function transfer(address _to, uint256 _value) returns (bool success) {
+    function transfer(address _to, uint256 _value) public returns (bool success) {
         if (balances[msg.sender] >= _value
             && _value > 0
             && balances[_to] + _value > balances[_to]) {
@@ -33,8 +29,8 @@ contract ERC20Token is ERC20Interface {
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
             return true;
-        } else { 
-            return false; 
+        } else {
+            return false;
         }
     }
 
@@ -42,7 +38,7 @@ contract ERC20Token is ERC20Interface {
         address _from,
         address _to,
         uint256 _value
-        ) returns (bool success) {
+        ) public returns (bool success) {
         if (balances[_from] >= _value
             && allowed[_from][msg.sender] >= _value
             && _value > 0
@@ -52,18 +48,18 @@ contract ERC20Token is ERC20Interface {
             balances[_to] += _value;
             Transfer(_from, _to, _value);
             return true;
-        } else { 
-            return false; 
+        } else {
+            return false;
         }
     }
 
-    function approve(address _spender, uint256 _value) returns (bool success) {
+    function approve(address _spender, uint256 _value) public returns (bool success) {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
     }
 
-    function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
+    function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
     }
 }
