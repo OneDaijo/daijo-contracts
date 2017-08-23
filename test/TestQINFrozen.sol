@@ -14,27 +14,27 @@ contract TestQINFrozen {
 
     uint decimalMultiplier = 10**18;
 
-    //disabled temporarily - function is private
-    //function testQINFrozenInitFromQINToken() {
-    //    uint releaseTime = now + 1000;
-    //    uint freezeAmount = decimalMultiplier.mul(200000000);
-    //    QINToken qin = new QINToken();
-    //    qin.freezeRemainingTokens(releaseTime, freezeAmount);
-	//	address expected = this;
-	//	address owner = qin.getFreezeOwner();
+    // Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
+    function testQINFrozenInitFromQINToken() {
+        uint releaseTime = now + 1000;
+        uint freezeAmount = decimalMultiplier.mul(200000000);
+        QINToken qin = new QINToken();
+        qin.freezeRemainingTokens(releaseTime, freezeAmount);
+		address expected = this;
+		address owner = qin.getFreezeOwner();
 
-	//	Assert.equal(owner, expected, "Freeze has wrong owner.");
-	//}
+		Assert.equal(owner, expected, "Freeze has wrong owner.");
+	}
 
-    //disabled temporarily - function is private
-    //function testQINTokenIsTransferringToQINFrozen() {
-    //    uint releaseTime = now + 1000;
-    //    uint freezeAmount = decimalMultiplier.mul(200000000);
-    //    QINToken qin = new QINToken();
-    //    qin.freezeRemainingTokens(releaseTime, freezeAmount);
+    // Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
+    function testQINTokenIsTransferringToQINFrozen() {
+        uint releaseTime = now + 1000;
+        uint freezeAmount = decimalMultiplier.mul(200000000);
+        QINToken qin = new QINToken();
+        qin.freezeRemainingTokens(releaseTime, freezeAmount);
 
-    //    Assert.equal(qin.balanceOf(qin.owner()), 0, "Incorrect amount of QIN sent.");
-    //}
+        Assert.equal(qin.balanceOf(qin.owner()), 0, "Incorrect amount of QIN sent.");
+    }
 
     function testQINFrozenInit() {
         uint releaseTime = now + 1000;

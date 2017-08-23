@@ -36,7 +36,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
     }
 
     function frozenBalance() constant returns (uint) {
-        return token.balance;
+        return token.balanceOf(this);
     }
 
     function tokenFallback(address _from, uint _value, bytes _data) {
