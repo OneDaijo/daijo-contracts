@@ -4,6 +4,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
 import "../permissions/Ownable.sol";
 import '../libs/SafeMath.sol';
 import "./QINToken.sol";
+import "./interfaces/ERC223ReceivingContract.sol";
 
 /** @title Frozen QIN Tokens
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -34,7 +35,7 @@ import "./QINToken.sol";
         token.transfer(_wallet, frozenBalance());
     }
 
-    function frozenBalance() constant returns (uint balance) {
+    function frozenBalance() constant returns (uint) {
         return token.balanceOf(this);
     }
 
