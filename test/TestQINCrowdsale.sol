@@ -22,7 +22,7 @@ contract TestQINCrowdsale {
 
 	function testQINCrowdsaleInitFromStartCrowdsaleFunction() {
 		uint startBlock = block.number + 1;
-    	uint endBlock = block.number + 5;
+		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		uint releaseTime = now + 1000;
 		QINToken qin = new QINToken();
@@ -50,8 +50,7 @@ contract TestQINCrowdsale {
     	uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
-
+		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
         bool support = tcs.supportsToken(address(qin));
 
         Assert.equal(support, true, "supportsToken() is rejecting QIN.");
@@ -59,7 +58,7 @@ contract TestQINCrowdsale {
 
 	function testQINCrowdsaleOwner() {
 		uint startBlock = block.number + 1;
-    	uint endBlock = block.number + 5;
+		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
         QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
 		address expected = 0x1234;
