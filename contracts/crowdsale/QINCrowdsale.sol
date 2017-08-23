@@ -51,7 +51,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
      */
     event Burn(uint256 value);
 
-    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) onlyOwner {
+    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
         require(_startBlock >= block.number);
         require(_endBlock >= _startBlock);
         require(_rate > 0);
