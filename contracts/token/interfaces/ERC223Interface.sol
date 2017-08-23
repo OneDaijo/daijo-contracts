@@ -6,9 +6,9 @@ pragma solidity ^0.4.13;
  *  @notice only has functions that differ from ERC20 since ERC223
  *          is backwards compatible with ERC20
  */
-contract ERC223 {
+contract ERC223Interface {
     
-    function transfer(address _to, uint _value, bytes _data) returns (bool success);
+    function transfer(address _to, uint _value, bytes _data) public returns (bool success);
 
     event Transfer(address indexed _from, address indexed _to, uint _value, bytes _data);
 
