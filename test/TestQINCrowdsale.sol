@@ -11,7 +11,7 @@ contract TestQINCrowdsale {
 
 	function testQINCrowdsaleInit() {
 		uint startBlock = block.number + 1;
-    	uint endBlock = block.number + 5;
+		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
 		Assert.equal(tcs.startBlock(), startBlock, "Incorrect startblock.");
@@ -27,17 +27,16 @@ contract TestQINCrowdsale {
 		uint releaseTime = now + 1000;
 		QINToken qin = new QINToken();
 		qin.startCrowdsale(startBlock, endBlock, 10, wallet, releaseTime);
-
 		address owner = qin.getTCSOwner();
 		address expected = 0x1234;
-
+		
 		Assert.equal(owner, expected, "Incorrect owner.");
 	}
 
 	function testQINCrowdsaleTokenFallback() {
 		bytes memory empty;
 		uint startBlock = block.number + 1;
-    	uint endBlock = block.number + 5;
+		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
 		tcs.tokenFallback(wallet, 100, empty);
@@ -47,22 +46,22 @@ contract TestQINCrowdsale {
 
 	function testQINCrowdsaleSupportsToken() {
 		uint startBlock = block.number + 1;
-    	uint endBlock = block.number + 5;
+		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINToken qin = new QINToken();
 		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
-        bool support = tcs.supportsToken(address(qin));
-
-        Assert.equal(support, true, "supportsToken() is rejecting QIN.");
+		bool support = tcs.supportsToken(address(qin));
+		
+		Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }
 
 	function testQINCrowdsaleOwner() {
 		uint startBlock = block.number + 1;
 		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
-        QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
+		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
 		address expected = 0x1234;
-
-        Assert.equal(tcs.owner(), 0x1234, "Not the correct owner. ");
+		
+		Assert.equal(tcs.owner(), 0x1234, "Not the correct owner. ");
     }
 }
