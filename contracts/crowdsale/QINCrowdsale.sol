@@ -1,6 +1,6 @@
 pragma solidity ^0.4.13;
 
-import '../token/ERC223Token.sol';
+import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
@@ -9,7 +9,7 @@ import '../permissions/Haltable.sol';
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is ERC223Token, Haltable {
+contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     using SafeMath for uint256;
 
 /* QIN Token Crowdsale */
@@ -58,7 +58,7 @@ contract QINCrowdsale is ERC223Token, Haltable {
         require(_wallet != 0x0);
 
         // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
-        //token = QINToken(msg.sender);
+        token = QINToken(msg.sender);
         startBlock = _startBlock;
         endBlock = _endBlock;
         rate = _rate; // qinpereth = 400
