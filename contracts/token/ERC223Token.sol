@@ -51,8 +51,8 @@ contract ERC223Token is ERC223Interface, ERC20Token {
 
         balances[msg.sender] = balanceOf(msg.sender).sub(_value);
         balances[_to] = balanceOf(_to).add(_value);
-        //ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
-        //receiver.tokenFallback(msg.sender, _value, _data);
+        ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
+        receiver.tokenFallback(msg.sender, _value, _data);
         Transfer(msg.sender, _to, _value, _data);
         return true;
     }
