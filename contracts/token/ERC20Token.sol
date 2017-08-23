@@ -1,7 +1,6 @@
 pragma solidity ^0.4.13;
 
 import "./interfaces/ERC20Interface.sol";
-import "../permissions/Ownable.sol";
 import "../libs/SafeMath.sol";
 
 /** @title ERC20 Token Implementation
@@ -10,7 +9,7 @@ import "../libs/SafeMath.sol";
  *  @notice functions check against integer over and underflow
  *  TODO: make this use safemath instead
  */
-contract ERC20Token is ERC20Interface, Ownable {
+contract ERC20Token is ERC20Interface {
     using SafeMath for uint256;
 
     mapping (address => uint256) balances;

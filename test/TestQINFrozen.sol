@@ -50,9 +50,30 @@ contract TestQINFrozen {
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(releaseTime);
 
+        bool frozen = freeze.frozen();
+
         qin.transfer(freeze, decimalMultiplier.mul(140000000));
+        Assert.equal(frozen, true, "Not frozen.");
         Assert.equal(qin.balanceOf(this), decimalMultiplier.mul(60000000), "Incorrect.");
         Assert.equal(qin.balanceOf(freeze), decimalMultiplier.mul(140000000), "Incorrect.");
+    }
+
+    function testQINFrozenOwner() {
+        uint releaseTime = now + 1000;
+        QINFrozen freeze = new QINFrozen(releaseTime);
+        address expected = this;
+
+        Assert.equal(freeze.owner(), this, "Not the correct owner. ");
+    }
+
+    function testQINFrozenSupportsToken() {
+        uint releaseTime = now + 1000;
+        QINToken qin = new QINToken();
+        QINFrozen freeze = new QINFrozen(releaseTime);
+
+        bool support = freeze.supportsToken(qin.address);
+
+        Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }
 
     //TODO: Fix this test
