@@ -71,7 +71,7 @@ contract TestQINFrozen {
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(releaseTime);
 
-        bool support = freeze.supportsToken(qin.address);
+        bool support = freeze.supportsToken(msg.sender);
 
         Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }

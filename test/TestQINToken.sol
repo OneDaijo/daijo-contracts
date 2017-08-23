@@ -29,7 +29,7 @@ contract TestQINToken {
 
     function testTotalSupplyAfterConstruction() {
         QINToken qin = new QINToken();
-        uint totalSupply = qin.initialSupply();
+        uint totalSupply = qin.totalSupply();
 
         Assert.equal(totalSupply, decimalMultiplier.mul(200000000), "Total supply incorrect.");
     }

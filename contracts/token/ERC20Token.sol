@@ -15,6 +15,12 @@ contract ERC20Token is ERC20Interface {
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
 
+    uint _totalSupply;
+
+    function totalSupply() constant returns (uint256 totalSupply) {
+        totalSupply = _totalSupply;
+    }
+
     function balanceOf(address _owner) constant returns (uint256 balance) {
         return balances[_owner];
     }
