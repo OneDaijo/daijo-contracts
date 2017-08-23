@@ -12,15 +12,15 @@ import "../libs/SafeMath.sol";
 contract QINToken is ERC223Token, Ownable {
     using SafeMath for uint256;
 
-    string public name = "QIN Token";
-    string public symbol = "QIN";
+    string public constant name = "QIN Token";
+    string public constant symbol = "QIN";
+    uint public constant decimals = 18;
 
     // Multiplier to convert QIN to the smallest subdivision of QIN
     uint public decimalMultiplier = 10**18;
 
     uint public frozenSupply = decimalMultiplier.mul(140000000);
     uint public crowdsaleSupply = decimalMultiplier.mul(60000000);
-    uint public initialSupply = frozenSupply.add(crowdsaleSupply); // a check to make sure the math works out
 
     QINCrowdsale public crowdsale;
     QINFrozen public frozenQIN;
@@ -31,7 +31,8 @@ contract QINToken is ERC223Token, Ownable {
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
-        balances[msg.sender] = initialSupply;
+        _totalSupply = decimalMultiplier.mul(200000000);
+        balances[msg.sender] = _totalSupply;
     }
 
     function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet, uint _releaseTime) onlyOwner {
@@ -62,7 +63,7 @@ contract QINToken is ERC223Token, Ownable {
     	assert(balanceOf(msg.sender) == 0);
     }
 
-    function getTCSOwner() {
+    function getTCSOwner() constant returns (address) {
         return crowdsale.owner();
     }
 }

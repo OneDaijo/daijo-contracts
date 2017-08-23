@@ -24,7 +24,7 @@ contract TestQINCrowdsale {
 		uint startBlock = block.number + 1;
     	uint endBlock = block.number + 5;
 		address wallet = 0x1234;
-		releaseTime = now + 1000;
+		uint releaseTime = now + 1000;
 		QINToken qin = new QINToken();
 		qin.startCrowdsale(startBlock, endBlock, 10, wallet, releaseTime);
 
@@ -46,14 +46,13 @@ contract TestQINCrowdsale {
 	}
 
 	function testQINCrowdsaleSupportsToken() {
-        QINToken qin = new QINToken();
 		uint startBlock = block.number + 1;
     	uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINToken qin = new QINToken();
         QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
 
-        bool support = tcs.supportsToken(qin.address);
+        bool support = tcs.supportsToken(address(qin));
 
         Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }
