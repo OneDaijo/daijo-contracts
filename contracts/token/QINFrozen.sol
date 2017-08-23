@@ -39,7 +39,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
         return token.balanceOf(this);
     }
 
-    function tokenFallback(address _from, uint _value, bytes _data) {
+    function tokenFallback(address _from, uint _value, bytes _data) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
@@ -56,7 +56,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
         frozen = true;
     }
 
-    function supportsToken(address _token) constant returns (bool) {
+    function supportsToken(address _token) public constant returns (bool) {
         // The only ERC223 token that can be paid to this contract is QIN
         return _token == address(token);
     }

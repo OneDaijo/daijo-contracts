@@ -42,7 +42,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
      * @param purchaser who paid for and receives the tokens
      * @param value weis paid for purchase
      * @param amount amount of tokens purchased
-     */ 
+     */
     event QINPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
     /**
@@ -66,7 +66,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // TODO: This assumes ERC223 - which should be added
-    function tokenFallback(address _from, uint _value, bytes _data) {
+    function tokenFallback(address _from, uint _value, bytes _data) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
@@ -85,7 +85,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         hasBeenFunded = true;
     }
 
-    function supportsToken(address _token) constant returns (bool) {
+    function supportsToken(address _token) public constant returns (bool) {
         // The only ERC223 token that can be paid to this contract is QIN
         return _token == address(token);
     }
@@ -107,8 +107,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         if (QINToBuy > crowdsaleTokensRemaining) {
             QINToBuy = crowdsaleTokensRemaining;
 
-            // Will technically round down the amount of wei if this doesn't 
-            // divide evenly, so the last person could get 1/2 a wei extra of QIN.  
+            // Will technically round down the amount of wei if this doesn't
+            // divide evenly, so the last person could get 1/2 a wei extra of QIN.
             // TODO: improve this logic
             weiToSpend = QINToBuy.div(rate);
         }
@@ -134,7 +134,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // send purchased QIN tokens to buyer's address, ensure only the contract can call this
-    function sendQIN(address _to, uint256 _amount) {
+    function sendQIN(address _to, uint256 _amount) private {
         token.transfer(_to, _amount);
     }
 
