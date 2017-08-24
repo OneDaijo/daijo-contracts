@@ -55,17 +55,17 @@ contract TestQINToken {
     // Test works if qin.transferFrom() were initiated by 0x5678
     function testCorrectBalancesAfterTransferringFromAnotherAccount() {
         QINToken qin = new QINToken();
-        qin.approve(0x1234, 100);
-        qin.approve(0x5678, 100);
-        qin.transferFrom(qin.owner(), 0x5678, 100);
-        uint balance0 = qin.balanceOf(qin.owner());
+        Assert.isTrue(qin.approve(0x1234, 100), "address 1 approval failed");
+        Assert.isTrue(qin.approve(this, 100), "address 2 approval failed");
+        Assert.isTrue(qin.transferFrom(this, 0x5678, 100), "address 2 transfer failed");
+        uint balance0 = qin.balanceOf(this);
         uint balance1 = qin.balanceOf(0x1234);
         uint balance2 = qin.balanceOf(0x5678);
         uint allowance = qin.allowance(qin.owner(), 0x1234);
 
         Assert.equal(allowance, 100, "Target was not approved correct amount."); // approve() works
-        Assert.equal(balance0, decimalMultiplier.mul(199999900), "Incorrect owner balance.");
-        Assert.equal(balance1, 100, "Incorrect address 1 balance.");
+        Assert.equal(balance0, decimalMultiplier.mul(200000000) - 100, "Incorrect owner balance.");
+        Assert.equal(balance1, 0, "Incorrect address 1 balance.");
         Assert.equal(balance2, 100, "Incorrect address 2 balance.");
     }
 }
