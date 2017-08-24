@@ -13,7 +13,8 @@ contract TestQINCrowdsale {
 		uint startBlock = block.number + 1;
 		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
-		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
+		QINToken qin = new QINToken();
+		QINCrowdsale tcs = new QINCrowdsale(qin, startBlock, endBlock, 10, wallet);
 		Assert.equal(tcs.startBlock(), startBlock, "Incorrect startblock.");
 		Assert.equal(tcs.endBlock(), endBlock, "Incorrect endblock.");
 		Assert.equal(tcs.rate(), 10, "Incorrect rate.");
@@ -27,19 +28,20 @@ contract TestQINCrowdsale {
 		uint releaseTime = now + 1000;
 		QINToken qin = new QINToken();
 		qin.startCrowdsale(startBlock, endBlock, 10, wallet, releaseTime);
+
 		address owner = qin.getTCSOwner();
-		address expected = 0x1234;
+		address expected = this;
 		
 		Assert.equal(owner, expected, "Incorrect owner.");
 	}
 
 	function testQINCrowdsaleTokenFallback() {
-		bytes memory empty;
 		uint startBlock = block.number + 1;
 		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
-		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
-		tcs.tokenFallback(wallet, 100, empty);
+		QINToken qin = new QINToken();
+		QINCrowdsale tcs = new QINCrowdsale(qin, startBlock, endBlock, 10, wallet);
+		qin.transfer(tcs, 100);
 		bool funded = tcs.hasBeenFunded();
 		Assert.equal(funded, true, "tokenFallback was not called.");
 	}
@@ -49,8 +51,9 @@ contract TestQINCrowdsale {
 		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
 		QINToken qin = new QINToken();
-		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
-		bool support = tcs.supportsToken(address(qin));
+		QINCrowdsale tcs = new QINCrowdsale(qin, startBlock, endBlock, 10, wallet);
+
+		bool support = tcs.supportsToken(qin);
 		
 		Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }
@@ -59,9 +62,11 @@ contract TestQINCrowdsale {
 		uint startBlock = block.number + 1;
 		uint endBlock = block.number + 5;
 		address wallet = 0x1234;
-		QINCrowdsale tcs = new QINCrowdsale(startBlock, endBlock, 10, wallet);
-		address expected = 0x1234;
-		
-		Assert.equal(tcs.owner(), 0x1234, "Not the correct owner. ");
+		QINToken qin = new QINToken();
+		QINCrowdsale tcs = new QINCrowdsale(qin, startBlock, endBlock, 10, wallet);
+
+		// Expect the creator to be the owner.
+		address expected = this;
+		Assert.equal(tcs.owner(), this, "Not the correct owner. ");
     }
 }
