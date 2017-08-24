@@ -37,7 +37,7 @@ contract QINToken is ERC223Token, Ownable {
 
     function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet, uint _releaseTime) onlyOwner {
     	require(!crowdsaleExecuted);
-    	crowdsale = new QINCrowdsale(_startBlock, _endBlock, _rate, _wallet);
+        crowdsale = new QINCrowdsale(this, _startBlock, _endBlock, _rate, _wallet);
 
         // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
         crowdsale.transferOwnership(msg.sender);

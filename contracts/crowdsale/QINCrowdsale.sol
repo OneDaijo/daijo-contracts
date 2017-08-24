@@ -51,14 +51,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
      */
     event Burn(uint256 value);
 
-    function QINCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
+    function QINCrowdsale(QINToken _token, uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
         require(_startBlock >= block.number);
         require(_endBlock >= _startBlock);
         require(_rate > 0);
         require(_wallet != 0x0);
 
         // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
-        token = QINToken(msg.sender);
+        token = _token;
         startBlock = _startBlock;
         endBlock = _endBlock;
         rate = _rate; // qinpereth = 400
