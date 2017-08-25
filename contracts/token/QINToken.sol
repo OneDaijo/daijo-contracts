@@ -6,7 +6,7 @@ import "../permissions/Ownable.sol";
 import "../crowdsale/QINCrowdsale.sol";
 import "../libs/SafeMath.sol";
 
-/** @title QIN Token 
+/** @title QIN Token
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINToken is ERC223Token, Ownable {
@@ -52,8 +52,8 @@ contract QINToken is ERC223Token, Ownable {
         crowdsaleExecuted = true;
     }
 
-    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) private onlyOwner {
-        frozenQIN = new QINFrozen(_releaseTime);
+    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
+        frozenQIN = new QINFrozen(this, _releaseTime);
 
         // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
         frozenQIN.transferOwnership(msg.sender);

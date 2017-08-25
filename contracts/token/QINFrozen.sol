@@ -22,9 +22,9 @@ import "./interfaces/ERC223ReceivingContract.sol";
     // whether or not QIN tokens have already been frozen
     bool public frozen = false;
 
-    function QINFrozen(uint _releaseTime) {
+    function QINFrozen(QINToken _token, uint _releaseTime) {
         require(_releaseTime > now);
-        token = QINToken(msg.sender);
+        token = _token;
         releaseTime = _releaseTime;
     }
 

@@ -38,7 +38,8 @@ contract TestQINFrozen {
 
     function testQINFrozenInit() {
         uint releaseTime = now + 1000;
-        QINFrozen freeze = new QINFrozen(releaseTime);
+        QINToken qin = new QINToken();
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.equal(freeze.releaseTime(), releaseTime, "Incorrect release time.");
         Assert.equal(freeze.frozenBalance(), 0, "Incorrect frozen balance.");
@@ -47,12 +48,12 @@ contract TestQINFrozen {
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
         uint frozenBalance = decimalMultiplier.mul(20000);
+        bool frozen;
         QINToken qin = new QINToken();
-        QINFrozen freeze = new QINFrozen(releaseTime);
-
-        bool frozen = freeze.frozen();
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         qin.transfer(freeze, decimalMultiplier.mul(140000000));
+        frozen = freeze.frozen();
         Assert.equal(frozen, true, "Not frozen.");
         Assert.equal(qin.balanceOf(this), decimalMultiplier.mul(60000000), "Incorrect.");
         Assert.equal(qin.balanceOf(freeze), decimalMultiplier.mul(140000000), "Incorrect.");
@@ -60,7 +61,8 @@ contract TestQINFrozen {
 
     function testQINFrozenOwner() {
         uint releaseTime = now + 1000;
-        QINFrozen freeze = new QINFrozen(releaseTime);
+        QINToken qin = new QINToken();
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
         address expected = this;
 
         Assert.equal(freeze.owner(), this, "Not the correct owner. ");
@@ -69,28 +71,25 @@ contract TestQINFrozen {
     function testQINFrozenSupportsToken() {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken();
-        QINFrozen freeze = new QINFrozen(releaseTime);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
-        bool support = freeze.supportsToken(msg.sender);
+        bool support = freeze.supportsToken(qin);
 
         Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     }
 
     //TODO: Fix this test
-    //function testReleaseFunction() {
-    //    uint releaseTime = now + 1000;
-    //    uint frozenBalance = 200000000;
-    //    QINToken qin = new QINToken();
-    //    QINFrozen freeze = new QINFrozen(releaseTime, frozenBalance);
+    function testReleaseFunction() {
+        uint releaseTime = now + 1000;
+        uint frozenBalance = decimalMultiplier.mul(200000000);
+        QINToken qin = new QINToken();
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
-    //    qin.transfer(freeze, 140000000);
+        qin.transfer(freeze, 140000000);
 
-    //    bool frozen = freeze.frozen();
-    //    Assert.isTrue(frozen, "Transfer did not trigger freeze.");
+        freeze.release(msg.sender);
+        Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
 
-    //    freeze.release(this);
-    //    Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
-
-    //}
+    }
 
 }
