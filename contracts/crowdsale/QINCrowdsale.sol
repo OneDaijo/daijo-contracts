@@ -91,12 +91,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // fallback function can be used to buy tokens
-    function () payable {
+    function () external payable {
         buyQINTokens();
     }
 
     // low level QIN token purchase function
-    function buyQINTokens() payable {
+    function buyQINTokens() public payable {
         require(validPurchase());
 
         uint256 weiToSpend = msg.value;
@@ -151,7 +151,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // burn remaining funds if goal not met
-    function burnRemainder() onlyOwner {
+    function burnRemainder() external onlyOwner {
         require(hasEnded());
         if (crowdsaleTokensRemaining > 0) {
             token.transfer(0x0, crowdsaleTokensRemaining);
