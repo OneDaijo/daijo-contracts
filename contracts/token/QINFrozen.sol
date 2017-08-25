@@ -14,7 +14,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
     using SafeMath for uint256;
 
     // the token that's being locked
-    QINToken token;
+    QINToken public token;
 
     // timestamp of when to release the QIN tokens
     uint public releaseTime;
@@ -22,20 +22,20 @@ import "./interfaces/ERC223ReceivingContract.sol";
     // whether or not QIN tokens have already been frozen
     bool public frozen = false;
 
-    function QINFrozen(uint _releaseTime) {
+    function QINFrozen(QINToken _token, uint _releaseTime) {
         require(_releaseTime > now);
-        token = QINToken(msg.sender);
+        token = _token;
         releaseTime = _releaseTime;
     }
 
-    function release(address _wallet) onlyOwner {
+    function release(address _wallet) external onlyOwner {
         require(frozen);
         require(_wallet != 0x0);
         require(now >= releaseTime);
         token.transfer(_wallet, frozenBalance());
     }
 
-    function frozenBalance() constant returns (uint) {
+    function frozenBalance() public constant returns (uint) {
         return token.balanceOf(this);
     }
 
