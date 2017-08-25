@@ -29,7 +29,7 @@ contract TestQINCrowdsale {
 		QINToken qin = new QINToken();
 		qin.startCrowdsale(startBlock, endBlock, 10, wallet, releaseTime);
 
-		address owner = qin.getTCSOwner();
+		address owner = qin.getCrowdsale().owner();
 		address expected = this;
 		
 		Assert.equal(owner, expected, "Incorrect owner.");
