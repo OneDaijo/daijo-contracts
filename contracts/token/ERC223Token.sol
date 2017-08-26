@@ -11,10 +11,12 @@ import "../libs/SafeMath.sol";
  */
 contract ERC223Token is ERC223Interface, ERC20Token {
     using SafeMath for uint256;
+    
+    uint length;
 
     // assemble the given address bytecode. If bytecode exists then the _addr is a contract.
     function isContract(address _to) private returns (bool isContract) {
-        uint length;
+
         assembly {
             //retrieve the size of the code on target address, this needs assembly
             length := extcodesize(_to)
@@ -51,8 +53,10 @@ contract ERC223Token is ERC223Interface, ERC20Token {
 
         balances[msg.sender] = balanceOf(msg.sender).sub(_value);
         balances[_to] = balanceOf(_to).add(_value);
-        ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
-        receiver.tokenFallback(msg.sender, _value, _data);
+        if(_data > 0) {
+            ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
+            receiver.tokenFallback(msg.sender, _value, _data);
+        }
         Transfer(msg.sender, _to, _value, _data);
         return true;
     }
