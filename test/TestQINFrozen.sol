@@ -53,6 +53,7 @@ contract TestQINFrozen {
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
         uint frozenBalance = decimalMultiplier.mul(20000);
+        bool frozen;
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -90,14 +91,11 @@ contract TestQINFrozen {
     //    uint releaseTime = now + 1000;
     //    uint frozenBalance = 200000000;
     //    QINToken qin = new QINToken();
-    //    QINFrozen freeze = new QINFrozen(qin, releaseTime, frozenBalance);
+    //    QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
     //    qin.transfer(freeze, 140000000);
 
-    //    bool frozen = freeze.frozen();
-    //    Assert.isTrue(frozen, "Transfer did not trigger freeze.");
-
-    //    freeze.release(this);
+    //    freeze.release(msg.sender);
     //    Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
 
     //}
