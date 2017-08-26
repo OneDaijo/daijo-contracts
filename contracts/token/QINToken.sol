@@ -6,7 +6,7 @@ import "../permissions/Ownable.sol";
 import "../crowdsale/QINCrowdsale.sol";
 import "../libs/SafeMath.sol";
 
-/** @title QIN Token 
+/** @title QIN Token
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINToken is ERC223Token, Ownable {
