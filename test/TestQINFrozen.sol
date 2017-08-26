@@ -53,7 +53,6 @@ contract TestQINFrozen {
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
         uint frozenBalance = decimalMultiplier.mul(20000);
-        bool frozen;
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
