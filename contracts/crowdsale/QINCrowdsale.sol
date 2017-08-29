@@ -20,9 +20,11 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // QINTokens will be sent from this address
     address public wallet;
 
-    // start and end block where investments are allowed (both inclusive)
-    uint256 public startBlock;
-    uint256 public endBlock;
+    // start and end UNIX timestamp where investments are allowed
+    uint256 public startTime;
+    uint256 public endTime;
+
+    uint256 public unixDay = 24*60*60;
 
     // how many token units a buyer gets per wei
     uint256 public rate;
@@ -30,12 +32,25 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // amount of raised money in wei
     uint256 public weiRaised;
 
+    // number of registered users
+    uint256 public registeredUserCount;
+
+    mapping (address => bool) registeredUserWhitelist;
+    mapping (address => uint256) amountBoughtDayOne;
+    mapping (address => uint256) amountBoughtDayTwo;
+
     // total amount and amount remaining of QIN in the crowdsale
     uint256 public crowdsaleTokenSupply;
     uint256 public crowdsaleTokensRemaining;
 
+    uint256 private dayOneLimit = crowdsaleTokenSupply / registeredUserCount;
+    uint256 private dayTwoLimit = crowdsaleTokensRemaining / registeredUserCount;
+
     // whether QIN has been transferred to the crowdsale contract
     bool public hasBeenFunded = false;
+
+    /* State Machine for each day of sale */
+    enum State {BeforeSale, SaleDay1, SaleDay2, SaleFFA}
 
     /**
      * event for token purchase logging
@@ -51,18 +66,22 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
      */
     event Burn(uint256 value);
 
-    function QINCrowdsale(QINToken _token, uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet) {
-        require(_startBlock >= block.number);
-        require(_endBlock >= _startBlock);
+    function QINCrowdsale(QINToken _token, uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
+        require(_startTime >= now);
+        require(_endTime >= _startTime);
         require(_rate > 0);
         require(_wallet != 0x0);
 
         // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
         token = _token;
-        startBlock = _startBlock;
-        endBlock = _endBlock;
-        rate = _rate; // qinpereth = 400
+        startTime = _startTime;
+        endTime = _endTime;
+        rate = _rate; // Qin per ETH = 400, subject to change
         wallet = _wallet;
+    }
+
+    function updateRegisteredUserWhitelist(address addr, bool status) {
+      registeredUserWhitelist[addr] = status;
     }
 
     // TODO: This assumes ERC223 - which should be added
@@ -91,26 +110,57 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // fallback function can be used to buy tokens
+    /* Since we're trying to make it so that only registered
+       buy tokens, should we make it so that the generic
+       fallback function throws? */
     function () external payable {
-        buyQINTokens();
+        revert();
+    }
+
+    function buyQINTokensWithRegisteredID(address buyer) public payable {
+      require(validPurchase());
+      require(registeredUserWhitelist[buyer]);
+
+      buyQINTokens(buyer);
     }
 
     // low level QIN token purchase function
-    function buyQINTokens() public payable {
-        require(validPurchase());
-
+    function buyQINTokens(address buyer) breakInEmergency private {
         uint256 weiToSpend = msg.value;
 
         // calculate token amount to be sent
         uint256 QINToBuy = weiToSpend.mul(rate);
 
-        if (QINToBuy > crowdsaleTokensRemaining) {
+        // Token Crowdsale Day 1 Structure
+        if (getState() == State.SaleDay1) {
+          if(amountBoughtDayOne[buyer] == dayOneLimit) { // throw if buyer has hit Day 1 limit
+            revert();
+          }
+          else if (QINToBuy > dayOneLimit - amountBoughtDayOne[buyer]) {
+            QINToBuy = dayOneLimit - amountBoughtDayOne[buyer]; // set QINToBuy to remaining daily limit if buy order goes over
+          }
+          weiToSpend = QINToBuy.div(rate);
+        }
+
+        if (getState() == State.SaleDay2) {
+          if(amountBoughtDayTwo[buyer] == dayTwoLimit) { // throw if buyer has hit Day 2 limit
+            revert();
+          }
+          else if (QINToBuy > dayTwoLimit - amountBoughtDayTwo[buyer]) {
+            QINToBuy = dayTwoLimit - amountBoughtDayTwo[buyer]; // set QINToBuy to remaining daily limit if buy order goes over
+          }
+          weiToSpend = QINToBuy.div(rate);
+        }
+
+        if (getState() == State.SaleFFA) {
+          if (QINToBuy > crowdsaleTokensRemaining) {
             QINToBuy = crowdsaleTokensRemaining;
 
             // Will technically round down the amount of wei if this doesn't
             // divide evenly, so the last person could get 1/2 a wei extra of QIN.
             // TODO: improve this logic
             weiToSpend = QINToBuy.div(rate);
+          }
         }
 
         crowdsaleTokensRemaining = crowdsaleTokensRemaining.sub(QINToBuy);
@@ -124,6 +174,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
         // send purchased QIN to the buyer
         sendQIN(msg.sender, QINToBuy);
+        if(getState() == State.SaleDay1) {
+          amountBoughtDayOne[buyer] = amountBoughtDayOne[buyer].add(QINToBuy);
+        }
+        if(getState() == State.SaleDay2) {
+          amountBoughtDayTwo[buyer] = amountBoughtDayTwo[buyer].add(QINToBuy);
+        }
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
@@ -140,14 +196,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     // @return true if the transaction can buy tokens
     function validPurchase() internal constant returns (bool) {
-        bool duringCrowdsale = (block.number >= startBlock) && (block.number <= endBlock);
+        bool duringCrowdsale = (now >= startTime) && (now <= endTime);
         bool nonZeroPurchase = msg.value != 0;
         return duringCrowdsale && nonZeroPurchase && !halted && crowdsaleTokensRemaining != 0;
     }
 
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
-        return block.number > endBlock || crowdsaleTokensRemaining == 0;
+        return now > endTime || crowdsaleTokensRemaining == 0;
     }
 
     // burn remaining funds if goal not met
@@ -158,5 +214,20 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
             Burn(crowdsaleTokensRemaining);
             crowdsaleTokensRemaining = 0;
         }
+    }
+
+    function getState() public constant returns (State) {
+      if (now >= startTime + unixDay*2) {
+        return State.SaleFFA;
+      }
+      else if (now >= startTime + unixDay) {
+        return State.SaleDay2;
+      }
+      else if (now >= startTime) {
+        return State.SaleDay1;
+      }
+      else {
+        return State.BeforeSale;
+      }
     }
 }
