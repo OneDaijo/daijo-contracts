@@ -44,7 +44,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     uint256 public crowdsaleTokensRemaining;
 
     uint256 private dayOneLimit = crowdsaleTokenSupply / registeredUserCount;
-    uint256 private dayTwoLimit = crowdsaleTokensRemaining / registeredUserCount;
+    uint256 private dayTwoLimit; // set on second day
+    bool private dayTwoLimitSet;
 
     // whether QIN has been transferred to the crowdsale contract
     bool public hasBeenFunded = false;
@@ -67,7 +68,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     event Burn(uint256 value);
 
     function QINCrowdsale(QINToken _token, uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
-        require(_startTime >= now);
+        require(_startTime >= block.timestamp);
         require(_endTime >= _startTime);
         require(_rate > 0);
         require(_wallet != 0x0);
@@ -80,7 +81,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         wallet = _wallet;
     }
 
-    function updateRegisteredUserWhitelist(address addr, bool status) {
+    function updateRegisteredUserWhitelist(address addr, bool status) external onlyOwner {
       registeredUserWhitelist[addr] = status;
     }
 
@@ -95,7 +96,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         // Crowdsale can only be paid by the owner of the crowdsale.
         require(_from == owner);
 
-        // Ensure that QIN was actually transferred.  Not sure if this is really necessary, but for correctness' sake.
+        // Sanity check to ensure that QIN was correctly transferred
         require(_value > 0);
         assert(token.balanceOf(this) == _value);
 
@@ -114,10 +115,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
        buy tokens, should we make it so that the generic
        fallback function throws? */
     function () external payable {
-        revert();
+        buyQINTokensWithRegisteredAddress(msg.sender);
     }
 
-    function buyQINTokensWithRegisteredID(address buyer) public payable {
+    function buyQINTokensWithRegisteredAddress(address buyer) public payable {
       require(validPurchase());
       require(registeredUserWhitelist[buyer]);
 
@@ -143,6 +144,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         }
 
         if (getState() == State.SaleDay2) {
+          if(!dayTwoLimitSet) { // only triggers once, upon first sale of day 2
+            dayTwoLimit = crowdsaleTokensRemaining;
+            dayTwoLimitSet = true;
+          }
           if(amountBoughtDayTwo[buyer] == dayTwoLimit) { // throw if buyer has hit Day 2 limit
             revert();
           }
@@ -196,14 +201,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     // @return true if the transaction can buy tokens
     function validPurchase() internal constant returns (bool) {
-        bool duringCrowdsale = (now >= startTime) && (now <= endTime);
+        bool duringCrowdsale = (block.timestamp >= startTime) && (block.timestamp <= endTime);
         bool nonZeroPurchase = msg.value != 0;
         return duringCrowdsale && nonZeroPurchase && !halted && crowdsaleTokensRemaining != 0;
     }
 
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || crowdsaleTokensRemaining == 0;
+        return block.timestamp > endTime || crowdsaleTokensRemaining == 0;
     }
 
     // burn remaining funds if goal not met
@@ -212,18 +217,18 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         if (crowdsaleTokensRemaining > 0) {
             token.transfer(0x0, crowdsaleTokensRemaining);
             Burn(crowdsaleTokensRemaining);
-            crowdsaleTokensRemaining = 0;
+            assert(crowdsaleTokensRemaining == 0);
         }
     }
 
     function getState() public constant returns (State) {
-      if (now >= startTime + unixDay*2) {
+      if (block.timestamp >= startTime + unixDay*2) {
         return State.SaleFFA;
       }
-      else if (now >= startTime + unixDay) {
+      else if (block.timestamp >= startTime + unixDay) {
         return State.SaleDay2;
       }
-      else if (now >= startTime) {
+      else if (block.timestamp >= startTime) {
         return State.SaleDay1;
       }
       else {
