@@ -57,7 +57,6 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         require(_rate > 0);
         require(_wallet != 0x0);
 
-        // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
         token = _token;
         startBlock = _startBlock;
         endBlock = _endBlock;
