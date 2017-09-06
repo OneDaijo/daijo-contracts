@@ -21,36 +21,37 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     address public wallet;
 
     // start and end UNIX timestamp where investments are allowed
-    uint256 public startTime;
-    uint256 public endTime;
+    uint public startTime;
+    uint public endTime;
 
-    uint8 public numRestrictedDays;
-    uint8 public saleDay = 0;
-    uint256 public dailyReset;
-    uint256 public constant unixDay = 24*60*60;
+    uint public numRestrictedDays;
+    bool public saleHasStarted = false;
+    uint public saleDay = 0;
+    uint public dailyReset;
+    uint public constant unixDay = 24*60*60;
 
     // how many token units a buyer gets per wei
-    uint256 public rate;
+    uint public rate;
 
     // amount of raised money in wei
-    uint256 public weiRaised;
+    uint public weiRaised;
 
     // number of registered users
-    uint256 public registeredUserCount = 0;
+    uint public registeredUserCount = 0;
 
     mapping (address => bool) registeredUserWhitelist;
     mapping (address => uint256) amountBoughtCumulative;
 
     // total amount and amount remaining of QIN in the crowdsale
-    uint256 public crowdsaleTokenSupply;
-    uint256 public crowdsaleTokensRemaining;
+    uint public crowdsaleTokenSupply;
+    uint public crowdsaleTokensRemaining;
 
-    uint256 private nthDayLimit; // set on each subsequent restricted day
-    uint256 private cumulativeLimit;
+    uint private nthDayLimit; // set on each subsequent restricted day
+    uint private cumulativeLimit;
     bool private nthDayLimitSet;
 
     // whether QIN has been transferred to the crowdsale contract
-    bool public hasBeenFunded = false;
+    bool public hasBeenSupplied = false;
 
     /* State Machine for each day of sale */
     enum State {BeforeSale, SaleNthDay, SaleFFA, SaleComplete}
@@ -103,7 +104,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         require(supportsToken(msg.sender));
 
         // Ensures this function has only been run once
-        require(!hasBeenFunded);
+        require(!hasBeenSupplied);
 
         // Crowdsale can only be paid by the owner of the crowdsale.
         require(_from == owner);
@@ -114,7 +115,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
         crowdsaleTokenSupply = _value;
         crowdsaleTokensRemaining = _value;
-        hasBeenFunded = true;
+        hasBeenSupplied = true;
     }
 
     function supportsToken(address _token) public constant returns (bool) {
@@ -137,19 +138,27 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // low level QIN token purchase function
     function buyQINTokens(address buyer) breakInEmergency private {
         require(registeredUserCount > 0);
+        if (getState() == State.SaleComplete) {
+          revert();
+        }
         uint256 weiToSpend = msg.value;
 
         // calculate token amount to be sent
         uint256 QINToBuy = weiToSpend.mul(rate);
 
-        if (now >= dailyReset + unixDay) { // will only evaluate to true on first sale each day
+        if(!saleHasStarted) { // runs once upon the first transaction of the crowdsale
+          saleHasStarted = true;
+          saleDay = saleDay.add(1);
+        }
+
+        if (now >= dailyReset + unixDay) { // will only evaluate to true on first sale each subsequent day
           dailyReset = dailyReset + unixDay;
           nthDayLimitSet = false;
+          saleDay = saleDay.add((now - dailyReset)/unixDay);
         }
 
         if (getState() == State.SaleNthDay) {
           if(!nthDayLimitSet) { // only triggers once, upon first sale of nth day
-            saleDay++;
             nthDayLimit = crowdsaleTokensRemaining / registeredUserCount;
             cumulativeLimit += nthDayLimit;
             nthDayLimitSet = true;
@@ -228,10 +237,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
       if (hasEnded()) {
         return State.SaleComplete;
       }
-      else if (saleDay > numRestrictedDays - 1) {
+      else if (saleDay > numRestrictedDays) {
         return State.SaleFFA;
       }
-      else if (now >= startTime + unixDay * saleDay) {
+      else if (now >= startTime + unixDay * (saleDay-1)) {
         return State.SaleNthDay;
       }
       else {
