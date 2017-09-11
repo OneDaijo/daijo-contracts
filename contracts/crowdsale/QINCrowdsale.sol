@@ -91,7 +91,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
       registeredUserWhitelist[_addr] = _status;
-      registeredUserCount++;
+      registeredUserCount = registeredUserCount.add(1);
     }
 
     function getUserRegistrationState(address _addr) public constant returns (bool) {
