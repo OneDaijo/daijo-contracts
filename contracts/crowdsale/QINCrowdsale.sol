@@ -40,7 +40,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     uint public registeredUserCount = 0;
 
     mapping (address => bool) registeredUserWhitelist;
-    mapping (address => uint256) amountBoughtCumulative;
+    mapping (address => uint) amountBoughtCumulative;
 
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
@@ -62,15 +62,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
      * @param value weis paid for purchase
      * @param amount amount of tokens purchased
      */
-    event QINPurchase(address indexed purchaser, uint256 value, uint256 amount);
 
     /**
      * event that notifies clients about the amount burned
      * @param value the value burned
      */
-    event Burn(uint256 value);
+    event Burn(uint value);
 
-    function QINCrowdsale(QINToken _token, uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
+    function QINCrowdsale(QINToken _token, uint _startTime, uint _endTime, uint _days, uint _rate, address _wallet) {
         require(_startTime >= now);
         require(_endTime >= _startTime);
         require(_rate > 0);
@@ -81,11 +80,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         startTime = _startTime;
         dailyReset = _startTime;
         endTime = _endTime;
+        numRestrictedDays = _days;
         rate = _rate; // Qin per ETH = 400, subject to change
         wallet = _wallet;
     }
 
-    function setRestrictedSaleDays(uint8 _days) external onlyOwner {
+    function setRestrictedSaleDays(uint _days) external onlyOwner {
         numRestrictedDays = _days;
     }
 
@@ -141,10 +141,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         if (getState() == State.SaleComplete) {
           revert();
         }
-        uint256 weiToSpend = msg.value;
+        uint weiToSpend = msg.value;
 
         // calculate token amount to be sent
-        uint256 QINToBuy = weiToSpend.mul(rate);
+        uint QINToBuy = weiToSpend.mul(rate);
 
         if(!saleHasStarted) { // runs once upon the first transaction of the crowdsale
           saleHasStarted = true;
@@ -207,7 +207,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // send purchased QIN tokens to buyer's address, ensure only the contract can call this
-    function sendQIN(address _to, uint256 _amount) private {
+    function sendQIN(address _to, uint _amount) private {
         token.transfer(_to, _amount);
     }
 
