@@ -19,19 +19,23 @@ contract('QINToken', function(accounts) {
     }).then(function() {
       // TODO(mrice): the block number is coming back undefined.  This needs to be investigated further.
       var blockNumber = web3.eth.blockNumber;
-      qinToken.startCrowdsale(10000, 10001, 250, accounts[0], 1597721000);
+      return qinToken.startCrowdsale(blockNumber + 1, blockNumber + 100, 250, accounts[0], 1597721000);
     }).then(function() {
-      return qinToken.balanceOf.call(accounts[0]);
+      return qinToken.crowdsaleExecuted();
+    }).then(function(wasExecuted) {
+      assert.isTrue(wasExecuted, "crowdsale was not executed");
+      return qinToken.balanceOf.call(wrf_owner);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 0, "the correct balance wasn't in the first after crowdsale start");
-    }).catch(function(err) {
-      assert.equal("error", "no error", "there was an error thrown" + web3.eth.blockNumber);
-    // }).then(function() {
-    //   return web3.eth.sendTransaction({from: user, to: crowdsale, value: web3.toWei(1, 'ether'), gasLimit: 21000, gasPrice: 1000});
-    // }).then(function() {
-    //   return qinToken.balanceOf.call(user);
-    // }).then(function(balance) {
-    //   assert.equal(balance.valueOf(), 250 * 10**18, "the correct balance wasn't in the user account");
+    }).then(function() {
+      return qinToken.getCrowdsale();
+    }).then(function(crowsdaleContract) {
+      // Does not work with the default gas amount.
+      return web3.eth.sendTransaction({from: user, to: crowsdaleContract, value: web3.toWei(1, 'ether'), gas: 95000});
+    }).then(function() {
+      return qinToken.balanceOf.call(user);
+    }).then(function(balance) {
+      assert.equal(balance.valueOf(), 250 * 10**18, "the correct balance wasn't in the user account");
     });
   });
 });
