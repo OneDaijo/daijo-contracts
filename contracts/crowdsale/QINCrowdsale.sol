@@ -5,6 +5,7 @@ import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
 import '../permissions/Haltable.sol';
+import '../crowdsale/Whitelist.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -88,21 +89,6 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     function setRestrictedSaleDays(uint _days) external onlyOwner {
         numRestrictedDays = _days;
-    }
-
-    function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
-      require(registeredUserWhitelist[_addr] != _status);
-      registeredUserWhitelist[_addr] = _status;
-      if (_status) {
-        registeredUserCount = registeredUserCount.add(1);
-      }
-      else {
-        registeredUserCount = registeredUserCount.sub(1);
-      }
-    }
-
-    function getUserRegistrationState(address _addr) public constant returns (bool) {
-      return registeredUserWhitelist[_addr];
     }
 
     // TODO: This assumes ERC223 - which should be added
