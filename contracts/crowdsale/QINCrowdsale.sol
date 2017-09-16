@@ -5,6 +5,7 @@ import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
 import '../permissions/Haltable.sol';
+import '../crowdsale/Whitelist.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -90,14 +91,6 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         numRestrictedDays = _days;
     }
 
-    function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
-      registeredUserWhitelist[_addr] = _status;
-      registeredUserCount = registeredUserCount.add(1);
-    }
-
-    function getUserRegistrationState(address _addr) public constant returns (bool) {
-      return registeredUserWhitelist[_addr];
-    }
 
     // TODO: This assumes ERC223 - which should be added
     function tokenFallback(address _from, uint _value, bytes _data) external {
