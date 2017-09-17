@@ -29,6 +29,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     uint public saleDay = 0;
     uint public dailyReset;
     uint public constant unixDay = 24*60*60;
+    uint public dayIncrement;
 
     // how many token units a buyer gets per wei
     uint public rate;
@@ -91,8 +92,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
+      require(registeredUserWhitelist[_addr] != _status);
       registeredUserWhitelist[_addr] = _status;
-      registeredUserCount = registeredUserCount.add(1);
+      if (_status == true) {
+        registeredUserCount = registeredUserCount.add(1);
+      }
+      else {
+        registeredUserCount = registeredUserCount.sub(1);
+      }
     }
 
     function getUserRegistrationState(address _addr) public constant returns (bool) {
@@ -145,10 +152,13 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         }
 
         if (now >= dailyReset.add(unixDay)) { // will only evaluate to true on first sale each subsequent day
-          dailyReset = dailyReset.add(((now - dailyReset)/unixDay) * unixDay);
-          saleDay = saleDay.add((now - dailyReset)/unixDay);
-          restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
-          cumulativeLimit = cumulativeLimit.add(restrictedDayLimit);
+          dayIncrement = (now - dailyReset)/unixDay;
+          dailyReset = dailyReset.add(dayIncrement * unixDay);
+          saleDay = saleDay.add(dayIncrement);
+          if (getState() == State.SaleRestrictedDay) {
+            restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
+            cumulativeLimit = cumulativeLimit.add(restrictedDayLimit);
+          }
         }
 
         if (getState() == State.SaleRestrictedDay) {
@@ -159,7 +169,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
           weiToSpend = QINToBuy.div(rate);
         }
 
-        if (getState() == State.SaleFFA) {
+        else if (getState() == State.SaleFFA) {
           if (QINToBuy > crowdsaleTokensRemaining) {
             QINToBuy = crowdsaleTokensRemaining;
           }
@@ -213,6 +223,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
             token.transfer(0x0, crowdsaleTokensRemaining);
             Burn(crowdsaleTokensRemaining);
             assert(crowdsaleTokensRemaining == 0);
+            assert(token.balanceOf(this) == 0);
         }
     }
 

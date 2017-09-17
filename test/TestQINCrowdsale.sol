@@ -69,7 +69,7 @@ contract TestQINCrowdsale {
 		uint restrictedDays = 3;
 		QINToken qin = new QINToken();
 		QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
-		
+
 		Assert.equal(tcs.owner(), this, "Not the correct owner. ");
   }
 }
