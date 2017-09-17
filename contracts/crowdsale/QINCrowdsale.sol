@@ -3,6 +3,7 @@ pragma solidity ^0.4.13;
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
+import '../libs/Controls.sol';
 import '../permissions/Ownable.sol';
 import '../permissions/Haltable.sol';
 import '../crowdsale/Whitelist.sol';
@@ -46,6 +47,13 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
     uint public crowdsaleTokensRemaining;
+
+    // whether endCrowdsale has been called (Controls.sol cannot contain state variables)
+    bool public manualEnd = false;
+
+    // Number of addresses on the whitelist
+    uint public registeredUserCount = 0;
+
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
     uint private cumulativeLimit;
@@ -196,7 +204,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || crowdsaleTokensRemaining == 0;
+        return now > endTime || crowdsaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
