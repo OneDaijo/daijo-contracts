@@ -49,6 +49,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     uint public crowdsaleTokenSupply;
     uint public crowdsaleTokensRemaining;
 
+    bool public halted = false;
+
     // whether endCrowdsale has been called (Controls.sol cannot contain state variables)
     bool public manualEnd = false;
 
