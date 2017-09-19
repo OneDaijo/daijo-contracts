@@ -2,22 +2,30 @@ pragma solidity ^0.4.16
 
 import '../permissions/Ownable.sol';
 
-/** @title Crowdsale Admin Controls library
+/** @title Controllable
   * @author WorldRapidFinance <info@worldrapidfinance.com>
-  * @dev control functions that interact with QINCrowdsale.sol
+  * @dev Base class that provides crowdsale control functions to interact with QINCrowdsale.sol
 */
 
-library Controls {
+contract Controllable {
 
-    // Modifiers allowing easy access to boolean halted
-    modifier breakInEmergency {
+    bool public halted = false;
+    bool public manualEnd = false;
+
+    uint public registeredUserCount = 0;
+
+    mapping (address => bool) registeredUserWhitelist;
+    mapping (address => uint) amountBoughtCumulative;
+
+    // Requires the crowdsale to be not halted (previously breakInEmergency)
+    modifier onlyIfActive {
         if (halted) {
             revert();
         }
         _;
     }
-
-    modifier onlyInEmergency {
+    // Requires the crowdsale to be halted (previously onlyInEmergency)
+    modifier onlyIfHalted {
         if (!halted) {
             revert();
         }
@@ -30,14 +38,13 @@ library Controls {
     }
 
     // Unhalt the crowdsale
-    function unhaltCrowdsale() external onlyOwner onlyInEmergency {
+    function unhaltCrowdsale() external onlyOwner OnlyIfHalted {
         halted = false;
     }
 
     // Sets manualEnd to true, making fxn hasEnded() return true, setting the crowdsale state to SaleComplete
     // This function is an option to prematurely end a halted crowdsale
-    function endCrowdsale() external onlyOwner {
-        require halted;
+    function endCrowdsale() external onlyOwner OnlyIfHalted{
         manualEnd = true;
     }
 
@@ -49,7 +56,7 @@ library Controls {
 
 
     // Removes an address from the whitelist
-    function removeFromWhitelist(address _addr)  external onlyOwner {
+    function removeFromWhitelist(address _addr) external onlyOwner {
       registeredUserWhitelist[_addr] = false;
       registeredUserCount = registeredUserCount.sub(1);
     }
@@ -58,4 +65,5 @@ library Controls {
     function getUserRegistrationState(address _addr) public constant returns (bool) {
       return registeredUserWhitelist[_addr];
     }
+
 }

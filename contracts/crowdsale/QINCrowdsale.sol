@@ -3,10 +3,8 @@ pragma solidity ^0.4.13;
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
-import '../libs/Controls.sol';
+import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
-import '../permissions/Haltable.sol';
-import '../crowdsale/Whitelist.sol';
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
@@ -38,24 +36,9 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // amount of raised money in wei
     uint public weiRaised;
 
-    // number of registered users
-    uint public registeredUserCount = 0;
-
-    mapping (address => bool) registeredUserWhitelist;
-    mapping (address => uint) amountBoughtCumulative;
-
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
     uint public crowdsaleTokensRemaining;
-
-    bool public halted = false;
-
-    // whether endCrowdsale has been called (Controls.sol cannot contain state variables)
-    bool public manualEnd = false;
-
-    // Number of addresses on the whitelist
-    uint public registeredUserCount = 0;
-
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
     uint private cumulativeLimit;
@@ -133,7 +116,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // low level QIN token purchase function
-    function buyQINTokensWithRegisteredAddress(address buyer) breakInEmergency private {
+    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive private {
         require(validPurchase());
         require(registeredUserWhitelist[buyer]);
         require(getState() != State.SaleComplete);
