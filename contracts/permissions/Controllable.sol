@@ -7,7 +7,7 @@ import '../permissions/Ownable.sol';
   * @dev Base class that provides crowdsale control functions to interact with QINCrowdsale.sol
 */
 
-contract Controllable {
+contract Controllable is Ownable {
 
     bool public halted = false;
     bool public manualEnd = false;
