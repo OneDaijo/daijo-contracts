@@ -93,7 +93,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
       require(registeredUserWhitelist[_addr] != _status);
       registeredUserWhitelist[_addr] = _status;
-      if (_status == true) {
+      if (_status) {
         registeredUserCount = registeredUserCount.add(1);
       }
       else {
@@ -156,12 +156,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
           saleDay = saleDay.add(dayIncrement);
           if (getState() == State.SaleRestrictedDay) {
             restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
-            cumulativeLimit = cumulativeLimit.add(restrictedDayLimit);
+            cumulativeLimit = cumulativeLimit.add(restrictedDayLimit * dayIncrement);
           }
         }
 
         if (getState() == State.SaleRestrictedDay) {
-          require(amountBoughtCumulative[buyer] != cumulativeLimit); // throw if buyer has hit restricted day limit
+          require(amountBoughtCumulative[buyer] <= cumulativeLimit); // throw if buyer has hit restricted day limit
           if (QINToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
             QINToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set QINToBuy to remaining daily limit if buy order goes over
           }

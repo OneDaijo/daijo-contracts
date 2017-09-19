@@ -49,18 +49,18 @@ contract TestQINCrowdsale {
 		Assert.equal(funded, true, "tokenFallback was not called.");
 	}
 
-	function testQINCrowdsaleSupportsToken() {
-		uint startTime = now + 100;
-		uint endTime = now + 200;
-		address wallet = 0x1234;
-		uint restrictedDays = 3;
-		QINToken qin = new QINToken();
-		QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+	//function testQINCrowdsaleSupportsToken() {
+		//uint startTime = now + 100;
+		//uint endTime = now + 200;
+		//address wallet = 0x1234;
+		//uint restrictedDays = 3;
+		//QINToken qin = new QINToken();
+		//QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-		bool support = tcs.supportsToken(qin);
+		//bool support = tcs.supportsToken(qin);
 
-		Assert.equal(support, true, "supportsToken() is rejecting QIN.");
-	}
+		//Assert.equal(support, true, "supportsToken() is rejecting QIN.");
+	//}
 
 	function testQINCrowdsaleOwner() {
 		uint startTime = now + 100;
