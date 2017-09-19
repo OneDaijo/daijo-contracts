@@ -161,7 +161,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         }
 
         if (getState() == State.SaleRestrictedDay) {
-          require(amountBoughtCumulative[buyer] <= cumulativeLimit); // throw if buyer has hit restricted day limit
+          require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
           if (QINToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
             QINToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set QINToBuy to remaining daily limit if buy order goes over
           }
