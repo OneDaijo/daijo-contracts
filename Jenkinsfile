@@ -8,7 +8,7 @@ node {
 
     sh "sleep 5"
 
-    sh "truffle test"
+    sh "truffle test &> output/test_output.txt || true"
 
     // Write an useful file, which is needed to be archived.
     writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
