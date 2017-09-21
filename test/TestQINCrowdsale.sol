@@ -49,6 +49,7 @@ contract TestQINCrowdsale {
 		Assert.equal(funded, true, "tokenFallback was not called.");
 	}
 
+<<<<<<< HEAD
 	function testQINCrowdsaleSupportsToken() {
 		uint startTime = now + 100;
 		uint endTime = now + 200;
@@ -61,6 +62,20 @@ contract TestQINCrowdsale {
 
 		Assert.equal(support, true, "supportsToken() is rejecting QIN.");
 	}
+=======
+	//function testQINCrowdsaleSupportsToken() {
+		//uint startTime = now + 100;
+		//uint endTime = now + 200;
+		//address wallet = 0x1234;
+		//uint restrictedDays = 3;
+		//QINToken qin = new QINToken();
+		//QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+
+		//bool support = tcs.supportsToken(qin);
+
+		//Assert.equal(support, true, "supportsToken() is rejecting QIN.");
+	//}
+>>>>>>> e31f26984c9f4814f23cf101b517ce3399f111f4
 
 	function testQINCrowdsaleOwner() {
 		uint startTime = now + 100;
@@ -69,7 +84,11 @@ contract TestQINCrowdsale {
 		uint restrictedDays = 3;
 		QINToken qin = new QINToken();
 		QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> e31f26984c9f4814f23cf101b517ce3399f111f4
 		Assert.equal(tcs.owner(), this, "Not the correct owner. ");
   }
 }
