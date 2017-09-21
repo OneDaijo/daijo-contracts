@@ -15,7 +15,6 @@ contract Controllable is Ownable {
     uint public registeredUserCount = 0;
 
     mapping (address => bool) registeredUserWhitelist;
-    mapping (address => uint) amountBoughtCumulative;
 
     // Requires the crowdsale to be not halted (previously breakInEmergency)
     modifier onlyIfActive {
@@ -29,6 +28,11 @@ contract Controllable is Ownable {
         if (!halted) {
             revert();
         }
+        _;
+    }
+    // Requires address to be on the whitelist
+    modifier onlyWhitelisted() {
+        require(getUserRegistrationState(msg.sender));
         _;
     }
 

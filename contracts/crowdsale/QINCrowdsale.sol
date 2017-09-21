@@ -36,6 +36,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
     // amount of raised money in wei
     uint public weiRaised;
 
+    mapping (address => uint) amountBoughtCumulative;
+
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
     uint public crowdsaleTokensRemaining;
@@ -116,9 +118,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
     }
 
     // low level QIN token purchase function
-    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive private {
+    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive onlyWhitelisted private {
         require(validPurchase());
-        require(registeredUserWhitelist[buyer]);
         require(getState() != State.SaleComplete);
         uint weiToSpend = msg.value;
 
