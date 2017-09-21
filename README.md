@@ -10,8 +10,10 @@ The following prerequisites will be necessary to build and run the WRF project s
 
 1. [Install node](https://nodejs.org/en/) and [install npm](https://www.npmjs.com/get-npm):
 ```
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
 sudo apt-get install nodejs
-sudo apt-get install npm
+sudo apt-get install node-gyp
 # Allows the typical "node" command to be used.
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
@@ -20,7 +22,10 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 sudo npm install -g truffle@beta
 sudo npm install -g ethereumjs-testrpc
-sudo npm install -g web3@0.20.1
+# Installing locally generally works better.
+sudo npm install web3@0.20.1
+# Sometimes required by web3
+sudo npm install xhr2
 ```
 
 ## Build and Test
