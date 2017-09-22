@@ -20,10 +20,11 @@ node {
     // Get status but save as to not break early
     def status = sh "truffle test"
 
-    stage "Archive build output"
+    // stage "Archive build output"
     
     // Archive the build output artifacts.
-    archiveArtifacts artifacts: 'build/*'
+    // archiveArtifacts artifacts: 'build/*'
 
-    sh "rm -rf build"
+    // sh "rm -rf build"
+    assert status == 0
 }
