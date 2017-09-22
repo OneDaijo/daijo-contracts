@@ -33,3 +33,27 @@
 ###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
 
 #### Ownable.sol
+###### Ownable is an Abstract Base Class that creates secure ownership of contracts. It contains 1 modifier:
+###### `onlyOwner()`: Requires an address to match the owner address
+###### Ownable contains 2 functions:
+###### `Ownable()`: Sets the "owner" address to the message sender
+###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
+
+#### ERC223Token.sol
+###### ERC223Token is the base class of the ERC223 token standard.
+
+
+#### ERC20Token.sol
+
+
+#### ERC223Interface.sol
+
+#### ERC20Interface.sol
+
+#### SafeMath.sol
+###### SafeMath is a library that contains secure arithmetic operators. It contains 4 functions:
+###### `mul`: Multiplication, `div`: Division , `sub`: Subtraction, `add`: Addition
+
+#### ConvertLib.sol
+###### ConvertLib is a library that contains functions for converting between currencies. It contains 3 functions:
+\\TODO
