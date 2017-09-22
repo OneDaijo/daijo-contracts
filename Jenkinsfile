@@ -20,11 +20,9 @@ node {
     // Get status but save as to not break early
     sh "truffle test"
 
-    sh "ls -ltrh"
     // Archive stages need some work
     // stage "Archive build output"
     
-
     // Archive the build output artifacts.
     // archiveArtifacts artifacts: 'build/*'
 
