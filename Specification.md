@@ -17,7 +17,9 @@
 #### QINToken.sol
 //TODO
 #### QINCrowdsale.sol
-//TODO
+###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, incuding a fallback function, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConverLib.sol to provide a complete set of tools for administrator control, security, and utility.
+
+
 #### Controllable.sol
 ###### Controllable is a base contract that provides administrator control functionality for the crowdsale contract. It contains 3 modifiers:
 ###### `onlyIfActive`: Requires the crowdsale to be active
@@ -40,15 +42,17 @@
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
 #### ERC223Token.sol
-###### ERC223Token is the base contract of the ERC223 token standard.
+###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that cannot handle them, preventing the accidental loss of tokens. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
 
 
 #### ERC20Token.sol
-###### ERC20Token is the base contract of the ERC20 tokens standard.
+###### ERC20Token is the base contract of the ERC20 token standard. The ERC20 standard is a set of 6 functions and 2 events that standardizes token implementation on the Ethereum blockchain. More info can be found at [the Ethereum Wiki](https://theethereum.wiki/w/index.php/ERC20_Token_Standard).
 
 #### ERC223Interface.sol
+###### ERC223Interface is the abstract (by definition) standardized interface that any ERC223 token contract inherits from.
 
 #### ERC20Interface.sol
+###### ERC20Interface is the abstract (by definition) standardized interface that any ERC20 token contract inherits from.
 
 #### SafeMath.sol
 ###### SafeMath is a library written by OpenZeppelin that contains secure arithmetic operators. It contains 4 functions:
