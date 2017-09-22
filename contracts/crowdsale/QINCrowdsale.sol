@@ -9,7 +9,7 @@ import '../permissions/Ownable.sol';
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is ERC223ReceivingContract, Controllable{
+contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint256;
 
 /* QIN Token Crowdsale */
@@ -29,6 +29,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
     uint public saleDay = 0;
     uint public dailyReset;
     uint public constant unixDay = 24*60*60;
+    uint public dayIncrement;
 
     // how many token units a buyer gets per wei
     uint public rate;
@@ -72,7 +73,6 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
         require(_rate > 0);
         require(_wallet != 0x0);
 
-        // TODO(mrice) assumes the QINToken is the creator. If not, we should take the QIN token in explicitly.
         token = _token;
         startTime = _startTime;
         dailyReset = _startTime;
@@ -132,21 +132,24 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
         }
 
         if (now >= dailyReset.add(unixDay)) { // will only evaluate to true on first sale each subsequent day
-          dailyReset = dailyReset.add(((now - dailyReset)/unixDay) * unixDay);
-          saleDay = saleDay.add((now - dailyReset)/unixDay);
-          restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
-          cumulativeLimit = cumulativeLimit.add(restrictedDayLimit);
+          dayIncrement = (now - dailyReset)/unixDay;
+          dailyReset = dailyReset.add(dayIncrement * unixDay);
+          saleDay = saleDay.add(dayIncrement);
+          if (getState() == State.SaleRestrictedDay) {
+            restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
+            cumulativeLimit = cumulativeLimit.add(restrictedDayLimit * dayIncrement);
+          }
         }
 
         if (getState() == State.SaleRestrictedDay) {
-          require(amountBoughtCumulative[buyer] != cumulativeLimit); // throw if buyer has hit restricted day limit
+          require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
           if (QINToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
             QINToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set QINToBuy to remaining daily limit if buy order goes over
           }
           weiToSpend = QINToBuy.div(rate);
         }
 
-        if (getState() == State.SaleFFA) {
+        else if (getState() == State.SaleFFA) {
           if (QINToBuy > crowdsaleTokensRemaining) {
             QINToBuy = crowdsaleTokensRemaining;
           }
@@ -200,6 +203,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable{
             token.transfer(0x0, crowdsaleTokensRemaining);
             Burn(crowdsaleTokensRemaining);
             assert(crowdsaleTokensRemaining == 0);
+            assert(token.balanceOf(this) == 0);
         }
     }
 
