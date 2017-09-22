@@ -1,5 +1,9 @@
 node {
     stage "Create build output"
+
+    checkout scm
+
+    sh "ls -R"
     
     // Make the output directory.
     sh "mkdir -p output"
