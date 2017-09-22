@@ -4,22 +4,21 @@ node {
     // Make the output directory.
     sh "mkdir -p output"
 
-    sh "testrpc &"
+    sh "nohup testrpc &"
 
     sh "sleep 5"
 
-    sh "ls -R &> output/test_output.txt"
+    def status = sh returnStatus: true, script: "truffle test &> output/test_output.txt"
 
     // Write an useful file, which is needed to be archived.
     writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
 
-    // Write an useless file, which is not needed to be archived.
-    writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
-
     stage "Archive build output"
     
     // Archive the build output artifacts.
-    archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
+    archiveArtifacts artifacts: 'output/*.txt'
 
     sh "rm -rf output"
+
+    assert status == 0 
 }
