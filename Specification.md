@@ -1,14 +1,14 @@
 # QIN Token Code Specification
-###### This a technical documentation of the smart contracts in the WRF public github repository. It is divided into three parts: A shortlist of the contracts and libraries associated with the QIN Token and the QIN Token Crowdsale, a more detailed discussion of each file, and an inheritance diagram.
+###### This a technical documentation of the smart contracts in the WRF public github repository. It is divided into three parts: A shortlist of the contracts and libraries associated with the QIN Token and the QIN Token Crowdsale, a more detailed discussion of each file including functions and modifiers, and an inheritance diagram.
 
 
 #### Contracts and Libraries
-* ###### QINToken.sol (Contract): Base contract for the ERC223 QIN Token on the Ethereum Blockchain
+* ###### QINToken.sol (Contract): Contract for the ERC223 QIN Token on the Ethereum Blockchain
 * ###### QINCrowdsale.sol (Contract): Crowdsale contract for the QIN Token
-* ###### Controllable.sol (Abstract Contract): Administrator control functions and modifiers for the crowdsale
-* ###### Ownable.sol (Abstract Contract): Ownership functionality
-* ###### ERC223Token.sol (Abstract Contract): Framework for the ERC223 token standard.
-* ###### ERC20Token.sol (Abstract Contract): Framework for the ERC20 token standard.
+* ###### Controllable.sol (Base Contract): Administrator control functions and modifiers for the crowdsale
+* ###### Ownable.sol (Base Contract): Ownership functionality
+* ###### ERC223Token.sol (Base Contract): Framework for the ERC223 token standard.
+* ###### ERC20Token.sol (Base Contract): Framework for the ERC20 token standard.
 * ###### ERC223Interface.sol (Interface): Interface for the ERC223 token standard.
 * ###### ERC20Interface.sol (Interface): Interface for the ERC20 token standard.
 * ###### SafeMath.sol (Library): Protected arithmetic.
@@ -19,7 +19,7 @@
 #### QINCrowdsale.sol
 //TODO
 #### Controllable.sol
-###### Controllable is an Abstract Base Class that provides administrator control functionality for the crowdsale contract. It contains 3 modifiers:
+###### Controllable is a base contract that provides administrator control functionality for the crowdsale contract. It contains 3 modifiers:
 ###### `onlyIfActive`: Requires the crowdsale to be active
 ###### `onlyIfHalted`: Requires the crowdsale to be halted
 ###### `onlyWhitelisted`: Requires an address to be on the whitelist
@@ -33,18 +33,18 @@
 ###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
 
 #### Ownable.sol
-###### Ownable is an Abstract Base Class that creates secure ownership of contracts. It contains 1 modifier:
+###### Ownable is a base contract that creates secure ownership of contracts. It contains 1 modifier:
 ###### `onlyOwner()`: Requires an address to match the owner address
 ###### Ownable contains 2 functions:
 ###### `Ownable()`: Sets the "owner" address to the message sender
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
 #### ERC223Token.sol
-###### ERC223Token is the base class of the ERC223 token standard.
+###### ERC223Token is the base contract of the ERC223 token standard.
 
 
 #### ERC20Token.sol
-###### ERC20Token is the base class of the ERC20 tokens standard.
+###### ERC20Token is the base contract of the ERC20 tokens standard.
 
 #### ERC223Interface.sol
 
