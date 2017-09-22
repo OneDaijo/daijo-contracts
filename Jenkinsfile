@@ -3,7 +3,7 @@ node {
 
     checkout scm
 
-    sh "ls -R"
+    sh "npm install web3@0.20.1"
     
     // Make the output directory.
     sh "mkdir -p output"
