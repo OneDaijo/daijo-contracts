@@ -11,7 +11,7 @@
 * ###### ERC20Token.sol (Abstract Contract): Framework for the ERC20 token standard.
 * ###### ERC223Interface.sol (Interface): Interface for the ERC223 token standard.
 * ###### ERC20Interface.sol (Interface): Interface for the ERC20 token standard.
-* ###### SafeMath.sol (Library): Protected math functions.
+* ###### SafeMath.sol (Library): Protected arithmetic.
 * ###### ConvertLib.sol (Library) Currency conversions.
 
 #### QINToken.sol
@@ -27,7 +27,7 @@
 ###### Controllable contains 6 functions:
 ###### `haltCrowdsale()`: Halts the crowdsale
 ###### `unhaltCrowdsale()`: Resumes a halted crowdsale
-###### `endCrowdsale()`: completes a halted crowdsale in an emergency
+###### `endCrowdsale()`: Completes a halted crowdsale in an emergency
 ###### `addToWhitelist(address _addr)`: Adds an address to the whitelist
 ###### `removeFromWhitelist(address _addr)`: Removes an address from the whitelist
 ###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
@@ -44,16 +44,16 @@
 
 
 #### ERC20Token.sol
-
+###### ERC20Token is the base class of the ERC20 tokens standard.
 
 #### ERC223Interface.sol
 
 #### ERC20Interface.sol
 
 #### SafeMath.sol
-###### SafeMath is a library that contains secure arithmetic operators. It contains 4 functions:
-###### `mul`: Multiplication, `div`: Division , `sub`: Subtraction, `add`: Addition
+###### SafeMath is a library written by OpenZeppelin that contains secure arithmetic operators. It contains 4 functions:
+###### `mul`: Multiplication, `div`: Division , `sub`: Subtraction, and `add`: Addition
 
 #### ConvertLib.sol
 ###### ConvertLib is a library that contains functions for converting between currencies. It contains 3 functions:
-\\TODO
+\\TODO pending ConvertLib fix
