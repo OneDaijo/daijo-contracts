@@ -17,7 +17,8 @@
 #### QINToken.sol
 //TODO
 #### QINCrowdsale.sol
-###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, incuding a fallback function, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConverLib.sol to provide a complete set of tools for administrator control, security, and utility.
+###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConverLib.sol to provide a complete set of tools for administrator control, security, and utility.
+
 
 
 #### Controllable.sol
@@ -56,7 +57,7 @@
 
 #### SafeMath.sol
 ###### SafeMath is a library written by OpenZeppelin that contains secure arithmetic operators. It contains 4 functions:
-###### `mul`: Multiplication, `div`: Division , `sub`: Subtraction, and `add`: Addition
+###### `mul`: Secure Multiplication, `div`: Secure Division , `sub`: Secure Subtraction, and `add`: Secure Addition
 
 #### ConvertLib.sol
 ###### ConvertLib is a library that contains functions for converting between currencies. It contains 3 functions:
