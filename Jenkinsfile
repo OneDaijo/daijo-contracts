@@ -26,6 +26,4 @@ node {
     archiveArtifacts artifacts: 'build/*'
 
     sh "rm -rf build"
-
-    assert status == 0 
 }
