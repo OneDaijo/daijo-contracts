@@ -18,7 +18,7 @@ node {
     sh "sleep 5"
 
     // Get status but save as to not break early
-    def status = sh "truffle test"
+    sh "truffle test"
 
     sh "ls -ltrh"
     // Archive stages need some work
@@ -29,5 +29,4 @@ node {
     // archiveArtifacts artifacts: 'build/*'
 
     // sh "rm -rf build"
-    assert status == 0
 }
