@@ -19,7 +19,7 @@ contract('QINToken', function(accounts) {
     }).then(function() {
       // TODO(mrice): the block number is coming back undefined.  This needs to be investigated further.
       var blockNumber = web3.eth.blockNumber;
-      qinToken.startCrowdsale(10000, 10001, 250, accounts[0], 1597721000);
+      qinToken.startCrowdsale(10000, 10001, 3, 250, accounts[0], 1597721000);
     }).then(function() {
       return qinToken.balanceOf.call(accounts[0]);
     }).then(function(balance) {
