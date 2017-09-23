@@ -17,7 +17,11 @@
 #### QINToken.sol
 //TODO
 #### QINCrowdsale.sol
-###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConverLib.sol to provide a complete set of tools for administrator control, security, and utility.
+###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConvertLib.sol.   
+<br/>
+<br/>
+<br/>
+<br/>
 
 
 
@@ -63,5 +67,7 @@
 ###### ConvertLib is a library that contains functions for converting between currencies. It contains 3 functions:
 \\TODO pending ConvertLib fix
 
+##Inheritance Map
+###### The following is a map of the files in the QINCrowdsale repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y, represents that Y inherits from X. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
 
-![alt text](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceDraft1.jpg "Inheritance Diagram")
+![Inheritance Diagram](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceDraft1.jpg "Inheritance Diagram")
