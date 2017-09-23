@@ -43,7 +43,7 @@
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
 #### ERC223Token.sol
-###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that cannot handle them, preventing the accidental loss of tokens. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
+###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that cannot handle them, preventing their accidental loss. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call--`transfer`--as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
 
 
 #### ERC20Token.sol
@@ -62,3 +62,6 @@
 #### ConvertLib.sol
 ###### ConvertLib is a library that contains functions for converting between currencies. It contains 3 functions:
 \\TODO pending ConvertLib fix
+
+
+![alt text](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceDraft1.jpg "Inheritance Diagram")
