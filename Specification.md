@@ -67,4 +67,7 @@
 ###### The following is a map of the files in the QINCrowdsale repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y, represents that Y inherits from X. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
 <br/><br/>
 
-![Inheritance Diagram](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceDraft1.jpg "Inheritance Diagram")
+Layout option 1:
+![Inheritance Diagram](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceLayout1.jpg "Inheritance Diagram")
+Layout option 2:
+[Inheritance Diagram](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceLayout2.jpg "Inheritance Diagram")
