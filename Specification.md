@@ -17,8 +17,25 @@
 ### QINToken.sol
 //TODO
 ### QINCrowdsale.sol
-###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConvertLib.sol.   
-<br/><br/>
+###### QINCrowdsale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports both SafeMath.sol and ConvertLib.sol. The essential function of this contract is to accept Ethereum from whitelisted addresses ('buyers') and return to those addresses QIN Tokens at the rate of X QIN/ETH. The contract is designed to automatically implement the QIN crowdsale structure, available <here>, by restricting the number of QIN a single address may purchase on each day of the crowdsale.
+<br/>
+###### The state machine `State` and associated function `getState()` enumerate the four states that the crowdsale will be in: `BeforeSale`, before the sale opens, `SaleRestrictedDay`, the first two days of the sale in which buy orders are limited, `SaleFFA`, the final day in which buy orders are uncapped, and `SaleComplete`, after the sale has 1) sold out, 2) timed out, or 3) been manually ended by WRF. Note that the `haltCrowdsale` and `unhaltCrowdsale` methods inherited from `Controllable.sol` do not affect the state. These methods merely  pause or unpause the crowdsale by enabling or disabling incoming orders.
+<br/>
+###### The process by which a whitelisted address purchases QIN Tokens is as follows:
+###### A user sends Ethereum to the QINCrowdsale.sol contract address.
+###### The [fallback function](http://solidity.readthedocs.io/en/develop/contracts.html#fallback-function) of the contract is triggered, which calls `buyQINTokensWithRegisteredAddress` on `msg.sender`.
+###### `buyQINTokensWithRegisteredAddress`which is.... , only callable when the crowdsale is unpaused, calls `validPurchase`.
+###### `validPurchase` takes no arguments and returns `true` if the purchase passes several checks (detailed in the next section) and `false` otherwise.
+###### If `validPurchase` returns `true`, `buyQINTokensWithRegisteredAddress` performs several more checks.
+####### Provided the buy order has passed all checks, the contract now calculates the quantity of QIN to be returned to `msg.sender` and adds that amount to `amountBoughtCumulative`, a variable for each whitelisted address that tracks the total QIN they have bought. If `amountBoughtCumulative` exceeds the `cumulativeLimit` for `msg.sender`, the order will be partially filled up to the buyer's `cumulativeLimit` and the leftover Ethereum refunded.
+###### `buyQINTokensWithRegisteredAddress` now updates the total Ethereum contributed to the contract (`weiRaised`), subtracts the ordered QIN from `crowdsaleTokensRemaining`, and refunds the buyer any unspent wei from gas costs.
+###### Finally, `buyQINTokensWithRegisteredAddress` calls `sendQIN` and `QINPurchase` to send the buyer their purchased QIN. This action is performed last to prevent reentry attacks, where the fallback function, and hence the 'send tokens' function, is called repeatedly before the contract updates the state variables that control token transfers, such as `crowdsaleTokensRemaining`. 
+
+#######
+//DETAILS OF BUY FUNCTIONS + VALIDPURCHASE, ALSO PENDING CLEANUP
+
+
+######
 
 
 ### Controllable.sol
@@ -43,7 +60,7 @@
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
 ### ERC223Token.sol
-###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that cannot handle them, preventing their accidental loss. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call--`transfer`--as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
+###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that are not equipt to handle them, preventing their accidental loss. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call--`transfer`--as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
 
 
 ### ERC20Token.sol
@@ -64,7 +81,7 @@
 \\TODO pending ConvertLib fix
 
 ## Inheritance Map
-###### The following is a map of the files in the QINCrowdsale repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y, represents that Y inherits from X. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
+###### The following is a map of the files in the QINCrowdsale repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y represents 'Y inherits from X'. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
 <br/><br/>
 
 Layout option 1:  
