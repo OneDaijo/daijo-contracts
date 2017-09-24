@@ -88,7 +88,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
 
 
     // TODO: This assumes ERC223 - which should be added
-    function tokenFallback(address _from, uint _value, bytes _data) external {
+    function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 

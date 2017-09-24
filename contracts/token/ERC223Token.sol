@@ -13,7 +13,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
     using SafeMath for uint256;
 
     // assemble the given address bytecode. If bytecode exists then the _addr is a contract.
-    function isContract(address _to) private returns (bool isContract) {
+    function isContract(address _to) private returns (bool addressIsContract) {
         uint length;
         assembly {
             //retrieve the size of the code on target address, this needs assembly
