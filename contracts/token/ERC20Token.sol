@@ -17,8 +17,8 @@ contract ERC20Token is ERC20Interface {
 
     uint _totalSupply;
 
-    function totalSupply() constant returns (uint256 totalSupply) {
-      totalSupply = _totalSupply;
+    function totalSupply() constant returns (uint256 supply) {
+      return _totalSupply;
     }
 
     function balanceOf(address _owner) public constant returns (uint256 balance) {
