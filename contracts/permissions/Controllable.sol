@@ -1,5 +1,6 @@
-pragma solidity ^0.4.16
+pragma solidity ^0.4.13;
 
+import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
 
 /** @title Controllable
@@ -8,6 +9,7 @@ import '../permissions/Ownable.sol';
 */
 
 contract Controllable is Ownable {
+    using SafeMath for uint256;
 
     bool public halted = false;
     bool public manualEnd = false;
@@ -42,13 +44,13 @@ contract Controllable is Ownable {
     }
 
     // Unhalt the crowdsale
-    function unhaltCrowdsale() external onlyOwner OnlyIfHalted {
+    function unhaltCrowdsale() external onlyOwner onlyIfHalted {
         halted = false;
     }
 
     // Sets manualEnd to true, making fxn hasEnded() return true, setting the crowdsale state to SaleComplete
     // This function is an option to prematurely end a halted crowdsale
-    function endCrowdsale() external onlyOwner OnlyIfHalted{
+    function endCrowdsale() external onlyOwner onlyIfHalted {
         manualEnd = true;
     }
 
