@@ -6,6 +6,7 @@ import "../contracts/token/QINToken.sol";
 import "../contracts/token/QINFrozen.sol";
 import "../contracts/libs/SafeMath.sol";
 
+
 /** @title Frozen QIN Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
@@ -52,7 +53,6 @@ contract TestQINFrozen {
 
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
-        uint frozenBalance = decimalMultiplier.mul(20000);
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -67,7 +67,6 @@ contract TestQINFrozen {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken();
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
-        address expected = this;
 
         Assert.equal(freeze.owner(), this, "Not the correct owner. ");
     }

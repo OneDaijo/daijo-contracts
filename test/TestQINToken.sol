@@ -4,6 +4,7 @@ import "truffle/Assert.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/libs/SafeMath.sol";
 
+
 /** @title QIN Token Test
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */

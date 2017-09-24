@@ -3,6 +3,7 @@ pragma solidity ^0.4.13;
 import "./interfaces/ERC20Interface.sol";
 import "../libs/SafeMath.sol";
 
+
 /** @title ERC20 Token Implementation
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://theethereum.wiki/w/index.php/ERC20_Token_Standard
@@ -18,7 +19,7 @@ contract ERC20Token is ERC20Interface {
     uint _totalSupply;
 
     function totalSupply() constant returns (uint256 totalSupply) {
-      totalSupply = _totalSupply;
+        return _totalSupply;
     }
 
     function balanceOf(address _owner) public constant returns (uint256 balance) {
@@ -26,9 +27,9 @@ contract ERC20Token is ERC20Interface {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        if (balances[msg.sender] >= _value
-            && _value > 0
-            && balances[_to] + _value > balances[_to]) {
+        if (balances[msg.sender] >= _value &&
+            _value > 0 && 
+            balances[_to] + _value > balances[_to]) {
             balances[msg.sender] -= _value;
             balances[_to] += _value;
             Transfer(msg.sender, _to, _value);
@@ -42,11 +43,12 @@ contract ERC20Token is ERC20Interface {
         address _from,
         address _to,
         uint256 _value
-        ) public returns (bool success) {
-        if (balances[_from] >= _value
-            && allowed[_from][msg.sender] >= _value
-            && _value > 0
-            && balances[_to] + _value > balances[_to]) {
+        ) public returns (bool success)
+    {
+        if (balances[_from] >= _value &&
+            allowed[_from][msg.sender] >= _value &&
+            _value > 0 &&
+            balances[_to] + _value > balances[_to]) {
             balances[_from] -= _value;
             allowed[_from][msg.sender] -= _value;
             balances[_to] += _value;

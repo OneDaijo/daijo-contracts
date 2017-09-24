@@ -5,6 +5,7 @@ import "./ERC20Token.sol";
 import "./interfaces/ERC223ReceivingContract.sol";
 import "../libs/SafeMath.sol";
 
+
 /** @title ERC223 Token Implementation
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
@@ -30,7 +31,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
     //       included for backwards compatibility
     function transfer(address _to, uint256 _value) public returns (bool success) { 
         bytes memory empty;
-        if(isContract(_to)) {
+        if (isContract(_to)) {
             return transferToContract(_to, _value, empty);
         } else {
             return transferToAddress(_to, _value, empty);
@@ -38,7 +39,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
     }
 
     function transfer(address _to, uint _value, bytes _data) public returns (bool success) {
-        if(isContract(_to)) {
+        if (isContract(_to)) {
             return transferToContract(_to, _value, _data);
         } else {
             return transferToAddress(_to, _value, _data);
@@ -53,7 +54,12 @@ contract ERC223Token is ERC223Interface, ERC20Token {
         balances[_to] = balanceOf(_to).add(_value);
         ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
         receiver.tokenFallback(msg.sender, _value, _data);
-        Transfer(msg.sender, _to, _value, _data);
+        Transfer(
+            msg.sender,
+            _to,
+            _value,
+            _data
+        );
         return true;
     }
 
@@ -63,7 +69,12 @@ contract ERC223Token is ERC223Interface, ERC20Token {
 
         balances[msg.sender] = balanceOf(msg.sender).sub(_value);
         balances[_to] = balanceOf(_to).add(_value);
-        Transfer(msg.sender, _to, _value, _data);
+        Transfer(
+            msg.sender,
+            _to,
+            _value,
+            _data
+        );
         return true;
     }
   

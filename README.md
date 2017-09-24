@@ -18,10 +18,11 @@ sudo apt-get install node-gyp
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
-2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), and [web3 (0.20.1)](https://github.com/ethereum/web3.js/). Note: to install to a local directory (the WRF project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
+2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), [web3 (0.20.1)](https://github.com/ethereum/web3.js/), and [solium linter](https://github.com/duaraghav8/Solium). Note: to install to a local directory (the WRF project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
 ```
 sudo npm install -g truffle@beta
 sudo npm install -g ethereumjs-testrpc
+sudo npm install -g solium
 # Installing locally generally works better.
 sudo npm install web3@0.20.1
 # Sometimes required by web3
