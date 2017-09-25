@@ -1,8 +1,10 @@
-// var QINToken = artifacts.require("./token/QINToken.sol");
+var QINToken = artifacts.require("./token/QINToken.sol");
+var QINCrowdsale = artifacts.require("./crowdsale/QINCrowdsale.sol");
 
 contract('QINToken', function(accounts) {
   var qinToken;
   var crowdsale;
+  var crowdsaleAddress;
 
   var Web3 = require('web3');
   var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -17,9 +19,8 @@ contract('QINToken', function(accounts) {
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 200000000 * 10**18, "the correct balance wasn't in the first account");
     }).then(function() {
-      // TODO(mrice): the block number is coming back undefined.  This needs to be investigated further.
-      var blockNumber = web3.eth.blockNumber;
-      return qinToken.startCrowdsale(blockNumber + 1, blockNumber + 100, 250, accounts[0], 1597721000);
+      var current_time = new Date().getTime() / 1000;
+      qinToken.startCrowdsale(current_time, current_time + 1000, 3, 250, accounts[0], 1597721000);
     }).then(function() {
       return qinToken.crowdsaleExecuted();
     }).then(function(wasExecuted) {
@@ -28,10 +29,14 @@ contract('QINToken', function(accounts) {
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 0, "the correct balance wasn't in the first after crowdsale start");
     }).then(function() {
-      return qinToken.getCrowdsale();
+      return qinToken.getCrowdsale.call();
     }).then(function(crowsdaleContract) {
+      crowdsaleAddress = crowsdaleContract.valueOf();
+      crowdsale = QINCrowdsale.at(crowdsaleAddress);
+      return crowdsale.updateRegisteredUserWhitelist(user, true);
+    }).then(function() {
       // Does not work with the default gas amount.
-      return web3.eth.sendTransaction({from: user, to: crowsdaleContract, value: web3.toWei(1, 'ether'), gas: 95000});
+      return web3.eth.sendTransaction({from: user, to: crowdsaleAddress, value: web3.toWei(1, 'ether'), gas: 95000});
     }).then(function() {
       return qinToken.balanceOf.call(user);
     }).then(function(balance) {

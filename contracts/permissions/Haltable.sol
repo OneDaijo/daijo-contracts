@@ -5,19 +5,15 @@ import "./Ownable.sol";
 
 contract Haltable is Ownable {
 
-    bool public halted;
+    bool public halted = false;
 
     modifier breakInEmergency {
-        if (halted) {
-            revert();
-        }
+        require(!halted);
         _;
     }
 
     modifier onlyInEmergency {
-        if (!halted) {
-            revert();
-        }
+        require(halted);
         _;
     }
 
