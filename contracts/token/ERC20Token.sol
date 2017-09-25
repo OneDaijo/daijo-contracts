@@ -11,22 +11,22 @@ import "../libs/SafeMath.sol";
  *  TODO: make this use safemath instead
  */
 contract ERC20Token is ERC20Interface {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
-    mapping (address => uint256) balances;
-    mapping (address => mapping (address => uint256)) allowed;
+    mapping (address => uint) balances;
+    mapping (address => mapping (address => uint)) allowed;
 
-    uint _totalSupply;
+    uint totalSupply_;
 
-    function totalSupply() constant returns (uint256 totalSupply) {
-        return _totalSupply;
+    function totalSupply() constant returns (uint) {
+        return totalSupply_;
     }
 
-    function balanceOf(address _owner) public constant returns (uint256 balance) {
+    function balanceOf(address _owner) public constant returns (uint) {
         return balances[_owner];
     }
 
-    function transfer(address _to, uint256 _value) public returns (bool success) {
+    function transfer(address _to, uint _value) public returns (bool) {
         if (balances[msg.sender] >= _value &&
             _value > 0 && 
             balances[_to] + _value > balances[_to]) {
@@ -42,8 +42,8 @@ contract ERC20Token is ERC20Interface {
     function transferFrom(
         address _from,
         address _to,
-        uint256 _value
-        ) public returns (bool success)
+        uint _value
+        ) public returns (bool)
     {
         if (balances[_from] >= _value &&
             allowed[_from][msg.sender] >= _value &&
@@ -59,13 +59,13 @@ contract ERC20Token is ERC20Interface {
         }
     }
 
-    function approve(address _spender, uint256 _value) public returns (bool success) {
+    function approve(address _spender, uint _value) public returns (bool) {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
     }
 
-    function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {
+    function allowance(address _owner, address _spender) public constant returns (uint) {
         return allowed[_owner][_spender];
     }
 }

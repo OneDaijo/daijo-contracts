@@ -11,10 +11,10 @@ import "../libs/SafeMath.sol";
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
  */
 contract ERC223Token is ERC223Interface, ERC20Token {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     // assemble the given address bytecode. If bytecode exists then the _addr is a contract.
-    function isContract(address _to) private returns (bool isContract) {
+    function isContract(address _to) private returns (bool) {
         uint length;
         assembly {
             //retrieve the size of the code on target address, this needs assembly
@@ -29,7 +29,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
    
     // note: overrides the transfer function in ERC20Token
     //       included for backwards compatibility
-    function transfer(address _to, uint256 _value) public returns (bool success) { 
+    function transfer(address _to, uint _value) public returns (bool) { 
         bytes memory empty;
         if (isContract(_to)) {
             return transferToContract(_to, _value, empty);
@@ -38,7 +38,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
         }
     }
 
-    function transfer(address _to, uint _value, bytes _data) public returns (bool success) {
+    function transfer(address _to, uint _value, bytes _data) public returns (bool) {
         if (isContract(_to)) {
             return transferToContract(_to, _value, _data);
         } else {
@@ -47,7 +47,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
     }
 
     // function that is called when transaction target is a contract
-    function transferToContract(address _to, uint _value, bytes _data) private returns (bool success) {
+    function transferToContract(address _to, uint _value, bytes _data) private returns (bool) {
         require(balanceOf(msg.sender) >= _value);
 
         balances[msg.sender] = balanceOf(msg.sender).sub(_value);
@@ -64,7 +64,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
     }
 
     // function that is called when transaction target is an address
-    function transferToAddress(address _to, uint _value, bytes _data) private returns (bool success) {
+    function transferToAddress(address _to, uint _value, bytes _data) private returns (bool) {
         require(balanceOf(msg.sender) >= _value);
 
         balances[msg.sender] = balanceOf(msg.sender).sub(_value);

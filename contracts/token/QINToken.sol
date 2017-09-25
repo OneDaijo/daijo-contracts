@@ -11,7 +11,7 @@ import "../libs/SafeMath.sol";
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINToken is ERC223Token, Ownable {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     string public constant NAME = "QIN Token";
     string public constant SYMBOL = "QIN";

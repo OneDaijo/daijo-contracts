@@ -11,7 +11,7 @@ import "../contracts/libs/SafeMath.sol";
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract TestQINFrozen {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     uint decimalMultiplier = 10**18;
 
