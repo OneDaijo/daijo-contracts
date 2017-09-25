@@ -4,6 +4,7 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/libs/SafeMath.sol";
 
+
 /** @title Safe Math Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */

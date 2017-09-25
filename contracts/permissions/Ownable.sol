@@ -1,5 +1,6 @@
 pragma solidity ^0.4.13;
 
+
  /** @title Ownable
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @notice source: Zeppelin
@@ -31,7 +32,7 @@ contract Ownable {
      */
     function transferOwnership(address newOwner) onlyOwner {
         if (newOwner != address(0)) {
-           owner = newOwner;
+            owner = newOwner;
         }
     }  
 }

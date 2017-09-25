@@ -2,6 +2,7 @@ pragma solidity ^0.4.13;
 
 import "./Ownable.sol";
 
+
 contract Haltable is Ownable {
 
     bool public halted;
