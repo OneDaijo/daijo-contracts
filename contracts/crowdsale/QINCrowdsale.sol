@@ -198,8 +198,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
         amountBoughtCumulative[buyer] = amountBoughtCumulative[buyer].add(qinToBuy);
-        amountBoughtDuringRestricted[buyer] = amountBoughtDuringRestricted[buyer].add(qinToBuy);
-
+        if (getState() == State.SaleRestrictedDay) {
+            amountBoughtDuringRestricted[buyer] = amountBoughtDuringRestricted[buyer].add(qinToBuy);
+        }
+        
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));
