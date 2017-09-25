@@ -17,6 +17,9 @@ node {
     // Give testrpc time to start up.
     sh "sleep 5"
 
+    // Run linter
+    sh "solium --dir ."
+
     // Get status but save as to not break early
     sh "truffle test"
 

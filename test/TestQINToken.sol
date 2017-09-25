@@ -4,11 +4,12 @@ import "truffle/Assert.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/libs/SafeMath.sol";
 
+
 /** @title QIN Token Test
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract TestQINToken {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     uint decimalMultiplier = 10**18; 
 
