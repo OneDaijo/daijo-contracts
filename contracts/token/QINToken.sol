@@ -32,8 +32,8 @@ contract QINToken is ERC223Token, Ownable {
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
-        _totalSupply = frozenSupply.add(crowdsaleSupply);
-        balances[msg.sender] = _totalSupply;
+        totalSupply_ = frozenSupply.add(crowdsaleSupply);
+        balances[msg.sender] = totalSupply_;
     }
 
     function startCrowdsale(
