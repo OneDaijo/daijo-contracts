@@ -165,6 +165,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
             saleDay = saleDay.add(dayIncrement);
             if (getState() == State.SaleRestrictedDay) {
                 restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
+                previousCumulativelimit = cumulativeLimit;
                 cumulativeLimit = cumulativeLimit.add(restrictedDayLimit.mul(dayIncrement));
             }
         }
@@ -201,7 +202,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         if (getState() == State.SaleRestrictedDay) {
             amountBoughtDuringRestricted[buyer] = amountBoughtDuringRestricted[buyer].add(qinToBuy);
         }
-        
+
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));
