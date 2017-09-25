@@ -6,18 +6,19 @@ import "../permissions/Ownable.sol";
 import "../crowdsale/QINCrowdsale.sol";
 import "../libs/SafeMath.sol";
 
+
 /** @title QIN Token
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINToken is ERC223Token, Ownable {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
-    string public constant name = "QIN Token";
-    string public constant symbol = "QIN";
-    uint public constant decimals = 18;
+    string public constant NAME = "QIN Token";
+    string public constant SYMBOL = "QIN";
+    uint public constant DECIMALS = 18;
 
     // Multiplier to convert QIN to the smallest subdivision of QIN
-    uint public decimalMultiplier = 10**decimals;
+    uint public decimalMultiplier = 10**DECIMALS;
 
     uint public frozenSupply = decimalMultiplier.mul(140000000);
     uint public crowdsaleSupply = decimalMultiplier.mul(60000000);
@@ -31,13 +32,20 @@ contract QINToken is ERC223Token, Ownable {
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
-        _totalSupply = frozenSupply.add(crowdsaleSupply);
-        balances[msg.sender] = _totalSupply;
+        totalSupply_ = frozenSupply.add(crowdsaleSupply);
+        balances[msg.sender] = totalSupply_;
     }
 
-    function startCrowdsale(uint256 _startBlock, uint256 _endBlock, uint256 _rate, address _wallet, uint _releaseTime) external onlyOwner {
+    function startCrowdsale(
+        uint _startTime,
+        uint _endTime,
+        uint _days,
+        uint _rate,
+        address _wallet,
+        uint _releaseTime) external onlyOwner
+    {
         require(!crowdsaleExecuted);
-        crowdsale = new QINCrowdsale(this, _startBlock, _endBlock, _rate, _wallet);
+        crowdsale = new QINCrowdsale(this, _startTime, _endTime, _days, _rate, _wallet);
 
         // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
         crowdsale.transferOwnership(msg.sender);
@@ -60,7 +68,7 @@ contract QINToken is ERC223Token, Ownable {
 
         transfer(address(frozenQIN), _amountToFreeze);
 
-    	assert(balanceOf(msg.sender) == 0);
+        assert(balanceOf(msg.sender) == 0);
     }
 
     function getCrowdsale() public constant returns (QINCrowdsale) {

@@ -1,4 +1,4 @@
-var QINToken = artifacts.require("./token/QINToken.sol");
+// var QINToken = artifacts.require("./token/QINToken.sol");
 
 contract('QINToken', function(accounts) {
   var qinToken;
