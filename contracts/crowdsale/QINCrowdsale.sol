@@ -43,12 +43,14 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     mapping (address => bool) registeredUserWhitelist;
     mapping (address => uint) amountBoughtCumulative;
+    mapping (address => uint) amountBoughtDuringRestricted;
 
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
     uint public crowdsaleTokensRemaining;
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
+    uint private previousCumulativelimit;
     uint private cumulativeLimit;
     bool private restrictedDayLimitSet;
 
@@ -168,9 +170,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         }
 
         if (getState() == State.SaleRestrictedDay) {
-            require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
-            if (qinToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
-                qinToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
+            require(amountBoughtDuringRestricted[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
+            if (amountBoughtDuringRestricted[buyer] < previousCumulativelimit) {
+                amountBoughtDuringRestricted[buyer] = previousCumulativelimit;
+            }
+            if (qinToBuy > cumulativeLimit.sub(amountBoughtDuringRestricted[buyer])) {
+                qinToBuy = cumulativeLimit.sub(amountBoughtDuringRestricted[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
             }
             weiToSpend = qinToBuy.div(rate);
         } else if (getState() == State.SaleFFA) {
@@ -193,6 +198,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
         amountBoughtCumulative[buyer] = amountBoughtCumulative[buyer].add(qinToBuy);
+        amountBoughtDuringRestricted[buyer] = amountBoughtDuringRestricted[buyer].add(qinToBuy);
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
