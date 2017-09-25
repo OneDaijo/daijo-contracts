@@ -6,12 +6,13 @@ import '../libs/SafeMath.sol';
 import "./QINToken.sol";
 import "./interfaces/ERC223ReceivingContract.sol";
 
+
 /** @title Frozen QIN Tokens
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  *  @dev QIN Tokens that are locked in this contract until a given release time
  */
- contract QINFrozen is Ownable, ERC223ReceivingContract {
-    using SafeMath for uint256;
+contract QINFrozen is Ownable, ERC223ReceivingContract {
+    using SafeMath for uint;
 
     // the token that's being locked
     QINToken public token;
@@ -60,4 +61,4 @@ import "./interfaces/ERC223ReceivingContract.sol";
         // The only ERC223 token that can be paid to this contract is QIN
         return _token == address(token);
     }
- }
+}
