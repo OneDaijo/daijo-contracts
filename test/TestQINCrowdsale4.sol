@@ -26,5 +26,5 @@ contract TestQINCrowdsale4 {
             wallet
         );
         Assert.equal(tcs.owner(), this, "Not the correct owner. ");
-     }
- }
+    }
+}
