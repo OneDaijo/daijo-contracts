@@ -40,17 +40,4 @@ contract TestQINCrowdsale2 {
         Assert.equal(walletStatus, true, "User was not registered.");
         Assert.equal(walletStatus2, false, "User was registered somehow");
     }
-
-    function testSetRestrictedDays() {
-        uint startTime = now + 100;
-        uint endTime = now + 200;
-        address wallet = 0x1234;
-        uint restrictedDays = 3;
-        QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
-
-        Assert.equal(tcs.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
-        tcs.setRestrictedSaleDays(5);
-        Assert.equal(tcs.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
-    }
 }
