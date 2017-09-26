@@ -52,3 +52,16 @@ To run the contract tests, run:
 truffle test
 ```
 from the base of the repo.
+
+## Run Coverage
+Prerequisites:
+```
+npm install --save-dev coveralls
+npm install --save-dev solidity-coverage
+```
+
+To run the coverage report, run:
+```
+solidity-coverage
+```
+from the base of the repo.
