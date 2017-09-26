@@ -20,19 +20,19 @@ contract QINToken is ERC223Token, Ownable {
     // Multiplier to convert QIN to the smallest subdivision of QIN
     uint public decimalMultiplier = 10**DECIMALS;
 
-    uint public frozenSupply = decimalMultiplier.mul(140000000);
+    uint public reserveSupply = decimalMultiplier.mul(140000000);
     uint public crowdsaleSupply = decimalMultiplier.mul(60000000);
 
     bool public crowdsaleExecuted = false;
 
     QINCrowdsale internal crowdsale;
-    QINFrozen internal frozenQIN;
+    // QINFrozen internal frozenQIN;
 
     /* Token Creation */
 
     // initialize the QIN token and assign all funds to the creator
     function QINToken() {
-        totalSupply_ = frozenSupply.add(crowdsaleSupply);
+        totalSupply_ = reserveSupply.add(crowdsaleSupply);
         balances[msg.sender] = totalSupply_;
     }
 
@@ -54,13 +54,13 @@ contract QINToken is ERC223Token, Ownable {
         transfer(address(crowdsale), crowdsaleSupply);
 
         // ensure the correct amount was sent to crowdsale, then freeze the rest
-        assert(balanceOf(msg.sender) == frozenSupply);
+        // assert(balanceOf(msg.sender) == frozenSupply);
 
-        freezeRemainingTokens(_releaseTime, frozenSupply);
+        // freezeRemainingTokens(_releaseTime, frozenSupply);
         crowdsaleExecuted = true;
     }
 
-    function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
+    /*function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
         frozenQIN = new QINFrozen(this, _releaseTime);
 
         // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
@@ -69,15 +69,15 @@ contract QINToken is ERC223Token, Ownable {
         transfer(address(frozenQIN), _amountToFreeze);
 
         assert(balanceOf(msg.sender) == 0);
-    }
+    }*/
 
     function getCrowdsale() public constant returns (QINCrowdsale) {
         require(crowdsaleExecuted);
         return crowdsale;
     }
 
-    function getFrozenQIN() public constant returns (QINFrozen) {
+    /*function getFrozenQIN() public constant returns (QINFrozen) {
         require(crowdsaleExecuted);
         return frozenQIN;
-    }
+    }*/
 }
