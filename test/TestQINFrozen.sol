@@ -10,7 +10,7 @@ import "../contracts/libs/SafeMath.sol";
 /** @title Frozen QIN Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract TestQINFrozen {
+/*contract TestQINFrozen {
     using SafeMath for uint;
 
     uint decimalMultiplier = 10**18;
@@ -98,4 +98,4 @@ contract TestQINFrozen {
 
     //}
 
-}
+}*/
