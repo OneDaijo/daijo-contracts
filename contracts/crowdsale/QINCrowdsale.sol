@@ -41,9 +41,15 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // number of registered users
     uint public registeredUserCount = 0;
 
+    struct Buyer {
+        uint lastBought;
+        uint amountBoughtCumulative;
+        uint amountBoughtToday;
+    }
+
+    mapping (address => Buyer) buyersList;
+
     mapping (address => bool) registeredUserWhitelist;
-    mapping (address => uint) amountBoughtCumulative;
-    mapping (address => uint) amountBoughtDuringRestricted;
 
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
@@ -104,8 +110,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         require(registeredUserWhitelist[_addr] != _status);
         registeredUserWhitelist[_addr] = _status;
         if (_status) {
+            Buyer(0, 0, 0);
             registeredUserCount = registeredUserCount.add(1);
         } else {
+            delete buyersList[_addr];
             registeredUserCount = registeredUserCount.sub(1);
         }
     }
@@ -151,6 +159,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         require(getState() != State.SaleComplete);
         uint weiToSpend = msg.value;
 
+        Buyer storage b = buyersList[buyer];
+
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
@@ -165,18 +175,16 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
             saleDay = saleDay.add(dayIncrement);
             if (getState() == State.SaleRestrictedDay) {
                 restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
-                previousCumulativelimit = cumulativeLimit;
-                cumulativeLimit = cumulativeLimit.add(restrictedDayLimit.mul(dayIncrement));
             }
         }
 
         if (getState() == State.SaleRestrictedDay) {
-            require(amountBoughtDuringRestricted[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
-            if (amountBoughtDuringRestricted[buyer] < previousCumulativelimit) {
-                amountBoughtDuringRestricted[buyer] = previousCumulativelimit;
+            if (b.lastBought < dailyReset) {
+                b.amountBoughtToday = 0;
             }
-            if (qinToBuy > cumulativeLimit.sub(amountBoughtDuringRestricted[buyer])) {
-                qinToBuy = cumulativeLimit.sub(amountBoughtDuringRestricted[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
+            assert(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
+            if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtToday)) {
+                qinToBuy = restrictedDayLimit.sub(b.amountBoughtToday); // set qinToBuy to remaining daily limit if buy order goes over
             }
             weiToSpend = qinToBuy.div(rate);
         } else if (getState() == State.SaleFFA) {
@@ -198,10 +206,11 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         // send ETH to the fund collection wallet
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
-        amountBoughtCumulative[buyer] = amountBoughtCumulative[buyer].add(qinToBuy);
+        b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
         if (getState() == State.SaleRestrictedDay) {
-            amountBoughtDuringRestricted[buyer] = amountBoughtDuringRestricted[buyer].add(qinToBuy);
+            b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
         }
+        b.lastBought = now;
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
