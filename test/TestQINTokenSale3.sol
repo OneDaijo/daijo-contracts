@@ -3,21 +3,21 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/crowdsale/QINCrowdsale.sol";
+import "../contracts/tknsale/QINTokenSale.sol";
 
 
-/** @title QIN Crowdsale Tests
+/** @title QIN TokenSale Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract TestQINCrowdsale3 {
+contract TestQINTokenSale3 {
 
-    function testQINCrowdsaleTokenFallback() {
+    function testQINTokenSaleTokenFallback() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale tcs = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -30,13 +30,13 @@ contract TestQINCrowdsale3 {
         Assert.equal(funded, true, "tokenFallback was not called.");
     }
 
-    //function testQINCrowdsaleSupportsToken() {
+    //function testQINTokenSaleSupportsToken() {
         //uint startTime = now + 100;
         //uint endTime = now + 200;
         //address wallet = 0x1234;
         //uint restrictedDays = 3;
         //QINToken qin = new QINToken();
-        //QINCrowdsale tcs = new QINCrowdsale(
+        //QINTokenSale tcs = new QINTokenSale(
         //    qin,
         //    startTime,
         //    endTime,
@@ -50,13 +50,13 @@ contract TestQINCrowdsale3 {
         //Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     //}
 
-    function testQINCrowdsaleOwner() {
+    function testQINTokenSaleOwner() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale tcs = new QINTokenSale(
             qin,
             startTime,
             endTime,
