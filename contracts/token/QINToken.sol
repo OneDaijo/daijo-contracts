@@ -26,7 +26,6 @@ contract QINToken is ERC223Token, Ownable {
     bool public crowdsaleExecuted = false;
 
     QINCrowdsale internal crowdsale;
-    // QINFrozen internal frozenQIN;
 
     /* Token Creation */
 
@@ -41,8 +40,7 @@ contract QINToken is ERC223Token, Ownable {
         uint _endTime,
         uint _days,
         uint _rate,
-        address _wallet,
-        uint _releaseTime) external onlyOwner
+        address _wallet) external onlyOwner
     {
         require(!crowdsaleExecuted);
         crowdsale = new QINCrowdsale(this, _startTime, _endTime, _days, _rate, _wallet);
@@ -53,31 +51,11 @@ contract QINToken is ERC223Token, Ownable {
         // msg.sender should still be the owner
         transfer(address(crowdsale), crowdsaleSupply);
 
-        // ensure the correct amount was sent to crowdsale, then freeze the rest
-        // assert(balanceOf(msg.sender) == frozenSupply);
-
-        // freezeRemainingTokens(_releaseTime, frozenSupply);
         crowdsaleExecuted = true;
     }
-
-    /*function freezeRemainingTokens(uint _releaseTime, uint _amountToFreeze) internal onlyOwner {
-        frozenQIN = new QINFrozen(this, _releaseTime);
-
-        // Must transfer ownership to the owner of the QINToken contract rather than the QINToken itself.
-        frozenQIN.transferOwnership(msg.sender);
-
-        transfer(address(frozenQIN), _amountToFreeze);
-
-        assert(balanceOf(msg.sender) == 0);
-    }*/
 
     function getCrowdsale() public constant returns (QINCrowdsale) {
         require(crowdsaleExecuted);
         return crowdsale;
     }
-
-    /*function getFrozenQIN() public constant returns (QINFrozen) {
-        require(crowdsaleExecuted);
-        return frozenQIN;
-    }*/
 }

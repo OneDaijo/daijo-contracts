@@ -36,15 +36,13 @@ contract TestQINCrowdsale {
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
-        uint releaseTime = now + 1000;
         QINToken qin = new QINToken();
         qin.startCrowdsale(
             startTime,
             endTime,
             restrictedDays,
             10,
-            wallet,
-            releaseTime
+            wallet
         );
 
         address owner = qin.getCrowdsale().owner();
