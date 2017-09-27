@@ -109,7 +109,11 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         Buyer storage b = buyersList[_addr];
         assert(b.isRegistered != _status);
         if (_status) {
-            buyersList[_addr] = Buyer(true, 0, 0, 0);
+            buyersList[_addr] = Buyer(
+                true,
+                0,
+                0,
+                0);
             registeredUserCount = registeredUserCount.add(1);
         } else {
             delete buyersList[_addr];
