@@ -42,14 +42,13 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     uint public registeredUserCount = 0;
 
     struct Buyer {
+        bool isRegistered;
         uint lastBought;
         uint amountBoughtCumulative;
         uint amountBoughtToday;
     }
 
     mapping (address => Buyer) buyersList;
-
-    mapping (address => bool) registeredUserWhitelist;
 
     // total amount and amount remaining of QIN in the crowdsale
     uint public crowdsaleTokenSupply;
@@ -107,10 +106,10 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
-        require(registeredUserWhitelist[_addr] != _status);
-        registeredUserWhitelist[_addr] = _status;
+        Buyer storage b = buyersList[_addr];
+        assert(b.isRegistered != _status);
         if (_status) {
-            Buyer(0, 0, 0);
+            buyersList[_addr] = Buyer(true, 0, 0, 0);
             registeredUserCount = registeredUserCount.add(1);
         } else {
             delete buyersList[_addr];
@@ -119,7 +118,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     function getUserRegistrationState(address _addr) public constant returns (bool) {
-        return registeredUserWhitelist[_addr];
+        Buyer storage b = buyersList[_addr];
+        return b.isRegistered;
     }
 
     // TODO: This assumes ERC223 - which should be added
@@ -155,11 +155,12 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // low level QIN token purchase function
     function buyQINTokensWithRegisteredAddress(address buyer) breakInEmergency private {
         require(validPurchase());
-        require(registeredUserWhitelist[buyer]);
         require(getState() != State.SaleComplete);
+        Buyer storage b = buyersList[buyer];
+        require(b.isRegistered);
         uint weiToSpend = msg.value;
 
-        Buyer storage b = buyersList[buyer];
+
 
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
@@ -182,7 +183,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
             if (b.lastBought < dailyReset) {
                 b.amountBoughtToday = 0;
             }
-            assert(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
+            require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
             if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtToday)) {
                 qinToBuy = restrictedDayLimit.sub(b.amountBoughtToday); // set qinToBuy to remaining daily limit if buy order goes over
             }
