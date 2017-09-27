@@ -8,6 +8,7 @@ import '../permissions/Ownable.sol';
   * @dev Base class that provides crowdsale control functions to interact with QINCrowdsale.sol
 */
 
+
 contract Controllable is Ownable {
     using SafeMath for uint256;
 
@@ -56,20 +57,21 @@ contract Controllable is Ownable {
 
     // Adds an address to the whitelist
     function addToWhitelist(address _addr) external onlyOwner {
-      registeredUserWhitelist[_addr] = true;
-      registeredUserCount = registeredUserCount.add(1);
+
+        registeredUserWhitelist[_addr] = true;
+        registeredUserCount = registeredUserCount.add(1);
     }
 
 
     // Removes an address from the whitelist
     function removeFromWhitelist(address _addr) external onlyOwner {
-      registeredUserWhitelist[_addr] = false;
-      registeredUserCount = registeredUserCount.sub(1);
+        registeredUserWhitelist[_addr] = false;
+        registeredUserCount = registeredUserCount.sub(1);
     }
 
     // Returns true if address is on the whitelist
     function getUserRegistrationState(address _addr) public constant returns (bool) {
-      return registeredUserWhitelist[_addr];
+        return registeredUserWhitelist[_addr];
     }
 
 }

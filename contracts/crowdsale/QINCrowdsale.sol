@@ -14,7 +14,6 @@ import '../permissions/Ownable.sol';
 contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint256;
 
-
 /* QIN Token Crowdsale */
 
     // The token being sold
@@ -93,6 +92,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     }
 
     function setRestrictedSaleDays(uint _days) external onlyOwner {
+
         numRestrictedDays = _days;
     }
 
