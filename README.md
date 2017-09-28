@@ -39,7 +39,11 @@ truffle compile
 ```
 from the base of the WRF repo.
 
-For the rest of the sample commands, an ethereum network will be required. WRF uses testrpc to test against. To run testrpc, run `testrpc` in a separate shell session. It will need to remain running for the later commands to run successfully.
+For the rest of the sample commands, an ethereum network will be required. WRF uses testrpc to test against. For testing the WRF smart contracts, run testrpc in a separate shell session (or in the background). It must stay running while truffle as long as truffle is interacting with the network:
+```
+# Increase the gas limit to allow larger Solidity tests to be deployed.
+testrpc --gasLimit 471238801
+```
 
 To publish the contracts to the network, run:
 ```
