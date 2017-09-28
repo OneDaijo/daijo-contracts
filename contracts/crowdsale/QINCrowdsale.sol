@@ -11,7 +11,7 @@ import '../permissions/Ownable.sol';
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINCrowdsale is ERC223ReceivingContract, Controllable {
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     /* QIN Token Crowdsale */
 
