@@ -3,17 +3,17 @@ pragma solidity ^0.4.13;
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
+import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
-import '../permissions/Haltable.sol';
 
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is ERC223ReceivingContract, Haltable {
+contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint;
 
-/* QIN Token Crowdsale */
+    /* QIN Token Crowdsale */
 
     // The token being sold
     QINToken public token;
@@ -125,9 +125,9 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         Buyer storage b = buyersList[_addr];
         return b.isRegistered;
     }
-
+    
     // TODO: This assumes ERC223 - which should be added
-    function tokenFallback(address _from, uint _value, bytes _data) external {
+    function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
@@ -157,7 +157,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // low level QIN token purchase function
-    function buyQINTokensWithRegisteredAddress(address buyer) breakInEmergency private {
+    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive onlyWhitelisted private {
         require(validPurchase());
         require(getState() != State.SaleComplete);
         Buyer storage b = buyersList[buyer];
@@ -241,7 +241,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || crowdsaleTokensRemaining == 0;
+        return now > endTime || crowdsaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
