@@ -3,21 +3,21 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/crowdsale/QINCrowdsale.sol";
+import "../contracts/tknsale/QINTokenSale.sol";
 
 
-/** @title QIN Crowdsale Tests
+/** @title QIN TokenSale Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract TestQINCrowdsale {
+contract TestQINTokenSale {
 
-    function testQINCrowdsaleInit() {
+    function testQINTokenSaleInit() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale tcs = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -31,14 +31,14 @@ contract TestQINCrowdsale {
         Assert.equal(tcs.wallet(), wallet, "Incorrect wallet address.");
     }
 
-    function testQINCrowdsaleInitFromStartCrowdsaleFunction() {
+    function testQINTokenSaleInitFromStartTokenSaleFunction() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken();
-        qin.startCrowdsale(
+        qin.startTokenSale(
             startTime,
             endTime,
             restrictedDays,
@@ -47,7 +47,7 @@ contract TestQINCrowdsale {
             releaseTime
         );
 
-        address owner = qin.getCrowdsale().owner();
+        address owner = qin.getTokenSale().owner();
 
         Assert.equal(owner, this, "Incorrect owner.");
     }

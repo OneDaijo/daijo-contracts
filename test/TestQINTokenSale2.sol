@@ -3,10 +3,10 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/crowdsale/QINCrowdsale.sol";
+import "../contracts/tknsale/QINTokenSale.sol";
 
 
-contract TestQINCrowdsale2 {
+contract TestQINTokenSale2 {
 
     function testUserCountPostRegistration() {
         uint startTime = now + 100;
@@ -14,7 +14,7 @@ contract TestQINCrowdsale2 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         uint userCountBefore = tcs.registeredUserCount();
         tcs.updateRegisteredUserWhitelist(wallet, true);
@@ -30,7 +30,7 @@ contract TestQINCrowdsale2 {
         address wallet2 = 0x5678;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         tcs.updateRegisteredUserWhitelist(wallet, true);
 
@@ -47,7 +47,7 @@ contract TestQINCrowdsale2 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         Assert.equal(tcs.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
         tcs.setRestrictedSaleDays(5);
