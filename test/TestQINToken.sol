@@ -11,12 +11,12 @@ import "../contracts/libs/SafeMath.sol";
 contract TestQINToken {
     using SafeMath for uint;
 
-    uint decimalMultiplier = 10**18; 
+    uint decimalMultiplier = 10**18;
 
     // this tests the initial balance of QIN tokens when deployed as a contract
     function testInitialBalanceWithNewQINToken() {
         QINToken qin = new QINToken();
-        uint expected = qin.frozenSupply() + qin.crowdsaleSupply();
+        uint expected = qin.reserveSupply() + qin.tokenSaleSupply();
 
         Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + crowdsaleSupply initially.");
     }
