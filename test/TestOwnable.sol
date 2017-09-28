@@ -4,6 +4,7 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/permissions/Ownable.sol";
 
+
 /** @title Ownable Test
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */

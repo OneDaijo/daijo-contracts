@@ -18,10 +18,11 @@ sudo apt-get install node-gyp
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
-2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), and [web3 (0.20.1)](https://github.com/ethereum/web3.js/). Note: to install to a local directory (the WRF project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
+2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), [web3 (0.20.1)](https://github.com/ethereum/web3.js/), and [solium linter](https://github.com/duaraghav8/Solium). Note: to install to a local directory (the WRF project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
 ```
 sudo npm install -g truffle@beta
 sudo npm install -g ethereumjs-testrpc
+sudo npm install -g solium
 # Installing locally generally works better.
 sudo npm install web3@0.20.1
 # Sometimes required by web3
@@ -38,7 +39,11 @@ truffle compile
 ```
 from the base of the WRF repo.
 
-For the rest of the sample commands, an ethereum network will be required. WRF uses testrpc to test against. To run testrpc, run `testrpc` in a separate shell session. It will need to remain running for the later commands to run successfully.
+For the rest of the sample commands, an ethereum network will be required. WRF uses testrpc to test against. For testing the WRF smart contracts, run testrpc in a separate shell session (or in the background). It must stay running while truffle as long as truffle is interacting with the network:
+```
+# Increase the gas limit to allow larger Solidity tests to be deployed.
+testrpc --gasLimit 471238801
+```
 
 To publish the contracts to the network, run:
 ```
@@ -49,5 +54,18 @@ from the base of the repo.
 To run the contract tests, run:
 ```
 truffle test
+```
+from the base of the repo.
+
+## Run Coverage
+Prerequisites:
+```
+npm install --save-dev coveralls
+npm install --save-dev solidity-coverage
+```
+
+To run the coverage report, run:
+```
+solidity-coverage
 ```
 from the base of the repo.
