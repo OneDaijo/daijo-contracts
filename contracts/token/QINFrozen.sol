@@ -40,7 +40,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
         return token.balanceOf(this);
     }
 
-    function tokenFallback(address _from, uint _value, bytes _data) external {
+    function tokenFallback(address _from, uint _value, bytes ) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
