@@ -10,11 +10,10 @@ import '../permissions/Ownable.sol';
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-
 contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint256;
 
-/* QIN Token Crowdsale */
+    /* QIN Token Crowdsale */
 
     // The token being sold
     QINToken public token;
@@ -92,10 +91,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     }
 
     function setRestrictedSaleDays(uint _days) external onlyOwner {
-
         numRestrictedDays = _days;
     }
-
 
     // TODO: This assumes ERC223 - which should be added
     function tokenFallback(address _from, uint _value, bytes) external {

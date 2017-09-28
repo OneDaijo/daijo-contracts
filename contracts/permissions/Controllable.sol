@@ -3,13 +3,11 @@ pragma solidity ^0.4.13;
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
 
+
 /** @title Controllable
   * @author WorldRapidFinance <info@worldrapidfinance.com>
   * @dev Base class that provides crowdsale control functions to interact with QINCrowdsale.sol
 */
-
-
-
 contract Controllable is Ownable {
     using SafeMath for uint256;
 
@@ -58,11 +56,9 @@ contract Controllable is Ownable {
 
     // Adds an address to the whitelist
     function addToWhitelist(address _addr) external onlyOwner {
-
         registeredUserWhitelist[_addr] = true;
         registeredUserCount = registeredUserCount.add(1);
     }
-
 
     // Removes an address from the whitelist
     function removeFromWhitelist(address _addr) external onlyOwner {
