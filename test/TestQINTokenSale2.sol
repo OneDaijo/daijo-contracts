@@ -17,7 +17,7 @@ contract TestQINTokenSale2 {
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         uint userCountBefore = ts.registeredUserCount();
-        ts.updateRegisteredUserWhitelist(wallet, true);
+        ts.addToWhitelist(wallet);
         uint userCountAfter = ts.registeredUserCount();
         Assert.equal(userCountBefore, 0, "Incorrect original user count.");
         Assert.equal(userCountAfter, 1, "Incorrect new user count.");
@@ -32,7 +32,7 @@ contract TestQINTokenSale2 {
         QINToken qin = new QINToken();
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        ts.updateRegisteredUserWhitelist(wallet, true);
+        ts.addToWhitelist(wallet);
 
         bool walletStatus = ts.getUserRegistrationState(wallet);
         bool walletStatus2 = ts.getUserRegistrationState(wallet2);
