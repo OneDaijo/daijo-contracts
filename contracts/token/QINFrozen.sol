@@ -47,7 +47,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
         // Ensures this function has only been run once
         require(!frozen);
 
-        // Crowdsale can only be paid by the owner of QINFrozen.
+        // Token sale can only be paid by the owner of QINFrozen.
         require(_from == owner);
 
         // Ensure that QIN was actually transferred.  Not sure if this is really necessary, but for correctness' sake.

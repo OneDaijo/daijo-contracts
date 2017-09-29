@@ -16,9 +16,9 @@ contract TestQINToken {
     // this tests the initial balance of QIN tokens when deployed as a contract
     function testInitialBalanceWithNewQINToken() {
         QINToken qin = new QINToken();
-        uint expected = qin.reserveSupply() + qin.crowdsaleSupply();
+        uint expected = qin.reserveSupply() + qin.tokenSaleSupply();
 
-        Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + crowdsaleSupply initially.");
+        Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + tokenSaleSupply initially.");
     }
 
     function testNewQINTokenOwner() {
