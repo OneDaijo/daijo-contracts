@@ -10,7 +10,7 @@ import '../permissions/Haltable.sol';
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINTokenSale is ERC223ReceivingContract, Haltable {
+contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     using SafeMath for uint;
 
 /* QIN Token Crowdsale */
