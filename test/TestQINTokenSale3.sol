@@ -17,7 +17,7 @@ contract TestQINTokenSale3 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -25,8 +25,8 @@ contract TestQINTokenSale3 {
             10,
             wallet
         );
-        qin.transfer(tcs, 100);
-        bool funded = tcs.hasBeenSupplied();
+        qin.transfer(ts, 100);
+        bool funded = ts.hasBeenSupplied();
         Assert.equal(funded, true, "tokenFallback was not called.");
     }
 
@@ -36,7 +36,7 @@ contract TestQINTokenSale3 {
         //address wallet = 0x1234;
         //uint restrictedDays = 3;
         //QINToken qin = new QINToken();
-        //QINTokenSale tcs = new QINTokenSale(
+        //QINTokenSale ts = new QINTokenSale(
         //    qin,
         //    startTime,
         //    endTime,
@@ -45,7 +45,7 @@ contract TestQINTokenSale3 {
         //    wallet
         //);
 
-        //bool support = tcs.supportsToken(qin);
+        //bool support = ts.supportsToken(qin);
 
         //Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     //}
@@ -56,7 +56,7 @@ contract TestQINTokenSale3 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -65,6 +65,6 @@ contract TestQINTokenSale3 {
             wallet
         );
 
-        Assert.equal(tcs.owner(), this, "Not the correct owner. ");
+        Assert.equal(ts.owner(), this, "Not the correct owner. ");
     }
 }

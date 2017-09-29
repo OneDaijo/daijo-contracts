@@ -17,7 +17,7 @@ contract TestQINTokenSale {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -25,10 +25,10 @@ contract TestQINTokenSale {
             10,
             wallet
         );
-        Assert.equal(tcs.startTime(), startTime, "Incorrect startTime.");
-        Assert.equal(tcs.endTime(), endTime, "Incorrect endTime.");
-        Assert.equal(tcs.rate(), 10, "Incorrect rate.");
-        Assert.equal(tcs.wallet(), wallet, "Incorrect wallet address.");
+        Assert.equal(ts.startTime(), startTime, "Incorrect startTime.");
+        Assert.equal(ts.endTime(), endTime, "Incorrect endTime.");
+        Assert.equal(ts.rate(), 10, "Incorrect rate.");
+        Assert.equal(ts.wallet(), wallet, "Incorrect wallet address.");
     }
 
     function testQINTokenSaleInitFromStartTokenSaleFunction() {

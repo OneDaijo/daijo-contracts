@@ -14,11 +14,11 @@ contract TestQINTokenSale2 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        uint userCountBefore = tcs.registeredUserCount();
-        tcs.updateRegisteredUserWhitelist(wallet, true);
-        uint userCountAfter = tcs.registeredUserCount();
+        uint userCountBefore = ts.registeredUserCount();
+        ts.updateRegisteredUserWhitelist(wallet, true);
+        uint userCountAfter = ts.registeredUserCount();
         Assert.equal(userCountBefore, 0, "Incorrect original user count.");
         Assert.equal(userCountAfter, 1, "Incorrect new user count.");
     }
@@ -30,12 +30,12 @@ contract TestQINTokenSale2 {
         address wallet2 = 0x5678;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        tcs.updateRegisteredUserWhitelist(wallet, true);
+        ts.updateRegisteredUserWhitelist(wallet, true);
 
-        bool walletStatus = tcs.getUserRegistrationState(wallet);
-        bool walletStatus2 = tcs.getUserRegistrationState(wallet2);
+        bool walletStatus = ts.getUserRegistrationState(wallet);
+        bool walletStatus2 = ts.getUserRegistrationState(wallet2);
 
         Assert.equal(walletStatus, true, "User was not registered.");
         Assert.equal(walletStatus2, false, "User was registered somehow");
@@ -47,10 +47,10 @@ contract TestQINTokenSale2 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINTokenSale tcs = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
+        QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        Assert.equal(tcs.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
-        tcs.setRestrictedSaleDays(5);
-        Assert.equal(tcs.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
+        Assert.equal(ts.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
+        ts.setRestrictedSaleDays(5);
+        Assert.equal(ts.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
     }
 }
