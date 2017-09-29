@@ -34,5 +34,5 @@ contract Ownable {
         if (newOwner != address(0)) {
             owner = newOwner;
         }
-    }  
+    }
 }

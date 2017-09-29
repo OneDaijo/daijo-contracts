@@ -26,10 +26,10 @@ contract ERC223Token is ERC223Interface, ERC20Token {
             return false;
         }
     }
-   
+
     // note: overrides the transfer function in ERC20Token
     //       included for backwards compatibility
-    function transfer(address _to, uint _value) public returns (bool) { 
+    function transfer(address _to, uint _value) public returns (bool) {
         bytes memory empty;
         if (isContract(_to)) {
             return transferToContract(_to, _value, empty);
@@ -43,7 +43,7 @@ contract ERC223Token is ERC223Interface, ERC20Token {
             return transferToContract(_to, _value, _data);
         } else {
             return transferToAddress(_to, _value, _data);
-        }   
+        }
     }
 
     // function that is called when transaction target is a contract
@@ -77,6 +77,6 @@ contract ERC223Token is ERC223Interface, ERC20Token {
         );
         return true;
     }
-  
+
 
 }

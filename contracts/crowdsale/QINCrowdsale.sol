@@ -3,17 +3,17 @@ pragma solidity ^0.4.13;
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../libs/SafeMath.sol';
+import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
-import '../permissions/Haltable.sol';
 
 
 /** @title QIN Token Crowdsale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is ERC223ReceivingContract, Haltable {
+contract QINCrowdsale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint;
 
-/* QIN Token Crowdsale */
+    /* QIN Token Crowdsale */
 
     // The token being sold
     QINToken public token;
@@ -38,10 +38,6 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     // amount of raised money in wei
     uint public weiRaised;
 
-    // number of registered users
-    uint public registeredUserCount = 0;
-
-    mapping (address => bool) registeredUserWhitelist;
     mapping (address => uint) amountBoughtCumulative;
 
     // total amount and amount remaining of QIN in the tokenSale
@@ -98,22 +94,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
         numRestrictedDays = _days;
     }
 
-    function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
-        require(registeredUserWhitelist[_addr] != _status);
-        registeredUserWhitelist[_addr] = _status;
-        if (_status) {
-            registeredUserCount = registeredUserCount.add(1);
-        } else {
-            registeredUserCount = registeredUserCount.sub(1);
-        }
-    }
-
-    function getUserRegistrationState(address _addr) public constant returns (bool) {
-        return registeredUserWhitelist[_addr];
-    }
-
     // TODO: This assumes ERC223 - which should be added
-    function tokenFallback(address _from, uint _value, bytes _data) external {
+    function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
 
@@ -143,9 +125,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
     }
 
     // low level QIN token purchase function
-    function buyQINTokensWithRegisteredAddress(address buyer) breakInEmergency private {
+    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive onlyWhitelisted private {
         require(validPurchase());
-        require(registeredUserWhitelist[buyer]);
         require(getState() != State.SaleComplete);
         uint weiToSpend = msg.value;
 
@@ -218,7 +199,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Haltable {
 
     // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || tokenSaleTokensRemaining == 0;
+        return now > endTime || crowdsaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
