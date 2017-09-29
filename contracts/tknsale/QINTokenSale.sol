@@ -38,13 +38,24 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     // amount of raised money in wei
     uint public weiRaised;
 
-    mapping (address => uint) amountBoughtCumulative;
+    // number of registered users
+    uint public registeredUserCount = 0;
+
+    struct Buyer {
+        bool isRegistered;
+        uint lastBought;
+        uint amountBoughtCumulative;
+        uint amountBoughtToday;
+    }
+
+    mapping (address => Buyer) buyersList;
 
     // total amount and amount remaining of QIN in the tokenSale
     uint public tokenSaleTokenSupply;
     uint public tokenSaleTokensRemaining;
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
+    uint private previousCumulativelimit;
     uint private cumulativeLimit;
     bool private restrictedDayLimitSet;
 
@@ -94,6 +105,27 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         numRestrictedDays = _days;
     }
 
+    function updateRegisteredUserWhitelist(address _addr, bool _status) external onlyOwner {
+        Buyer storage b = buyersList[_addr];
+        assert(b.isRegistered != _status);
+        if (_status) {
+            buyersList[_addr] = Buyer(
+                true,
+                0,
+                0,
+                0);
+            registeredUserCount = registeredUserCount.add(1);
+        } else {
+            delete buyersList[_addr];
+            registeredUserCount = registeredUserCount.sub(1);
+        }
+    }
+
+    function getUserRegistrationState(address _addr) public constant returns (bool) {
+        Buyer storage b = buyersList[_addr];
+        return b.isRegistered;
+    }
+
     // TODO: This assumes ERC223 - which should be added
     function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
@@ -128,7 +160,11 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive onlyWhitelisted private {
         require(validPurchase());
         require(getState() != State.SaleComplete);
+        Buyer storage b = buyersList[buyer];
+        require(b.isRegistered);
         uint weiToSpend = msg.value;
+
+
 
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
@@ -149,9 +185,12 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         }
 
         if (getState() == State.SaleRestrictedDay) {
-            require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
-            if (qinToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
-                qinToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
+            if (b.lastBought < dailyReset) {
+                b.amountBoughtToday = 0;
+            }
+            require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
+            if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtToday)) {
+                qinToBuy = restrictedDayLimit.sub(b.amountBoughtToday); // set qinToBuy to remaining daily limit if buy order goes over
             }
             weiToSpend = qinToBuy.div(rate);
         } else if (getState() == State.SaleFFA) {
@@ -173,7 +212,11 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         // send ETH to the fund collection wallet
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
-        amountBoughtCumulative[buyer] = amountBoughtCumulative[buyer].add(qinToBuy);
+        b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
+        if (getState() == State.SaleRestrictedDay) {
+            b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
+        }
+        b.lastBought = now;
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {

@@ -40,6 +40,8 @@ contract TestQINTokenSale2 {
         Assert.equal(walletStatus, true, "User was not registered.");
         Assert.equal(walletStatus2, false, "User was registered somehow");
     }
+<<<<<<< HEAD:test/TestQINCrowdsale2.sol
+=======
 
     function testSetRestrictedDays() {
         uint startTime = now + 100;
@@ -53,4 +55,5 @@ contract TestQINTokenSale2 {
         ts.setRestrictedSaleDays(5);
         Assert.equal(ts.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
     }
+>>>>>>> master:test/TestQINTokenSale2.sol
 }
