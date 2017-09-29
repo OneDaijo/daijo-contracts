@@ -55,7 +55,7 @@ contract QINToken is ERC223Token, Ownable {
         tokenSaleExecuted = true;
     }
 
-    function getCrowdsale() public constant returns (QINCrowdsale) {
+    function getTokenSale() public constant returns (QINTokenSale) {
         require(tokenSaleExecuted);
         return tokenSale;
     }
