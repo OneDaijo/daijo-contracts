@@ -3,13 +3,13 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/crowdsale/QINCrowdsale.sol";
+import "../contracts/tknsale/QINTokenSale.sol";
 
 
-/** @title QIN Crowdsale Tests
+/** @title QIN TokenSale Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract TestQINCrowdsale3 {
+contract TestQINTokenSale3 {
 
     function testSetRestrictedDays() {
         uint startTime = now + 100;
@@ -30,7 +30,7 @@ contract TestQINCrowdsale3 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -38,8 +38,8 @@ contract TestQINCrowdsale3 {
             10,
             wallet
         );
-        qin.transfer(tcs, 100);
-        bool funded = tcs.hasBeenSupplied();
+        qin.transfer(ts, 100);
+        bool funded = ts.hasBeenSupplied();
         Assert.equal(funded, true, "tokenFallback was not called.");
     }
 
@@ -49,7 +49,7 @@ contract TestQINCrowdsale3 {
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
