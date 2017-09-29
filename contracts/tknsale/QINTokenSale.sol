@@ -7,13 +7,13 @@ import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
 
 
-/** @title QIN Token Crowdsale Contract
+/** @title QIN Token TokenSale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
 contract QINTokenSale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint;
 
-    /* QIN Token Crowdsale */
+    /* QIN Token TokenSale */
 
     // The token being sold
     QINToken public token;
@@ -102,7 +102,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         // Ensures this function has only been run once
         require(!hasBeenSupplied);
 
-        // Crowdsale can only be paid by the owner of the tokenSale.
+        // TokenSale can only be paid by the owner of the tokenSale.
         require(_from == owner);
 
         // Sanity check to ensure that QIN was correctly transferred
@@ -192,14 +192,14 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
 
     // @return true if the transaction can buy tokens
     function validPurchase() internal constant returns (bool) {
-        bool duringCrowdsale = (now >= startTime) && (now <= endTime);
+        bool duringTokenSale = (now >= startTime) && (now <= endTime);
         bool nonZeroPurchase = msg.value != 0;
-        return duringCrowdsale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
+        return duringTokenSale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
     }
 
     // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || crowdsaleTokensRemaining == 0 || manualEnd;
+        return now > endTime || tokenSaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
