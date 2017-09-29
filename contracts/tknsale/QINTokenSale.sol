@@ -7,13 +7,13 @@ import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
 
 
-/** @title QIN Token Crowdsale Contract
+/** @title QIN Token TokenSale Contract
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract QINCrowdsale is ERC223ReceivingContract, Controllable {
+contract QINTokenSale is ERC223ReceivingContract, Controllable {
     using SafeMath for uint;
 
-    /* QIN Token Crowdsale */
+    /* QIN Token TokenSale */
 
     // The token being sold
     QINToken public token;
@@ -40,15 +40,15 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
 
     mapping (address => uint) amountBoughtCumulative;
 
-    // total amount and amount remaining of QIN in the crowdsale
-    uint public crowdsaleTokenSupply;
-    uint public crowdsaleTokensRemaining;
+    // total amount and amount remaining of QIN in the tokenSale
+    uint public tokenSaleTokenSupply;
+    uint public tokenSaleTokensRemaining;
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
     uint private cumulativeLimit;
     bool private restrictedDayLimitSet;
 
-    // whether QIN has been transferred to the crowdsale contract
+    // whether QIN has been transferred to the tokenSale contract
     bool public hasBeenSupplied = false;
 
     /* State Machine for each day of sale */
@@ -68,7 +68,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
      */
     event Burn(uint value);
 
-    function QINCrowdsale(
+    function QINTokenSale(
         QINToken _token,
         uint _startTime,
         uint _endTime,
@@ -102,15 +102,15 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
         // Ensures this function has only been run once
         require(!hasBeenSupplied);
 
-        // Crowdsale can only be paid by the owner of the crowdsale.
+        // TokenSale can only be paid by the owner of the tokenSale.
         require(_from == owner);
 
         // Sanity check to ensure that QIN was correctly transferred
         require(_value > 0);
         assert(token.balanceOf(this) == _value);
 
-        crowdsaleTokenSupply = _value;
-        crowdsaleTokensRemaining = _value;
+        tokenSaleTokenSupply = _value;
+        tokenSaleTokensRemaining = _value;
         hasBeenSupplied = true;
     }
 
@@ -133,7 +133,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
-        if (!saleHasStarted) { // runs once upon the first transaction of the crowdsale
+        if (!saleHasStarted) { // runs once upon the first transaction of the tokenSale
             saleHasStarted = true;
             saleDay = saleDay.add(1);
         }
@@ -143,7 +143,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
             dailyReset = dailyReset.add(dayIncrement.mul(UNIX_DAY));
             saleDay = saleDay.add(dayIncrement);
             if (getState() == State.SaleRestrictedDay) {
-                restrictedDayLimit = crowdsaleTokensRemaining.div(registeredUserCount);
+                restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
                 cumulativeLimit = cumulativeLimit.add(restrictedDayLimit.mul(dayIncrement));
             }
         }
@@ -155,8 +155,8 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
             }
             weiToSpend = qinToBuy.div(rate);
         } else if (getState() == State.SaleFFA) {
-            if (qinToBuy > crowdsaleTokensRemaining) {
-                qinToBuy = crowdsaleTokensRemaining;
+            if (qinToBuy > tokenSaleTokensRemaining) {
+                qinToBuy = tokenSaleTokensRemaining;
             }
 
             // Will technically round down the amount of wei if this doesn't
@@ -165,7 +165,7 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
             weiToSpend = qinToBuy.div(rate);
         }
 
-        crowdsaleTokensRemaining = crowdsaleTokensRemaining.sub(qinToBuy);
+        tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
 
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
@@ -192,23 +192,23 @@ contract QINCrowdsale is ERC223ReceivingContract, Controllable {
 
     // @return true if the transaction can buy tokens
     function validPurchase() internal constant returns (bool) {
-        bool duringCrowdsale = (now >= startTime) && (now <= endTime);
+        bool duringTokenSale = (now >= startTime) && (now <= endTime);
         bool nonZeroPurchase = msg.value != 0;
-        return duringCrowdsale && nonZeroPurchase && !halted && crowdsaleTokensRemaining != 0;
+        return duringTokenSale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
     }
 
-    // @return true if crowdsale event has ended
+    // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || crowdsaleTokensRemaining == 0 || manualEnd;
+        return now > endTime || tokenSaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
     function burnRemainder() external onlyOwner {
         require(hasEnded());
-        if (crowdsaleTokensRemaining > 0) {
-            token.transfer(0x0, crowdsaleTokensRemaining);
-            Burn(crowdsaleTokensRemaining);
-            assert(crowdsaleTokensRemaining == 0);
+        if (tokenSaleTokensRemaining > 0) {
+            token.transfer(0x0, tokenSaleTokensRemaining);
+            Burn(tokenSaleTokensRemaining);
+            assert(tokenSaleTokensRemaining == 0);
             assert(token.balanceOf(this) == 0);
         }
     }
