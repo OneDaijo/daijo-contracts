@@ -2,6 +2,7 @@ pragma solidity ^0.4.13;
 
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
+import '../token/QINToken.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
