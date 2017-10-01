@@ -122,13 +122,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
 
     // fallback function can be used to buy tokens
     function () external payable {
-        buyQINTokensWithRegisteredAddress(msg.sender);
+        buyQIN();
     }
 
     // low level QIN token purchase function
-    function buyQINTokensWithRegisteredAddress(address buyer) onlyIfActive onlyWhitelisted private {
+    function buyQIN() onlyIfActive onlyWhitelisted public payable {
         require(validPurchase());
         require(getState() != State.SaleComplete);
+        address buyer = msg.sender;
+
         uint weiToSpend = msg.value;
 
         // calculate token amount to be sent
