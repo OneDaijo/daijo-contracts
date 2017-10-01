@@ -3,6 +3,7 @@ pragma solidity ^0.4.13;
 import '../libs/SafeMath.sol';
 import '../permissions/Ownable.sol';
 
+
 /** @title User
   * @author WorldRapidFinance <info@worldrapidfinance.com>
   * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
@@ -29,12 +30,7 @@ contract BuyerUsable is Ownable {
 
     // Adds an address to the whitelist
     function addToWhitelist(address _addr) external onlyOwner {
-        buyersList[_addr] = Buyer(
-            true,
-            0,
-            0,
-            0
-            );
+        buyersList[_addr] = Buyer(true, 0, 0, 0);
         registeredUserCount = registeredUserCount.add(1);
     }
 
