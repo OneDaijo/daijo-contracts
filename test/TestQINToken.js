@@ -12,7 +12,7 @@ contract('QINToken', function(accounts) {
   var wrf_owner = web3.eth.accounts[0];
   var user = web3.eth.accounts[1];
 
-  it("integration test for tokenSale: create QINToken", function() {
+  it("integration test for tokenSale: simple crowdsale purchase", function() {
     return QINToken.deployed().then(function(instance) {
       qinToken = instance;
       return qinToken.balanceOf.call(accounts[0]);
