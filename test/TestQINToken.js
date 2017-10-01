@@ -12,7 +12,7 @@ contract('QINToken', function(accounts) {
   var wrf_owner = web3.eth.accounts[0];
   var user = web3.eth.accounts[1];
 
-  it("integration test for tokenSale: create QINToken" + wrf_owner, function() {
+  it("integration test for tokenSale: create QINToken", function() {
     return QINToken.deployed().then(function(instance) {
       qinToken = instance;
       return qinToken.balanceOf.call(accounts[0]);
@@ -33,10 +33,10 @@ contract('QINToken', function(accounts) {
     }).then(function(crowsdaleContract) {
       tokenSaleAddress = crowsdaleContract.valueOf();
       tokenSale = QINTokenSale.at(tokenSaleAddress);
-      return tokenSale.updateRegisteredUserWhitelist(user, true);
-    }).then(function() {
+      return tokenSale.addToWhitelist(user);
+    }).then(function(state) {
       // Does not work with the default gas amount.
-      return web3.eth.sendTransaction({from: user, to: tokenSaleAddress, value: web3.toWei(1, 'ether'), gas: 95000});
+      return web3.eth.sendTransaction({from: user, to: tokenSaleAddress, value: web3.toWei(1, 'ether'), gas: 250000});
     }).then(function() {
       return qinToken.balanceOf.call(user);
     }).then(function(balance) {

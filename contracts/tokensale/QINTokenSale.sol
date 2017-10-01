@@ -47,7 +47,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
     uint private cumulativeLimit;
-    bool private restrictedDayLimitSet;
 
     // whether QIN has been transferred to the tokenSale contract
     bool public hasBeenSupplied = false;
@@ -84,7 +83,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
 
         token = _token;
         startTime = _startTime;
-        dailyReset = _startTime;
+        // Note: this is set to be one day before start so that the normal daily reset occurs on the first sale of the first day.
+        dailyReset = _startTime.sub(1 days);
         endTime = _endTime;
         numRestrictedDays = _days;
         rate = _rate; // Qin per ETH = 400, subject to change
@@ -128,7 +128,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     // low level QIN token purchase function
     function buyQIN() onlyIfActive onlyWhitelisted public payable {
         require(validPurchase());
-        require(getState() != State.SaleComplete);
+        State currentCrowdsaleState = getState();
+        require(currentCrowdsaleState != State.SaleComplete);
         address buyer = msg.sender;
 
         uint weiToSpend = msg.value;
@@ -136,28 +137,23 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
-        if (!saleHasStarted) { // runs once upon the first transaction of the tokenSale
-            saleHasStarted = true;
-            saleDay = saleDay.add(1);
-        }
-
         if (now >= dailyReset.add(UNIX_DAY)) { // will only evaluate to true on first sale each subsequent day
             dayIncrement = now.sub(dailyReset).div(UNIX_DAY);
             dailyReset = dailyReset.add(dayIncrement.mul(UNIX_DAY));
             saleDay = saleDay.add(dayIncrement);
-            if (getState() == State.SaleRestrictedDay) {
+            if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
                 cumulativeLimit = cumulativeLimit.add(restrictedDayLimit.mul(dayIncrement));
             }
         }
 
-        if (getState() == State.SaleRestrictedDay) {
+        if (currentCrowdsaleState == State.SaleRestrictedDay) {
             require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
             if (qinToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
                 qinToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
             }
             weiToSpend = qinToBuy.div(rate);
-        } else if (getState() == State.SaleFFA) {
+        } else if (currentCrowdsaleState == State.SaleFFA) {
             if (qinToBuy > tokenSaleTokensRemaining) {
                 qinToBuy = tokenSaleTokensRemaining;
             }
@@ -219,9 +215,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     function getState() public constant returns (State) {
         if (hasEnded()) {
             return State.SaleComplete;
-        } else if (saleDay > numRestrictedDays) {
+        } else if (now >= startTime.add(numRestrictedDays.mul(1 days))) {
             return State.SaleFFA;
-        } else if (now >= startTime.add(UNIX_DAY.mul(saleDay.sub(1)))) {
+        } else if (now >= startTime) {
             return State.SaleRestrictedDay;
         } else {
             return State.BeforeSale;
