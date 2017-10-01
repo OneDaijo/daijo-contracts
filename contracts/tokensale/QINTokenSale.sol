@@ -30,7 +30,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     bool public saleHasStarted = false;
     uint public saleDay = 0;
     uint public dailyReset;
-    uint public constant UNIX_DAY = 24*60*60;
     uint public dayIncrement;
 
     // how many token units a buyer gets per wei
@@ -137,9 +136,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
-        if (now >= dailyReset.add(UNIX_DAY)) { // will only evaluate to true on first sale each subsequent day
-            dayIncrement = now.sub(dailyReset).div(UNIX_DAY);
-            dailyReset = dailyReset.add(dayIncrement.mul(UNIX_DAY));
+        if (now >= dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
+            dayIncrement = now.sub(dailyReset).div(1 days);
+            dailyReset = dailyReset.add(dayIncrement.mul(1 days));
             saleDay = saleDay.add(dayIncrement);
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
