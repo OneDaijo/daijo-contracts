@@ -3,21 +3,21 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/crowdsale/QINCrowdsale.sol";
+import "../contracts/tokensale/QINTokenSale.sol";
 
 
-/** @title QIN Crowdsale Tests
+/** @title QIN TokenSale Tests
  *  @author WorldRapidFinance <info@worldrapidfinance.com>
  */
-contract TestQINCrowdsale3 {
+contract TestQINTokenSale3 {
 
-    function testQINCrowdsaleTokenFallback() {
+    function testQINTokenSaleTokenFallback() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -25,18 +25,18 @@ contract TestQINCrowdsale3 {
             10,
             wallet
         );
-        qin.transfer(tcs, 100);
-        bool funded = tcs.hasBeenSupplied();
+        qin.transfer(ts, 100);
+        bool funded = ts.hasBeenSupplied();
         Assert.equal(funded, true, "tokenFallback was not called.");
     }
 
-    //function testQINCrowdsaleSupportsToken() {
+    //function testQINTokenSaleSupportsToken() {
         //uint startTime = now + 100;
         //uint endTime = now + 200;
         //address wallet = 0x1234;
         //uint restrictedDays = 3;
         //QINToken qin = new QINToken();
-        //QINCrowdsale tcs = new QINCrowdsale(
+        //QINTokenSale ts = new QINTokenSale(
         //    qin,
         //    startTime,
         //    endTime,
@@ -45,18 +45,18 @@ contract TestQINCrowdsale3 {
         //    wallet
         //);
 
-        //bool support = tcs.supportsToken(qin);
+        //bool support = ts.supportsToken(qin);
 
         //Assert.equal(support, true, "supportsToken() is rejecting QIN.");
     //}
 
-    function testQINCrowdsaleOwner() {
+    function testQINTokenSaleOwner() {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint restrictedDays = 3;
         QINToken qin = new QINToken();
-        QINCrowdsale tcs = new QINCrowdsale(
+        QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
             endTime,
@@ -65,6 +65,6 @@ contract TestQINCrowdsale3 {
             wallet
         );
 
-        Assert.equal(tcs.owner(), this, "Not the correct owner. ");
+        Assert.equal(ts.owner(), this, "Not the correct owner. ");
     }
 }

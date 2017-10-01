@@ -28,7 +28,7 @@ contract ERC20Token is ERC20Interface {
 
     function transfer(address _to, uint _value) public returns (bool) {
         if (balances[msg.sender] >= _value &&
-            _value > 0 && 
+            _value > 0 &&
             balances[_to] + _value > balances[_to]) {
             balances[msg.sender] -= _value;
             balances[_to] += _value;
