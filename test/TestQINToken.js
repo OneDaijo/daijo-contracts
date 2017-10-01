@@ -34,7 +34,7 @@ contract('QINToken', function(accounts) {
       tokenSaleAddress = crowsdaleContract.valueOf();
       tokenSale = QINTokenSale.at(tokenSaleAddress);
       return tokenSale.addToWhitelist(user);
-    }).then(function(state) {
+    }).then(function() {
       // Does not work with the default gas amount.
       return web3.eth.sendTransaction({from: user, to: tokenSaleAddress, value: web3.toWei(1, 'ether'), gas: 250000});
     }).then(function() {
