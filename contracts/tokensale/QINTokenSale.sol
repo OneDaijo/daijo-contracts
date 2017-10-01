@@ -27,7 +27,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     uint public endTime;
 
     uint public numRestrictedDays;
-    bool public saleHasStarted = false;
     uint public saleDay = 0;
     uint public dailyReset;
     uint public dayIncrement;
