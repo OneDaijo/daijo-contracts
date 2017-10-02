@@ -127,7 +127,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerUsable {
         require(validPurchase());
         require(getState() != State.SaleComplete);
         address buyer = msg.sender;
-        Buyer storage b = buyersList[buyer];
+        Buyer storage b = buyers[buyer];
         require(b.isRegistered);
         uint weiToSpend = msg.value;
 

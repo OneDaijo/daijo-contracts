@@ -20,7 +20,7 @@ contract BuyerUsable is Ownable {
         uint amountBoughtToday;
     }
 
-    mapping (address => Buyer) buyersList;
+    mapping (address => Buyer) buyers;
 
     // Requires address to be on the whitelist
     modifier onlyWhitelisted() {
@@ -30,19 +30,18 @@ contract BuyerUsable is Ownable {
 
     // Adds an address to the whitelist
     function addToWhitelist(address _addr) external onlyOwner {
-        buyersList[_addr] = Buyer(true, 0, 0, 0);
+        buyers[_addr].isRegistered = true;
         registeredUserCount = registeredUserCount.add(1);
     }
 
     // Removes an address from the whitelist
     function removeFromWhitelist(address _addr) external onlyOwner {
-        delete buyersList[_addr];
+        delete buyers[_addr];
         registeredUserCount = registeredUserCount.sub(1);
     }
 
     // Returns true if address is on the whitelist
     function getUserRegistrationState(address _addr) public constant returns (bool) {
-        Buyer storage b = buyersList[_addr];
-        return b.isRegistered;
+        return buyers[_addr].isRegistered;
     }
 }
