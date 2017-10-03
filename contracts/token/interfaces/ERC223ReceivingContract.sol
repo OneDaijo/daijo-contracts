@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 
  /** @title ERC223 Receiving Contract Interface
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
  *  @notice must be implemented by any contract working with ERC223 tokens
  */

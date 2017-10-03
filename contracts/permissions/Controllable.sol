@@ -5,7 +5,7 @@ import '../permissions/Ownable.sol';
 
 
 /** @title Controllable
-  * @author WorldRapidFinance <info@worldrapidfinance.com>
+  * @author DaijoLabs <info@daijolabs.com>
   * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
 */
 contract Controllable is Ownable {
