@@ -6,6 +6,9 @@ import "../contracts/token/QINToken.sol";
 import "../contracts/tokensale/QINTokenSale.sol";
 
 
+/** @title QIN TokenSale Tests
+ *  @author DaijoLabs <info@daijolabs.com>
+ */
 contract TestQINTokenSale2 {
 
     function testUserCountPostRegistration() {

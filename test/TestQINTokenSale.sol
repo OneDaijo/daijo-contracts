@@ -7,7 +7,7 @@ import "../contracts/tokensale/QINTokenSale.sol";
 
 
 /** @title QIN TokenSale Tests
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINTokenSale {
 
