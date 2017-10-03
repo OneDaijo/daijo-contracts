@@ -7,7 +7,7 @@ import "../libs/SafeMath.sol";
 
 
 /** @title ERC223 Token Implementation
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
  */
 contract ERC223Token is ERC223Interface, ERC20Token {

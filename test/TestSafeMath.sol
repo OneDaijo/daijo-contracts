@@ -6,7 +6,7 @@ import "../contracts/libs/SafeMath.sol";
 
 
 /** @title Safe Math Tests
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestSafeMath {
     using SafeMath for uint;
