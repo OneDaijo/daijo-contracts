@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 
 /** @title ERC20 Interface
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
 contract ERC20Interface {

@@ -5,8 +5,8 @@ import '../permissions/Ownable.sol';
 
 
 /** @title Controllable
-  * @author WorldRapidFinance <info@worldrapidfinance.com>
-  * @dev Base class that provides token sale control functions to interact with QINTokenSale.sol
+  * @author DaijoLabs <info@daijolabs.com>
+  * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
 */
 contract Controllable is Ownable {
     using SafeMath for uint256;

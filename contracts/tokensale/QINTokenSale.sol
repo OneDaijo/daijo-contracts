@@ -10,7 +10,7 @@ import '../permissions/BuyerUsable.sol';
 
 
 /** @title QIN Token TokenSale Contract
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerUsable {
     using SafeMath for uint;
