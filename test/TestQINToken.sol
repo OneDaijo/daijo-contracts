@@ -6,7 +6,7 @@ import "../contracts/libs/SafeMath.sol";
 
 
 /** @title QIN Token Test
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINToken {
     using SafeMath for uint;
