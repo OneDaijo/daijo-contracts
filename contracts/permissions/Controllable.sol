@@ -11,6 +11,8 @@ import '../permissions/Ownable.sol';
 contract Controllable is Ownable {
     using SafeMath for uint256;
 
+    bool private testing = false;
+
     bool public halted = false;
     bool public manualEnd = false;
 
@@ -28,6 +30,13 @@ contract Controllable is Ownable {
     // Requires the token sale to be halted (previously onlyInEmergency)
     modifier onlyIfHalted {
         if (!halted) {
+            revert();
+        }
+        _;
+    }
+
+    modifier onlyInTesting {
+        if (!testing) {
             revert();
         }
         _;
@@ -69,6 +78,22 @@ contract Controllable is Ownable {
     // Returns true if address is on the whitelist
     function getUserRegistrationState(address _addr) public constant returns (bool) {
         return registeredUserWhitelist[_addr];
+    }
+
+    function setTesting() external onlyOwner {
+        testing = true;
+    }
+
+    function setCurrentTime(uint _time) external onlyOwner onlyInTesting {
+        fakeTime = _time;
+    }
+
+    function currentTime() public constant returns (uint) {
+        if(testing) {
+            return fakeTime;
+        } else {
+            return now;
+        }
     }
 
 }
