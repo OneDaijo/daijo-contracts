@@ -6,13 +6,13 @@ import '../token/QINToken.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Controllable.sol';
 import '../permissions/Ownable.sol';
-import '../permissions/BuyerUsable.sol';
+import '../permissions/BuyerStore.sol';
 
 
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerUsable {
+contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
     using SafeMath for uint;
 
     /* QIN Token TokenSale */
@@ -143,8 +143,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerUsable {
             }
         }
 
-        if (getState() == State.SaleRestrictedDay) {
-            if (b.lastBought < dailyReset) {
+        if (currentCrowdsaleState == State.SaleRestrictedDay) {
+            if (b.lastDayBought < saleDay) {
                 b.amountBoughtToday = 0;
             }
             require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
@@ -172,11 +172,12 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerUsable {
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
         b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
-        if (getState() == State.SaleRestrictedDay) {
+        if (currentCrowdsaleState == State.SaleRestrictedDay) {
             b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
         }
-        b.lastBought = now;
-
+        if (b.lastDayBought < saleDay) {
+            b.lastDayBought = saleDay;
+        }
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));

@@ -8,14 +8,15 @@ import '../permissions/Ownable.sol';
   * @author WorldRapidFinance <info@worldrapidfinance.com>
   * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
 */
-contract BuyerUsable is Ownable {
+contract BuyerStore is Ownable {
+    using SafeMath for uint8;
     using SafeMath for uint256;
 
     uint public registeredUserCount = 0;
 
     struct Buyer {
         bool isRegistered;
-        uint lastBought;
+        uint8 lastDayBought;
         uint amountBoughtCumulative;
         uint amountBoughtToday;
     }
@@ -30,13 +31,15 @@ contract BuyerUsable is Ownable {
 
     // Adds an address to the whitelist
     function addToWhitelist(address _addr) external onlyOwner {
+        require(!buyers[_addr].isRegistered);
         buyers[_addr].isRegistered = true;
         registeredUserCount = registeredUserCount.add(1);
     }
 
     // Removes an address from the whitelist
     function removeFromWhitelist(address _addr) external onlyOwner {
-        delete buyers[_addr];
+        require(buyers[_addr].isRegistered);
+        buyers[_addr].isRegistered = false;
         registeredUserCount = registeredUserCount.sub(1);
     }
 
