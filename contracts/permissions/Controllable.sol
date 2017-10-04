@@ -12,6 +12,7 @@ contract Controllable is Ownable {
     using SafeMath for uint256;
 
     bool private testing = false;
+    uint private fakeTime;
 
     bool public halted = false;
     bool public manualEnd = false;
@@ -89,7 +90,7 @@ contract Controllable is Ownable {
     }
 
     function currentTime() public constant returns (uint) {
-        if(testing) {
+        if (testing) {
             return fakeTime;
         } else {
             return now;
