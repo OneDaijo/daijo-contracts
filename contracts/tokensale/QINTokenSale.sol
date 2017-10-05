@@ -88,7 +88,11 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
         rate = _rate; // Qin per ETH = 400, subject to change
         wallet = _wallet;
 
-        rsd = RestrictedSaleDays(_days, 0, 0, _startTime.sub(1 days));
+        rsd = RestrictedSaleDays(
+            _days,
+            0,
+            0,
+            _startTime.sub(1 days));
     }
 
     function setRestrictedSaleDays(uint8 _days) external onlyOwner {
