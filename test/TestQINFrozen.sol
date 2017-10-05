@@ -8,7 +8,7 @@ import "../contracts/libs/SafeMath.sol";
 
 
 /** @title Frozen QIN Tests
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINFrozen {
     using SafeMath for uint;

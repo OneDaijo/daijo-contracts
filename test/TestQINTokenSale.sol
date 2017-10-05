@@ -3,11 +3,11 @@ pragma solidity ^0.4.13;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/tknsale/QINTokenSale.sol";
+import "../contracts/tokensale/QINTokenSale.sol";
 
 
 /** @title QIN TokenSale Tests
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINTokenSale {
 

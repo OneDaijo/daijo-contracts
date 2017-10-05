@@ -3,12 +3,12 @@ pragma solidity ^0.4.13;
 import "./ERC223Token.sol";
 import "./QINFrozen.sol";
 import "../permissions/Ownable.sol";
-import "../tknsale/QINTokenSale.sol";
+import "../tokensale/QINTokenSale.sol";
 import "../libs/SafeMath.sol";
 
 
 /** @title QIN Token
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract QINToken is ERC223Token, Ownable {
     using SafeMath for uint;
