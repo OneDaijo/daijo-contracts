@@ -9,7 +9,7 @@ contract('QINToken', function(accounts) {
   var Web3 = require('web3');
   var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-  var wrf_owner = web3.eth.accounts[0];
+  var daijo_owner = web3.eth.accounts[0];
   var user = web3.eth.accounts[1];
 
   it("integration test for tokenSale: simple crowdsale purchase", function() {
@@ -25,7 +25,7 @@ contract('QINToken', function(accounts) {
       return qinToken.tokenSaleExecuted();
     }).then(function(wasExecuted) {
       assert.isTrue(wasExecuted, "tokenSale was not executed");
-      return qinToken.balanceOf.call(wrf_owner);
+      return qinToken.balanceOf.call(daijo_owner);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 0, "the correct balance wasn't in the first after tokenSale start");
     }).then(function() {
