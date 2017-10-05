@@ -13,6 +13,7 @@ import '../permissions/BuyerStore.sol';
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
+    using SafeMath for uint8;
     using SafeMath for uint;
 
     /* QIN Token TokenSale */
@@ -27,10 +28,14 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
     uint public startTime;
     uint public endTime;
 
-    uint public numRestrictedDays;
-    uint public saleDay = 0;
-    uint public dailyReset;
-    uint public dayIncrement;
+    struct RestrictedSaleDays {
+        uint8 numRestrictedDays;
+        uint8 saleDay;
+        uint dayIncrement;
+        uint dailyReset;
+    }
+
+    RestrictedSaleDays rsd;
 
     // how many token units a buyer gets per wei
     uint public rate;
@@ -68,7 +73,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
         QINToken _token,
         uint _startTime,
         uint _endTime,
-        uint _days,
+        uint8 _days,
         uint _rate,
         address _wallet) {
 
@@ -79,16 +84,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
 
         token = _token;
         startTime = _startTime;
-        // Note: this is set to be one day before start so that the normal daily reset occurs on the first sale of the first day.
-        dailyReset = _startTime.sub(1 days);
         endTime = _endTime;
-        numRestrictedDays = _days;
         rate = _rate; // Qin per ETH = 400, subject to change
         wallet = _wallet;
+
+        rsd = RestrictedSaleDays(_days, 0, 0, _startTime.sub(1 days));
     }
 
-    function setRestrictedSaleDays(uint _days) external onlyOwner {
-        numRestrictedDays = _days;
+    function setRestrictedSaleDays(uint8 _days) external onlyOwner {
+        rsd.numRestrictedDays = _days;
     }
 
     // TODO: This assumes ERC223 - which should be added
@@ -134,17 +138,17 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
-        if (now >= dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
-            dayIncrement = now.sub(dailyReset).div(1 days);
-            dailyReset = dailyReset.add(dayIncrement.mul(1 days));
-            saleDay = saleDay.add(dayIncrement);
+        if (now >= rsd.dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
+            rsd.dayIncrement = now.sub(rsd.dailyReset).div(1 days);
+            rsd.dailyReset = rsd.dailyReset.add(rsd.dayIncrement.mul(1 days));
+            rsd.saleDay = uint8(rsd.saleDay.add(rsd.dayIncrement));
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
             }
         }
 
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
-            if (b.lastDayBought < saleDay) {
+            if (b.lastDayBought < rsd.saleDay) {
                 b.amountBoughtToday = 0;
             }
             require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
@@ -175,8 +179,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
             b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
         }
-        if (b.lastDayBought < saleDay) {
-            b.lastDayBought = saleDay;
+        if (b.lastDayBought < rsd.saleDay) {
+            b.lastDayBought = rsd.saleDay;
         }
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
@@ -219,7 +223,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
     function getState() public constant returns (State) {
         if (hasEnded()) {
             return State.SaleComplete;
-        } else if (now >= startTime.add(numRestrictedDays.mul(1 days))) {
+        } else if (now >= startTime.add(rsd.numRestrictedDays.mul(1 days))) {
             return State.SaleFFA;
         } else if (now >= startTime) {
             return State.SaleRestrictedDay;

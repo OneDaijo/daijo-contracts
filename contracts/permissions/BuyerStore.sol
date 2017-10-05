@@ -10,7 +10,7 @@ import '../permissions/Ownable.sol';
 */
 contract BuyerStore is Ownable {
     using SafeMath for uint8;
-    using SafeMath for uint256;
+    using SafeMath for uint;
 
     uint public registeredUserCount = 0;
 
