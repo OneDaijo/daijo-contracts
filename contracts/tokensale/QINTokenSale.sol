@@ -92,7 +92,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, BuyerStore {
             _days,
             0,
             0,
-            _startTime.sub(1 days));
+            _startTime.sub(1 days)
+        );
     }
 
     function setRestrictedSaleDays(uint8 _days) external onlyOwner {
