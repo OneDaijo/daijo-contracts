@@ -55,8 +55,8 @@ contract TestQINTokenSale2 {
         uint8 initialSet = 3;
         uint8 secondSet = 5;
 
-        Assert.equal(ts.getNumRestrictedDays(), initialSet, "Incorrect initial number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == initialSet, "Incorrect initial number of restricted days.");
         ts.setRestrictedSaleDays(5);
-        Assert.equal(ts.getNumRestrictedDays(), secondSet, "Incorrect modified number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == secondSet, "Incorrect modified number of restricted days.");
     }
 }
