@@ -15,7 +15,7 @@ contract('QINToken', function(accounts) {
   it("integration test for tokenSale: simple crowdsale purchase", function() {
     return QINToken.deployed().then(function(instance) {
       qinToken = instance;
-      return qinToken.isTest.call();
+      return qinToken.getTestState.call();
     }).then(function(isTest) {
       assert.isTrue(isTest.valueOf(), "Contract not running in test mode");
       return qinToken.balanceOf.call(accounts[0]);
