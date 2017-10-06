@@ -15,6 +15,9 @@ contract('QINToken', function(accounts) {
   it("integration test for tokenSale: simple crowdsale purchase", function() {
     return QINToken.deployed().then(function(instance) {
       qinToken = instance;
+      return qinToken.getTestState.call();
+    }).then(function(isTest) {
+      assert.isTrue(isTest.valueOf(), "Contract not running in test mode");
       return qinToken.balanceOf.call(accounts[0]);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 200000000 * 10**18, "the correct balance wasn't in the first account");
