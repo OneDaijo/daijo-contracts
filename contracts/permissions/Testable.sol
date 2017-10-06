@@ -11,7 +11,7 @@ contract Testable is Ownable {
 
     // Is the contract being run on the test network. Note: this variable should be set on construction and never
     // modified.
-    bool public isTest;
+    bool private isTest;
 
     uint private currentTime;
 
@@ -23,6 +23,10 @@ contract Testable is Ownable {
     modifier onlyIfTest {
         require(isTest);
         _;
+    }
+
+    function getTestState() public constant returns (bool) {
+        return isTest;
     }
 
     function getCurrentTime() public constant returns (uint) {
