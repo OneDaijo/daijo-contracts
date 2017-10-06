@@ -22,7 +22,7 @@ contract TestQINFrozen {
     // function testQINFrozenInitFromQINToken() {
     //     uint releaseTime = now + 1000;
     //     uint freezeAmount = decimalMultiplier.mul(200000000);
-    //     QINToken qin = new QINToken();
+    //     QINToken qin = new QINToken(true);
     //     qin.freezeRemainingTokens(releaseTime, freezeAmount);
     //     address expected = this;
     //     address owner = qin.getQINFrozen().owner();
@@ -34,7 +34,7 @@ contract TestQINFrozen {
     // function testQINTokenIsTransferringToQINFrozen() {
     //     uint releaseTime = now + 1000;
     //     uint freezeAmount = decimalMultiplier.mul(200000000);
-    //     QINToken qin = new QINToken();
+    //     QINToken qin = new QINToken(true);
     //     qin.freezeRemainingTokens(releaseTime, freezeAmount);
 
     //     Assert.equal(qin.balanceOf(qin.owner()), 0, "Incorrect amount of QIN sent.");
@@ -43,7 +43,7 @@ contract TestQINFrozen {
     function testQINFrozenInit() {
         uint releaseTime = now + 1000;
 
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
 
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -53,7 +53,7 @@ contract TestQINFrozen {
 
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.isFalse(freeze.frozen(), "Frozen before payment.");
@@ -65,7 +65,7 @@ contract TestQINFrozen {
 
     function testQINFrozenOwner() {
         uint releaseTime = now + 1000;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.equal(freeze.owner(), this, "Not the correct owner. ");
@@ -73,7 +73,7 @@ contract TestQINFrozen {
 
     function testQINFrozenSupportsToken() {
         uint releaseTime = now + 1000;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         bool support = freeze.supportsToken(qin);
@@ -88,7 +88,7 @@ contract TestQINFrozen {
     //function testReleaseFunction() {
     //    uint releaseTime = now + 1000;
     //    uint frozenBalance = 200000000;
-    //    QINToken qin = new QINToken();
+    //    QINToken qin = new QINToken(true);
     //    QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
     //    qin.transfer(freeze, 140000000);
