@@ -52,8 +52,11 @@ contract TestQINTokenSale2 {
         QINToken qin = new QINToken();
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        Assert.equal(ts.rsd.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
+        uint8 initialSet = 3;
+        uint8 secondSet = 5;
+
+        Assert.equal(ts.getNumRestrictedDays(), initialSet, "Incorrect initial number of restricted days.");
         ts.setRestrictedSaleDays(5);
-        Assert.equal(ts.rsd.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
+        Assert.equal(ts.getNumRestrictedDays(), secondSet, "Incorrect modified number of restricted days.");
     }
 }
