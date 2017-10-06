@@ -3,6 +3,7 @@ pragma solidity ^0.4.13;
 import "./ERC223Token.sol";
 import "./QINFrozen.sol";
 import "../permissions/Ownable.sol";
+import "../permissions/Testable.sol";
 import "../tokensale/QINTokenSale.sol";
 import "../libs/SafeMath.sol";
 
@@ -10,7 +11,7 @@ import "../libs/SafeMath.sol";
 /** @title QIN Token
  *  @author DaijoLabs <info@daijolabs.com>
  */
-contract QINToken is ERC223Token, Ownable {
+contract QINToken is ERC223Token, Ownable, Testable {
     using SafeMath for uint;
 
     string public constant NAME = "QIN Token";
@@ -31,7 +32,7 @@ contract QINToken is ERC223Token, Ownable {
     /* Token Creation */
 
     // initialize the QIN token and assign all funds to the creator
-    function QINToken() {
+    function QINToken(bool _isTest) Testable(_isTest) {
         totalSupply_ = frozenSupply.add(tokenSaleSupply);
         balances[msg.sender] = totalSupply_;
     }
