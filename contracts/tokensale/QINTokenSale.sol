@@ -73,7 +73,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
         uint _endTime,
         uint _days,
         uint _rate,
-        address _wallet) Testable(_token.isTest()) 
+        address _wallet) Testable(_token.getTestState()) 
     {
 
         require(_startTime >= getCurrentTime());
