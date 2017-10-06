@@ -5,13 +5,14 @@ import '../token/QINFrozen.sol';
 import '../token/QINToken.sol';
 import '../libs/SafeMath.sol';
 import '../permissions/Controllable.sol';
+import '../permissions/Testable.sol';
 import '../permissions/Ownable.sol';
 
 
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-contract QINTokenSale is ERC223ReceivingContract, Controllable {
+contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
     using SafeMath for uint;
 
     /* QIN Token TokenSale */
@@ -72,9 +73,10 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         uint _endTime,
         uint _days,
         uint _rate,
-        address _wallet) {
+        address _wallet) Testable(_token.getTestState()) 
+    {
 
-        require(_startTime >= now);
+        require(_startTime >= getCurrentTime());
         require(_endTime >= _startTime);
         require(_rate > 0);
         require(_wallet != 0x0);
@@ -135,8 +137,10 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
-        if (now >= dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
-            dayIncrement = now.sub(dailyReset).div(1 days);
+        uint time = getCurrentTime();
+
+        if (time >= dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
+            dayIncrement = time.sub(dailyReset).div(1 days);
             dailyReset = dailyReset.add(dayIncrement.mul(1 days));
             saleDay = saleDay.add(dayIncrement);
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
@@ -189,14 +193,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
 
     // @return true if the transaction can buy tokens
     function validPurchase() internal constant returns (bool) {
-        bool duringTokenSale = (now >= startTime) && (now <= endTime);
+        uint time = getCurrentTime();
+        bool duringTokenSale = (time >= startTime) && (time <= endTime);
         bool nonZeroPurchase = msg.value != 0;
         return duringTokenSale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
     }
 
     // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return now > endTime || tokenSaleTokensRemaining == 0 || manualEnd;
+        return getCurrentTime() > endTime || tokenSaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met
@@ -211,11 +216,12 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable {
     }
 
     function getState() public constant returns (State) {
+        uint time = getCurrentTime();
         if (hasEnded()) {
             return State.SaleComplete;
-        } else if (now >= startTime.add(numRestrictedDays.mul(1 days))) {
+        } else if (time >= startTime.add(numRestrictedDays.mul(1 days))) {
             return State.SaleFFA;
-        } else if (now >= startTime) {
+        } else if (time >= startTime) {
             return State.SaleRestrictedDay;
         } else {
             return State.BeforeSale;
