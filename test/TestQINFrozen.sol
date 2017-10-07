@@ -47,7 +47,7 @@ contract TestQINFrozen {
 
         QINToken qin = new QINToken(true);
 
-        QINFrozen freeze = new QINFrozen(qin, releaseTime, true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.equal(freeze.releaseTime(), releaseTime, "Incorrect release time.");
         Assert.equal(freeze.frozenBalance(), 0, "Incorrect frozen balance.");
@@ -56,7 +56,7 @@ contract TestQINFrozen {
     function testTransferToFrozenQIN() {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken(true);
-        QINFrozen freeze = new QINFrozen(qin, releaseTime, true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.isFalse(freeze.frozen(), "Frozen before payment.");
         Assert.isTrue(qin.transfer(freeze, decimalMultiplier.mul(140000000)), "Transfer to freeze failed.");
@@ -68,7 +68,7 @@ contract TestQINFrozen {
     function testQINFrozenOwner() {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken(true);
-        QINFrozen freeze = new QINFrozen(qin, releaseTime, true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         Assert.equal(freeze.owner(), this, "Not the correct owner. ");
     }
@@ -76,7 +76,7 @@ contract TestQINFrozen {
     function testQINFrozenSupportsToken() {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken(true);
-        QINFrozen freeze = new QINFrozen(qin, releaseTime, true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         bool support = freeze.supportsToken(qin);
 
@@ -90,7 +90,7 @@ contract TestQINFrozen {
     function testReleaseFunction() {
         uint releaseTime = now + 1000;
         QINToken qin = new QINToken(true);
-        QINFrozen freeze = new QINFrozen(qin, releaseTime, true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         qin.transfer(freeze, 140000000);
 

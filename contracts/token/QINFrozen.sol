@@ -24,7 +24,7 @@ contract QINFrozen is Ownable, Testable, ERC223ReceivingContract {
     // whether or not QIN tokens have already been frozen
     bool public frozen = false;
 
-    function QINFrozen(QINToken _token, uint _releaseTime, bool _isTest) Testable(_isTest) {
+    function QINFrozen(QINToken _token, uint _releaseTime) Testable(_token.getTestState()) {
         require(_releaseTime > getCurrentTime());
         token = _token;
         releaseTime = _releaseTime;
