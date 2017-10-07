@@ -15,33 +15,6 @@ contract TestQINFrozen {
 
     uint decimalMultiplier = 10**18;
 
-    // TODO(thiefinparis): testing these internal functions (if we even want to do this) will requre special
-    // test contracts to provide hooks into these internal methods.
-
-    // Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
-    // Note: the following two tests are disabled because freezeRemainingTokens() no longer exists
-    // in QINToken.
-    /*function testQINFrozenInitFromQINToken() {
-        uint releaseTime = now + 1000;
-        uint freezeAmount = decimalMultiplier.mul(200000000);
-        QINToken qin = new QINToken(true);
-        qin.freezeRemainingTokens(releaseTime, freezeAmount);
-        address expected = this;
-        address owner = qin.getQINFrozen().owner();
-
-        Assert.equal(owner, expected, "Freeze has wrong owner.");
-    }
-
-    //  Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
-    function testQINTokenIsTransferringToQINFrozen() {
-        uint releaseTime = now + 1000;
-        uint freezeAmount = decimalMultiplier.mul(200000000);
-        QINToken qin = new QINToken(true);
-        qin.freezeRemainingTokens(releaseTime, freezeAmount);
-
-        Assert.equal(qin.balanceOf(qin.owner()), 0, "Incorrect amount of QIN sent.");
-    }*/
-
     function testQINFrozenInit() {
         uint releaseTime = now + 1000;
 
@@ -82,10 +55,6 @@ contract TestQINFrozen {
 
         Assert.isTrue(support, "supportsToken() is rejecting QIN.");
     }
-
-    // TODO(thiefinparis): Like the tests at the top, triggering the release will require hooks into
-    // the internal contract state to modify the time to allow the payment and release to occur in
-    // the same solidity transaction.
 
     function testReleaseFunction() {
         uint releaseTime = now + 1000;
