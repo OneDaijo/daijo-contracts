@@ -78,7 +78,7 @@ contract TestQINFrozen {
 
         bool support = freeze.supportsToken(qin);
 
-        Assert.equal(support, true, "supportsToken() is rejecting QIN.");
+        Assert.isTrue(support, "supportsToken() is rejecting QIN.");
     }
 
     // TODO(thiefinparis): Like the tests at the top, triggering the release will require hooks into
