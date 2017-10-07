@@ -16,7 +16,7 @@ contract TestQINTokenSale2 {
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         uint userCountBefore = ts.registeredUserCount();
@@ -32,7 +32,7 @@ contract TestQINTokenSale2 {
         address wallet = 0x1234;
         address wallet2 = 0x5678;
         uint8 restrictedDays = 3;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         ts.addToWhitelist(wallet);
@@ -49,7 +49,7 @@ contract TestQINTokenSale2 {
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
         uint8 initialSet = 3;

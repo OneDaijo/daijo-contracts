@@ -16,7 +16,7 @@ contract TestQINTokenSale3 {
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,
@@ -35,7 +35,7 @@ contract TestQINTokenSale3 {
         //uint endTime = now + 200;
         //address wallet = 0x1234;
         //uint restrictedDays = 3;
-        //QINToken qin = new QINToken();
+        //QINToken qin = new QINToken(true);
         //QINTokenSale ts = new QINTokenSale(
         //    qin,
         //    startTime,
@@ -55,7 +55,7 @@ contract TestQINTokenSale3 {
         uint endTime = now + 200;
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(
             qin,
             startTime,

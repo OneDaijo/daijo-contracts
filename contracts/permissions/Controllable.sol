@@ -16,16 +16,12 @@ contract Controllable is Ownable {
 
     // Requires the token sale to be not halted (previously breakInEmergency)
     modifier onlyIfActive {
-        if (halted) {
-            revert();
-        }
+        require(!halted);
         _;
     }
     // Requires the token sale to be halted (previously onlyInEmergency)
     modifier onlyIfHalted {
-        if (!halted) {
-            revert();
-        }
+        require(halted);
         _;
     }
 
