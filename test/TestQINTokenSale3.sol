@@ -73,15 +73,13 @@ contract TestQINTokenSale3 {
         uint endTime = now + 5 days;
         address wallet = 0x1234;
         uint restrictedDays = 3;
-        uint releaseTime = now + 1000;
         QINToken qin = new QINToken(true);
         qin.startTokenSale(
             startTime,
             endTime,
             restrictedDays,
             10,
-            wallet,
-            releaseTime
+            wallet
         );
 
         QINTokenSale ts = qin.getTokenSale();
