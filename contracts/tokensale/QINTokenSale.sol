@@ -216,7 +216,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
 
     // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return getCurrentTime() > endTime || tokenSaleTokensRemaining == 0 || manualEnd;
+        return getCurrentTime() >= endTime || tokenSaleTokensRemaining == 0 || manualEnd;
     }
 
     // burn remaining funds if goal not met

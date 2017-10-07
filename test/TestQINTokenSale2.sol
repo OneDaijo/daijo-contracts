@@ -40,8 +40,8 @@ contract TestQINTokenSale2 {
         bool walletStatus = ts.getUserRegistrationState(wallet);
         bool walletStatus2 = ts.getUserRegistrationState(wallet2);
 
-        Assert.equal(walletStatus, true, "User was not registered.");
-        Assert.equal(walletStatus2, false, "User was registered somehow");
+        Assert.isTrue(walletStatus, "User was not registered.");
+        Assert.isFalse(walletStatus2, "User was registered somehow");
     }
 
     function testSetRestrictedDays() {
