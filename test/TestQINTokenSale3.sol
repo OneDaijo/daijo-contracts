@@ -67,4 +67,32 @@ contract TestQINTokenSale3 {
 
         Assert.equal(ts.owner(), this, "Not the correct owner. ");
     }
+
+    function testTokenSaleTimeStateTransitions() {
+        uint startTime = now + 1 days;
+        uint endTime = now + 5 days;
+        address wallet = 0x1234;
+        uint restrictedDays = 3;
+        uint releaseTime = now + 1000;
+        QINToken qin = new QINToken(true);
+        qin.startTokenSale(
+            startTime,
+            endTime,
+            restrictedDays,
+            10,
+            wallet,
+            releaseTime
+        );
+
+        QINTokenSale ts = qin.getTokenSale();
+
+        // Using isTrue because equal does not compile with enum types.
+        Assert.isTrue(ts.getState() == QINTokenSale.State.BeforeSale, "BeforeSale expected");
+        ts.setCurrentTime(startTime);
+        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
+        ts.setCurrentTime(startTime + 3 days);
+        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
+        ts.setCurrentTime(endTime);
+        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleComplete, "SaleComplete expected");
+    }
 }
