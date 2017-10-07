@@ -27,7 +27,7 @@ contract TestQINTokenSale3 {
         );
         qin.transfer(ts, 100);
         bool funded = ts.hasBeenSupplied();
-        Assert.equal(funded, true, "tokenFallback was not called.");
+        Assert.isTrue(funded, "tokenFallback was not called.");
     }
 
     //function testQINTokenSaleSupportsToken() {
@@ -47,7 +47,7 @@ contract TestQINTokenSale3 {
 
         //bool support = ts.supportsToken(qin);
 
-        //Assert.equal(support, true, "supportsToken() is rejecting QIN.");
+        //Assert.isTrue(support, "supportsToken() is rejecting QIN.");
     //}
 
     function testQINTokenSaleOwner() {
