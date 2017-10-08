@@ -1,7 +1,7 @@
 pragma solidity ^0.4.13;
 
 import "./interfaces/ERC20Interface.sol";
-import "../libs/SafeMath.sol";
+import "../libs/SafeMath256.sol";
 
 
 /** @title ERC20 Token Implementation
@@ -11,7 +11,7 @@ import "../libs/SafeMath.sol";
  *  TODO: make this use safemath instead
  */
 contract ERC20Token is ERC20Interface {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     mapping (address => uint) balances;
     mapping (address => mapping (address => uint)) allowed;

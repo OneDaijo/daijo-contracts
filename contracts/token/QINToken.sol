@@ -5,14 +5,14 @@ import "./QINFrozen.sol";
 import "../permissions/Ownable.sol";
 import "../permissions/Testable.sol";
 import "../tokensale/QINTokenSale.sol";
-import "../libs/SafeMath.sol";
+import "../libs/SafeMath256.sol";
 
 
 /** @title QIN Token
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract QINToken is ERC223Token, Ownable, Testable {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     string public constant NAME = "QIN Token";
     string public constant SYMBOL = "QIN";
