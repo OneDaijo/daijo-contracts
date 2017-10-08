@@ -129,7 +129,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
     function buyQIN() onlyIfActive onlyWhitelisted public payable {
         State currentCrowdsaleState = getState();
         require(validPurchase(currentCrowdsaleState));
-        
+
         address buyer = msg.sender;
 
         uint weiToSpend = msg.value;
@@ -154,17 +154,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
             if (qinToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
                 qinToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
             }
-            weiToSpend = qinToBuy.div(rate);
         } else if (currentCrowdsaleState == State.SaleFFA) {
             if (qinToBuy > tokenSaleTokensRemaining) {
                 qinToBuy = tokenSaleTokensRemaining;
             }
-
-            // Will technically round down the amount of wei if this doesn't
-            // divide evenly, so the last person could get 1/2 a wei extra of QIN.
-            // TODO: improve this logic
-            weiToSpend = qinToBuy.div(rate);
         }
+
+        // Will technically round down the amount of wei if this doesn't
+        // divide evenly, so the last person could get 1/2 a wei extra of QIN.
+        weiToSpend = qinToBuy.div(rate);
 
         tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
 
