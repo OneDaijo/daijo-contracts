@@ -135,9 +135,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
 
     // low level QIN token purchase function
     function buyQIN() onlyIfActive onlyWhitelisted public payable {
-        require(validPurchase());
         State currentCrowdsaleState = getState();
-        require(currentCrowdsaleState != State.SaleComplete);
+        require(validPurchase(currentCrowdsaleState));
+
         address buyer = msg.sender;
         Buyer storage b = buyers[buyer];
         require(b.isRegistered);
@@ -166,7 +166,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
             if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay)) {
                 qinToBuy = restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay);
             }
-            weiToSpend = qinToBuy.div(rate);
 
             // qinToBuy will not be modified after this, so add to the buyer's count.
             b.amountBoughtCurrentRestrictedDay = b.amountBoughtCurrentRestrictedDay.add(qinToBuy);
@@ -175,15 +174,14 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
             if (qinToBuy > tokenSaleTokensRemaining) {
                 qinToBuy = tokenSaleTokensRemaining;
             }
-
-            // Will technically round down the amount of wei if this doesn't
-            // divide evenly, so the last person could get 1/2 a wei extra of QIN.
-            // TODO: improve this logic
-            weiToSpend = qinToBuy.div(rate);
         }
 
         b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
         tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
+
+        // Will technically round down the amount of wei if this doesn't
+        // divide evenly, so the last person could get 1/2 a wei extra of QIN.
+        weiToSpend = qinToBuy.div(rate);
 
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
@@ -208,16 +206,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
     }
 
     // @return true if the transaction can buy tokens
-    function validPurchase() internal constant returns (bool) {
-        uint time = getCurrentTime();
-        bool duringTokenSale = (time >= startTime) && (time <= endTime);
+    function validPurchase(State state) internal constant returns (bool) {
+        bool validPurchaseState = state != State.SaleComplete && state != State.BeforeSale;
         bool nonZeroPurchase = msg.value != 0;
-        return duringTokenSale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
+        return validPurchaseState && nonZeroPurchase && !halted;
     }
 
     // @return true if tokenSale event has ended
     function hasEnded() public constant returns (bool) {
-        return getCurrentTime() >= endTime || tokenSaleTokensRemaining == 0 || manualEnd;
+        return getCurrentTime() >= endTime || (hasBeenSupplied && tokenSaleTokensRemaining == 0) || manualEnd;
     }
 
     // burn remaining funds if goal not met
