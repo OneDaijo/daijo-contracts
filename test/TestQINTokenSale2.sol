@@ -15,7 +15,7 @@ contract TestQINTokenSale2 {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
-        uint restrictedDays = 3;
+        uint8 restrictedDays = 3;
         QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
@@ -31,7 +31,7 @@ contract TestQINTokenSale2 {
         uint endTime = now + 200;
         address wallet = 0x1234;
         address wallet2 = 0x5678;
-        uint restrictedDays = 3;
+        uint8 restrictedDays = 3;
         QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
@@ -48,12 +48,15 @@ contract TestQINTokenSale2 {
         uint startTime = now + 100;
         uint endTime = now + 200;
         address wallet = 0x1234;
-        uint restrictedDays = 3;
+        uint8 restrictedDays = 3;
         QINToken qin = new QINToken(true);
         QINTokenSale ts = new QINTokenSale(qin, startTime, endTime, restrictedDays, 10, wallet);
 
-        Assert.equal(ts.numRestrictedDays(), 3, "Incorrect initial number of restricted days.");
+        uint8 initialSet = 3;
+        uint8 secondSet = 5;
+
+        Assert.isTrue(ts.getNumRestrictedDays() == initialSet, "Incorrect initial number of restricted days.");
         ts.setRestrictedSaleDays(5);
-        Assert.equal(ts.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == secondSet, "Incorrect modified number of restricted days.");
     }
 }
