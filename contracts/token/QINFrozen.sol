@@ -2,6 +2,7 @@ pragma solidity ^0.4.13;
 
 import "./interfaces/ERC223ReceivingContract.sol";
 import "../permissions/Ownable.sol";
+import "../permissions/Testable.sol";
 import '../libs/SafeMath.sol';
 import "./QINToken.sol";
 import "./interfaces/ERC223ReceivingContract.sol";
@@ -11,7 +12,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
  *  @author DaijoLabs <info@daijolabs.com>
  *  @dev QIN Tokens that are locked in this contract until a given release time
  */
-contract QINFrozen is Ownable, ERC223ReceivingContract {
+contract QINFrozen is Ownable, Testable, ERC223ReceivingContract {
     using SafeMath for uint;
 
     // the token that's being locked
@@ -23,8 +24,8 @@ contract QINFrozen is Ownable, ERC223ReceivingContract {
     // whether or not QIN tokens have already been frozen
     bool public frozen = false;
 
-    function QINFrozen(QINToken _token, uint _releaseTime) {
-        require(_releaseTime > now);
+    function QINFrozen(QINToken _token, uint _releaseTime) Testable(_token.getTestState()) {
+        require(_releaseTime > getCurrentTime());
         token = _token;
         releaseTime = _releaseTime;
     }
@@ -32,7 +33,7 @@ contract QINFrozen is Ownable, ERC223ReceivingContract {
     function release(address _wallet) external onlyOwner {
         require(frozen);
         require(_wallet != 0x0);
-        require(now >= releaseTime);
+        require(getCurrentTime() >= releaseTime);
         token.transfer(_wallet, frozenBalance());
     }
 
