@@ -7,12 +7,15 @@ import '../libs/SafeMath.sol';
 import '../permissions/Controllable.sol';
 import '../permissions/Testable.sol';
 import '../permissions/Ownable.sol';
+import '../permissions/BuyerStore.sol';
 
 
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
+
+contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
+    using SafeMath for uint8;
     using SafeMath for uint;
 
     /* QIN Token TokenSale */
@@ -27,10 +30,13 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
     uint public startTime;
     uint public endTime;
 
-    uint public numRestrictedDays;
-    uint public saleDay = 0;
-    uint public dailyReset;
-    uint public dayIncrement;
+    struct RestrictedSaleDays {
+        uint8 numRestrictedDays;
+        uint8 saleDay;
+        uint dailyReset;
+    }
+
+    RestrictedSaleDays internal rsd;
 
     // how many token units a buyer gets per wei
     uint public rate;
@@ -38,14 +44,11 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
     // amount of raised money in wei
     uint public weiRaised;
 
-    mapping (address => uint) amountBoughtCumulative;
-
     // total amount and amount remaining of QIN in the tokenSale
     uint public tokenSaleTokenSupply;
     uint public tokenSaleTokensRemaining;
 
     uint private restrictedDayLimit; // set on each subsequent restricted day
-    uint private cumulativeLimit;
 
     // whether QIN has been transferred to the tokenSale contract
     bool public hasBeenSupplied = false;
@@ -71,9 +74,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
         QINToken _token,
         uint _startTime,
         uint _endTime,
-        uint _days,
+        uint8 _days,
         uint _rate,
-        address _wallet) Testable(_token.getTestState()) 
+        address _wallet) Testable(_token.getTestState())
     {
 
         require(_startTime >= getCurrentTime());
@@ -83,16 +86,20 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
 
         token = _token;
         startTime = _startTime;
-        // Note: this is set to be one day before start so that the normal daily reset occurs on the first sale of the first day.
-        dailyReset = _startTime.sub(1 days);
         endTime = _endTime;
-        numRestrictedDays = _days;
         rate = _rate; // Qin per ETH = 400, subject to change
         wallet = _wallet;
+
+        rsd.numRestrictedDays = _days;
+        rsd.dailyReset = _startTime.sub(1 days);
     }
 
-    function setRestrictedSaleDays(uint _days) external onlyOwner {
-        numRestrictedDays = _days;
+    function setRestrictedSaleDays(uint8 _days) external onlyOwner {
+        rsd.numRestrictedDays = _days;
+    }
+
+    function getNumRestrictedDays() external constant returns (uint8) {
+        return rsd.numRestrictedDays;
     }
 
     // TODO: This assumes ERC223 - which should be added
@@ -131,48 +138,56 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
         require(validPurchase(currentCrowdsaleState));
 
         address buyer = msg.sender;
-
+        Buyer storage b = buyers[buyer];
+        require(b.isRegistered);
         uint weiToSpend = msg.value;
 
         // calculate token amount to be sent
         uint qinToBuy = weiToSpend.mul(rate);
 
         uint time = getCurrentTime();
-
-        if (time >= dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
-            dayIncrement = time.sub(dailyReset).div(1 days);
-            dailyReset = dailyReset.add(dayIncrement.mul(1 days));
-            saleDay = saleDay.add(dayIncrement);
+        if (time >= rsd.dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
+            uint8 dayIncrement = uint8(time.sub(rsd.dailyReset).div(1 days));
+            rsd.dailyReset = rsd.dailyReset.add(dayIncrement.mul(1 days));
+            rsd.saleDay = uint8(rsd.saleDay.add(dayIncrement));
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
-                cumulativeLimit = cumulativeLimit.add(restrictedDayLimit.mul(dayIncrement));
             }
         }
 
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
-            require(amountBoughtCumulative[buyer] < cumulativeLimit); // throw if buyer has hit restricted day limit
-            if (qinToBuy > cumulativeLimit.sub(amountBoughtCumulative[buyer])) {
-                qinToBuy = cumulativeLimit.sub(amountBoughtCumulative[buyer]); // set qinToBuy to remaining daily limit if buy order goes over
+            if (b.lastRestrictedDayBought < rsd.saleDay) {
+                b.amountBoughtCurrentRestrictedDay = 0;
+                b.lastRestrictedDayBought = rsd.saleDay;
             }
+
+            require(b.amountBoughtCurrentRestrictedDay < restrictedDayLimit); // throw if buyer has hit restricted day limit
+            if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay)) {
+                qinToBuy = restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay);
+            }
+
+            // qinToBuy will not be modified after this, so add to the buyer's count.
+            b.amountBoughtCurrentRestrictedDay = b.amountBoughtCurrentRestrictedDay.add(qinToBuy);
+
         } else if (currentCrowdsaleState == State.SaleFFA) {
             if (qinToBuy > tokenSaleTokensRemaining) {
                 qinToBuy = tokenSaleTokensRemaining;
             }
         }
 
+        b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
+        tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
+
         // Will technically round down the amount of wei if this doesn't
         // divide evenly, so the last person could get 1/2 a wei extra of QIN.
         weiToSpend = qinToBuy.div(rate);
-
-        tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
 
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
 
         // send ETH to the fund collection wallet
-        // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
+        // Note: could consider a mutex-locking function modifier instead or in addition to doing the transfers at the end.
         wallet.transfer(weiToSpend);
-        amountBoughtCumulative[buyer] = amountBoughtCumulative[buyer].add(qinToBuy);
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
@@ -216,7 +231,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
         uint time = getCurrentTime();
         if (hasEnded()) {
             return State.SaleComplete;
-        } else if (time >= startTime.add(numRestrictedDays.mul(1 days))) {
+        } else if (time >= startTime.add(rsd.numRestrictedDays.mul(1 days))) {
             return State.SaleFFA;
         } else if (time >= startTime) {
             return State.SaleRestrictedDay;
