@@ -40,7 +40,7 @@ contract QINToken is ERC223Token, Ownable, Testable {
     function startTokenSale(
         uint _startTime,
         uint _endTime,
-        uint _days,
+        uint8 _days,
         uint _rate,
         address _wallet) external onlyOwner
     {

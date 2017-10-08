@@ -14,10 +14,6 @@ contract Controllable is Ownable {
     bool public halted = false;
     bool public manualEnd = false;
 
-    uint public registeredUserCount = 0;
-
-    mapping (address => bool) registeredUserWhitelist;
-
     // Requires the token sale to be not halted (previously breakInEmergency)
     modifier onlyIfActive {
         require(!halted);
@@ -26,11 +22,6 @@ contract Controllable is Ownable {
     // Requires the token sale to be halted (previously onlyInEmergency)
     modifier onlyIfHalted {
         require(halted);
-        _;
-    }
-    // Requires address to be on the whitelist
-    modifier onlyWhitelisted() {
-        require(getUserRegistrationState(msg.sender));
         _;
     }
 
@@ -48,23 +39,6 @@ contract Controllable is Ownable {
     // This function is an option to prematurely end a halted token sale
     function endCrowdsale() external onlyOwner onlyIfHalted {
         manualEnd = true;
-    }
-
-    // Adds an address to the whitelist
-    function addToWhitelist(address _addr) external onlyOwner {
-        registeredUserWhitelist[_addr] = true;
-        registeredUserCount = registeredUserCount.add(1);
-    }
-
-    // Removes an address from the whitelist
-    function removeFromWhitelist(address _addr) external onlyOwner {
-        registeredUserWhitelist[_addr] = false;
-        registeredUserCount = registeredUserCount.sub(1);
-    }
-
-    // Returns true if address is on the whitelist
-    function getUserRegistrationState(address _addr) public constant returns (bool) {
-        return registeredUserWhitelist[_addr];
     }
 
 }
