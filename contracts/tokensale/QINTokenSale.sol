@@ -33,7 +33,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
     struct RestrictedSaleDays {
         uint8 numRestrictedDays;
         uint8 saleDay;
-        uint dayIncrement;
         uint dailyReset;
     }
 
@@ -148,12 +147,17 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
 
         uint time = getCurrentTime();
         if (time >= rsd.dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
-            rsd.dayIncrement = time.sub(rsd.dailyReset).div(1 days);
-            rsd.dailyReset = rsd.dailyReset.add(rsd.dayIncrement.mul(1 days));
-            rsd.saleDay = uint8(rsd.saleDay.add(rsd.dayIncrement));
+            uint8 dayIncrement = uint8(time.sub(rsd.dailyReset).div(1 days));
+            rsd.dailyReset = rsd.dailyReset.add(dayIncrement.mul(1 days));
+            rsd.saleDay = uint8(rsd.saleDay.add(dayIncrement));
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
             }
+        }
+
+        if (b.lastDayBought < rsd.saleDay) {
+            b.amountBoughtToday = 0;
+            b.lastDayBought = rsd.saleDay;
         }
 
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
@@ -185,12 +189,8 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
         wallet.transfer(weiToSpend);
         b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
-        if (currentCrowdsaleState == State.SaleRestrictedDay) {
-            b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
-        }
-        if (b.lastDayBought < rsd.saleDay) {
-            b.lastDayBought = rsd.saleDay;
-        }
+        b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
+
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));
