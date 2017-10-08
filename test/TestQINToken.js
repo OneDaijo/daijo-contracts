@@ -23,14 +23,14 @@ contract('QINToken', function(accounts) {
       assert.equal(balance.valueOf(), 200000000 * 10**18, "the correct balance wasn't in the first account");
     }).then(function() {
       var current_time = new Date().getTime() / 1000;
-      qinToken.startTokenSale(current_time, current_time + 1000, 3, 250, accounts[0], 1597721000);
+      qinToken.startTokenSale(current_time, current_time + 1000, 3, 250, accounts[0]);
     }).then(function() {
       return qinToken.tokenSaleExecuted();
     }).then(function(wasExecuted) {
       assert.isTrue(wasExecuted, "tokenSale was not executed");
       return qinToken.balanceOf.call(daijo_owner);
     }).then(function(balance) {
-      assert.equal(balance.valueOf(), 0, "the correct balance wasn't in the first after tokenSale start");
+      assert.equal(balance.valueOf(), 140000000 * 10**18, "the correct balance wasn't in the first after tokenSale start");
     }).then(function() {
       return qinToken.getTokenSale.call();
     }).then(function(crowsdaleContract) {
