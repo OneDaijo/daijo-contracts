@@ -155,20 +155,21 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
             }
         }
 
-        if (b.lastDayBought < rsd.saleDay) {
-            b.amountBoughtToday = 0;
-            b.lastDayBought = rsd.saleDay;
-        }
-
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
             if (b.lastDayBought < rsd.saleDay) {
                 b.amountBoughtToday = 0;
+                b.lastDayBought = rsd.saleDay;
             }
+
             require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
             if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtToday)) {
                 qinToBuy = restrictedDayLimit.sub(b.amountBoughtToday);
             }
             weiToSpend = qinToBuy.div(rate);
+
+            // qinToBuy will not be modified after this, so add to the buyer's count.
+            b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
+
         } else if (currentCrowdsaleState == State.SaleFFA) {
             if (qinToBuy > tokenSaleTokensRemaining) {
                 qinToBuy = tokenSaleTokensRemaining;
@@ -180,16 +181,15 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
             weiToSpend = qinToBuy.div(rate);
         }
 
+        b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
         tokenSaleTokensRemaining = tokenSaleTokensRemaining.sub(qinToBuy);
 
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
 
         // send ETH to the fund collection wallet
-        // Note: could consider a mutex-locking function modifier instead or in addition to this.  This also poses complexity and security concerns.
+        // Note: could consider a mutex-locking function modifier instead or in addition to doing the transfers at the end.
         wallet.transfer(weiToSpend);
-        b.amountBoughtCumulative = b.amountBoughtCumulative.add(qinToBuy);
-        b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
