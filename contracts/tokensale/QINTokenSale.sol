@@ -127,9 +127,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
 
     // low level QIN token purchase function
     function buyQIN() onlyIfActive onlyWhitelisted public payable {
-        require(validPurchase());
         State currentCrowdsaleState = getState();
-        require(currentCrowdsaleState != State.SaleComplete);
+        require(validPurchase(currentCrowdsaleState));
+        
         address buyer = msg.sender;
 
         uint weiToSpend = msg.value;
@@ -192,11 +192,10 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
     }
 
     // @return true if the transaction can buy tokens
-    function validPurchase() internal constant returns (bool) {
-        uint time = getCurrentTime();
-        bool duringTokenSale = (time >= startTime) && (time <= endTime);
+    function validPurchase(State state) internal constant returns (bool) {
+        bool validPurchaseState = state != State.SaleComplete && state != State.BeforeSale;
         bool nonZeroPurchase = msg.value != 0;
-        return duringTokenSale && nonZeroPurchase && !halted && tokenSaleTokensRemaining != 0;
+        return validPurchaseState && nonZeroPurchase && !halted;
     }
 
     // @return true if tokenSale event has ended
