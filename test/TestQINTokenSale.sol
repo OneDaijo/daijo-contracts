@@ -51,9 +51,9 @@ contract TestQINTokenSale {
         Assert.isTrue(ts.getUserRegistrationState(userWallet), "User status should be set to registered");
 
         // Check registration days setter and getter
-        Assert.equal(ts.numRestrictedDays(), restrictedDays, "Incorrect initial number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == restrictedDays, "Incorrect initial number of restricted days.");
         ts.setRestrictedSaleDays(5);
-        Assert.equal(ts.numRestrictedDays(), 5, "Incorrect modified number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == 5, "Incorrect modified number of restricted days.");
     }
 
     function testTokenSaleNormalInitialization() {
@@ -77,7 +77,7 @@ contract TestQINTokenSale {
         Assert.equal(ts.startTime(), startTime, "Incorrect startTime.");
         Assert.equal(ts.endTime(), endTime, "Incorrect endTime.");
         Assert.equal(ts.rate(), rate, "Incorrect rate.");
-        Assert.equal(ts.numRestrictedDays(), restrictedDays, "Incorrect initial number of restricted days.");
+        Assert.isTrue(ts.getNumRestrictedDays() == restrictedDays, "Incorrect initial number of restricted days.");
         Assert.equal(ts.wallet(), wallet, "Incorrect wallet address.");
         Assert.equal(ts.owner(), this, "Not the correct owner");
         Assert.isTrue(ts.supportsToken(qin), "supportsToken() is rejecting QIN.");
