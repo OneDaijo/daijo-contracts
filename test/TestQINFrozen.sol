@@ -15,31 +15,6 @@ contract TestQINFrozen {
 
     uint decimalMultiplier = 10**18;
 
-    // TODO(thiefinparis): testing these internal functions (if we even want to do this) will requre special
-    // test contracts to provide hooks into these internal methods.
-
-    // // Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
-    // function testQINFrozenInitFromQINToken() {
-    //     uint releaseTime = now + 1000;
-    //     uint freezeAmount = decimalMultiplier.mul(200000000);
-    //     QINToken qin = new QINToken(true);
-    //     qin.freezeRemainingTokens(releaseTime, freezeAmount);
-    //     address expected = this;
-    //     address owner = qin.getQINFrozen().owner();
-
-    //     Assert.equal(owner, expected, "Freeze has wrong owner.");
-    // }
-
-    // // Note: freezeRemainingTokens() function is private, remove modifier temporarily to perform test
-    // function testQINTokenIsTransferringToQINFrozen() {
-    //     uint releaseTime = now + 1000;
-    //     uint freezeAmount = decimalMultiplier.mul(200000000);
-    //     QINToken qin = new QINToken(true);
-    //     qin.freezeRemainingTokens(releaseTime, freezeAmount);
-
-    //     Assert.equal(qin.balanceOf(qin.owner()), 0, "Incorrect amount of QIN sent.");
-    // }
-
     function testQINFrozenInit() {
         uint releaseTime = now + 1000;
 
@@ -81,21 +56,17 @@ contract TestQINFrozen {
         Assert.isTrue(support, "supportsToken() is rejecting QIN.");
     }
 
-    // TODO(thiefinparis): Like the tests at the top, triggering the release will require hooks into
-    // the internal contract state to modify the time to allow the payment and release to occur in
-    // the same solidity transaction.
+    function testReleaseFunction() {
+        uint releaseTime = now + 1000;
+        QINToken qin = new QINToken(true);
+        QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
-    //function testReleaseFunction() {
-    //    uint releaseTime = now + 1000;
-    //    uint frozenBalance = 200000000;
-    //    QINToken qin = new QINToken(true);
-    //    QINFrozen freeze = new QINFrozen(qin, releaseTime);
+        qin.transfer(freeze, 140000000);
 
-    //    qin.transfer(freeze, 140000000);
+        freeze.setCurrentTime(now + 1001);
+        freeze.release(msg.sender);
+        Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
 
-    //    freeze.release(msg.sender);
-    //    Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
-
-    //}
+    }
 
 }
