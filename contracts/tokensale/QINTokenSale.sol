@@ -156,19 +156,19 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         }
 
         if (currentCrowdsaleState == State.SaleRestrictedDay) {
-            if (b.lastDayBought < rsd.saleDay) {
-                b.amountBoughtToday = 0;
-                b.lastDayBought = rsd.saleDay;
+            if (b.lastRestrictedDayBought < rsd.saleDay) {
+                b.amountBoughtCurrentRestrictedDay = 0;
+                b.lastRestrictedDayBought = rsd.saleDay;
             }
 
-            require(b.amountBoughtToday < restrictedDayLimit); // throw if buyer has hit restricted day limit
-            if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtToday)) {
-                qinToBuy = restrictedDayLimit.sub(b.amountBoughtToday);
+            require(b.amountBoughtCurrentRestrictedDay < restrictedDayLimit); // throw if buyer has hit restricted day limit
+            if (qinToBuy > restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay)) {
+                qinToBuy = restrictedDayLimit.sub(b.amountBoughtCurrentRestrictedDay);
             }
             weiToSpend = qinToBuy.div(rate);
 
             // qinToBuy will not be modified after this, so add to the buyer's count.
-            b.amountBoughtToday = b.amountBoughtToday.add(qinToBuy);
+            b.amountBoughtCurrentRestrictedDay = b.amountBoughtCurrentRestrictedDay.add(qinToBuy);
 
         } else if (currentCrowdsaleState == State.SaleFFA) {
             if (qinToBuy > tokenSaleTokensRemaining) {

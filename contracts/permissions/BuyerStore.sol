@@ -16,9 +16,9 @@ contract BuyerStore is Ownable {
 
     struct Buyer {
         bool isRegistered;
-        uint8 lastDayBought;
+        uint8 lastRestrictedDayBought;
         uint amountBoughtCumulative;
-        uint amountBoughtToday;
+        uint amountBoughtCurrentRestrictedDay;
     }
 
     mapping (address => Buyer) buyers;
