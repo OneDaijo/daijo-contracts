@@ -14,7 +14,7 @@ import '../permissions/BuyerStore.sol';
  *  @author DaijoLabs <info@daijolabs.com>
  */
 
-contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
+contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
     using SafeMath for uint8;
     using SafeMath for uint;
 
@@ -77,7 +77,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable {
         uint _endTime,
         uint8 _days,
         uint _rate,
-        address _wallet) Testable(_token.getTestState()) 
+        address _wallet) Testable(_token.getTestState())
     {
 
         require(_startTime >= getCurrentTime());
