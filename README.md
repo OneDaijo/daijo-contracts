@@ -44,6 +44,10 @@ For the rest of the sample commands, an ethereum network will be required. Daijo
 # Increase the gas limit to allow larger Solidity tests to be deployed.
 testrpc --gasLimit 471238801
 ```
+or you can run the included script to start tesrpc in the background and silence output:
+```
+./run_testrpc.sh
+```
 
 To publish the contracts to the network, run:
 ```
