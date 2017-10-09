@@ -3,7 +3,7 @@ pragma solidity ^0.4.13;
 import "./interfaces/ERC223ReceivingContract.sol";
 import "../permissions/Ownable.sol";
 import "../permissions/Testable.sol";
-import '../libs/SafeMath.sol';
+import '../libs/SafeMath256.sol';
 import "./QINToken.sol";
 import "./interfaces/ERC223ReceivingContract.sol";
 
@@ -13,7 +13,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
  *  @dev QIN Tokens that are locked in this contract until a given release time
  */
 contract QINFrozen is Ownable, Testable, ERC223ReceivingContract {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     // the token that's being locked
     QINToken public token;
