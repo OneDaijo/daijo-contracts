@@ -14,7 +14,6 @@ import '../permissions/BuyerStore.sol';
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-
 contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
     using SafeMath8 for uint8;
     using SafeMath256 for uint;
