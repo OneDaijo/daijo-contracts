@@ -1,6 +1,6 @@
 pragma solidity ^0.4.13;
 
-import '../libs/SafeMath.sol';
+import '../libs/SafeMath256.sol';
 import '../permissions/Ownable.sol';
 
 
@@ -9,7 +9,7 @@ import '../permissions/Ownable.sol';
   * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
 */
 contract Controllable is Ownable {
-    using SafeMath for uint256;
+    using SafeMath256 for uint;
 
     bool public halted = false;
     bool public manualEnd = false;
