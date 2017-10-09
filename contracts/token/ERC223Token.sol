@@ -3,7 +3,7 @@ pragma solidity ^0.4.13;
 import "./interfaces/ERC223Interface.sol";
 import "./ERC20Token.sol";
 import "./interfaces/ERC223ReceivingContract.sol";
-import "../libs/SafeMath.sol";
+import "../libs/SafeMath256.sol";
 
 
 /** @title ERC223 Token Implementation
@@ -11,7 +11,7 @@ import "../libs/SafeMath.sol";
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
  */
 contract ERC223Token is ERC223Interface, ERC20Token {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     // assemble the given address bytecode. If bytecode exists then the _addr is a contract.
     function isContract(address _to) private returns (bool) {
