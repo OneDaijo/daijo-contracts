@@ -5,7 +5,7 @@
 
 # Attempt to kill all running testrpc instances to start fresh, but don't fail if none are found.
 # Note: this is necessary because testrpc instances running on the same port cannot coexist.
-pkill -f testrpc || true
+pkill -f [^_]testrpc || true
 
 # Runs testrpc in the background, creating two accounts and silencing output.
 # To bump the gas limit (helpful for increasingly gas hungry test deployments).
