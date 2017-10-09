@@ -2,14 +2,14 @@ pragma solidity ^0.4.13;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/libs/SafeMath.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title Safe Math Tests
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestSafeMath {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     // tests SafeMath multiplication function
     function testBasicMultiplication() {

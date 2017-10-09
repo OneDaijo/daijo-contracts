@@ -2,41 +2,41 @@ pragma solidity ^0.4.13;
 
 import "truffle/Assert.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/libs/SafeMath.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN Token Test
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINToken {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
-    uint decimalMultiplier = 10**18; 
+    uint decimalMultiplier = 10**18;
 
     // this tests the initial balance of QIN tokens when deployed as a contract
     function testInitialBalanceWithNewQINToken() {
-        QINToken qin = new QINToken();
-        uint expected = qin.frozenSupply() + qin.crowdsaleSupply();
+        QINToken qin = new QINToken(true);
+        uint expected = qin.reserveSupply() + qin.tokenSaleSupply();
 
-        Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + crowdsaleSupply initially.");
+        Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + tokenSaleSupply initially.");
     }
 
     function testNewQINTokenOwner() {
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         address expected = this;
 
         Assert.equal(qin.owner(), expected, "Sender should be initial owner.");
     }
 
     function testTotalSupplyAfterConstruction() {
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         uint totalSupply = qin.totalSupply();
 
         Assert.equal(totalSupply, decimalMultiplier.mul(200000000), "Total supply incorrect.");
     }
 
     function testCorrectAllowanceAmountAfterApproval() {
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         qin.approve(0x1234, 100);
         uint result = qin.allowance(qin.owner(), 0x1234);
 
@@ -44,7 +44,7 @@ contract TestQINToken {
     }
 
     function testCorrectBalancesAfterTransfer() {
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         qin.transfer(0x1234, decimalMultiplier.mul(200000000));
         uint balance0 = qin.balanceOf(qin.owner());
         uint balance1 = qin.balanceOf(0x1234);
@@ -55,7 +55,7 @@ contract TestQINToken {
 
     // Test works if qin.transferFrom() were initiated by 0x5678
     function testCorrectBalancesAfterTransferringFromAnotherAccount() {
-        QINToken qin = new QINToken();
+        QINToken qin = new QINToken(true);
         Assert.isTrue(qin.approve(0x1234, 100), "address 1 approval failed");
         Assert.isTrue(qin.approve(this, 100), "address 2 approval failed");
         Assert.isTrue(qin.transferFrom(this, 0x5678, 100), "address 2 transfer failed");

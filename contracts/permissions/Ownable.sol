@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 
  /** @title Ownable
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  *  @notice source: Zeppelin
  *  @dev The Ownable contract has an owner address, and provides basic authorization control
  *       functions, this simplifies the implementation of "user permissions".
@@ -34,5 +34,5 @@ contract Ownable {
         if (newOwner != address(0)) {
             owner = newOwner;
         }
-    }  
+    }
 }

@@ -6,7 +6,7 @@ import "../contracts/permissions/Ownable.sol";
 
 
 /** @title Ownable Test
- *  @author WorldRapidFinance <info@worldrapidfinance.com>
+ *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestOwnable {
 
@@ -27,5 +27,5 @@ contract TestOwnable {
 
         Assert.isTrue(owner == newOwner, "Owner should be changed after transfer.");
     }
-    
+
 }
