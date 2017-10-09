@@ -6,8 +6,8 @@ import '../permissions/Ownable.sol';
 
 
 /** @title User
-  * @author WorldRapidFinance <info@worldrapidfinance.com>
-  * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
+  * @author Daijo Labs <info@daijolabs.com>
+  * @dev Base class that provides user-related functionality
 */
 contract BuyerStore is Ownable {
     using SafeMath8 for uint8;
