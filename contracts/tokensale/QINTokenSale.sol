@@ -186,10 +186,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
 
-        // send ETH to the fund collection wallet
-        // Note: could consider a mutex-locking function modifier instead or in addition to doing the transfers at the end.
-        wallet.transfer(weiToSpend);
-
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));
@@ -226,6 +222,12 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
             assert(tokenSaleTokensRemaining == 0);
             assert(token.balanceOf(this) == 0);
         }
+    }
+
+    // Deposit the ETH received by the token sale to the designated wallet.  Must be run after the token sale has ended.
+    function depositFunds() onlyOwner external {
+        require(getState() == State.SaleComplete);
+        wallet.transfer(this.balance);
     }
 
     function getState() public constant returns (State) {
