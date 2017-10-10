@@ -55,42 +55,4 @@ contract TestQINTokenSale {
         ts.setRestrictedSaleDays(5);
         Assert.isTrue(ts.getNumRestrictedDays() == 5, "Incorrect modified number of restricted days.");
     }
-
-    function testTokenSaleNormalInitialization() {
-        uint startTime = now + 1 days;
-        uint endTime = now + 5 days;
-        address wallet = 0x1234;
-        uint8 restrictedDays = 3;
-        uint rate = 10;
-        QINToken qin = new QINToken(true);
-        qin.startTokenSale(
-            startTime,
-            endTime,
-            restrictedDays,
-            10,
-            wallet
-        );
-
-        QINTokenSale ts = qin.getTokenSale();
-
-        // Tests are similar to the above, but initialization goes through a different path.
-        Assert.equal(ts.startTime(), startTime, "Incorrect startTime.");
-        Assert.equal(ts.endTime(), endTime, "Incorrect endTime.");
-        Assert.equal(ts.rate(), rate, "Incorrect rate.");
-        Assert.isTrue(ts.getNumRestrictedDays() == restrictedDays, "Incorrect initial number of restricted days.");
-        Assert.equal(ts.wallet(), wallet, "Incorrect wallet address.");
-        Assert.equal(ts.owner(), this, "Not the correct owner");
-        Assert.isTrue(ts.supportsToken(qin), "supportsToken() is rejecting QIN.");
-        Assert.isTrue(ts.hasBeenSupplied(), "tokenFallback was not called.");
-        Assert.equal(ts.registeredUserCount(), 0, "Should be Initialized with 0 users whitelisted");
-
-        // Check state transitions.
-        Assert.isTrue(ts.getState() == QINTokenSale.State.BeforeSale, "BeforeSale expected");
-        ts.setCurrentTime(startTime);
-        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
-        ts.setCurrentTime(startTime + 3 days);
-        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
-        ts.setCurrentTime(endTime);
-        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleComplete, "SaleComplete expected");
-    }
 }
