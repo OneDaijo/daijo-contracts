@@ -12,7 +12,7 @@ node {
 
     // Ensure testrpc is running
     // This is a little hacky right now.  testrpc just fails if there's already one running.
-    sh "nohup testrpc --gasLimit 471238801 &"
+    sh "./run_testrpc.sh"
 
     // Give testrpc time to start up.
     sh "sleep 5"
