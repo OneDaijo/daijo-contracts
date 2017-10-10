@@ -1,16 +1,17 @@
 pragma solidity ^0.4.13;
 
-import '../libs/SafeMath.sol';
+import '../libs/SafeMath256.sol';
+import '../libs/SafeMath8.sol';
 import '../permissions/Ownable.sol';
 
 
 /** @title User
-  * @author WorldRapidFinance <info@worldrapidfinance.com>
-  * @dev Base class that provides token sale control functions to interact with QINCrowdsale.sol
+  * @author Daijo Labs <info@daijolabs.com>
+  * @dev Base class that provides user-related functionality
 */
 contract BuyerStore is Ownable {
-    using SafeMath for uint8;
-    using SafeMath for uint;
+    using SafeMath8 for uint8;
+    using SafeMath256 for uint;
 
     uint public registeredUserCount = 0;
 

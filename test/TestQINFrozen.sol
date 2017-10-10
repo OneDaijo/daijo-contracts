@@ -4,14 +4,14 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/token/QINFrozen.sol";
-import "../contracts/libs/SafeMath.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title Frozen QIN Tests
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINFrozen {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     uint decimalMultiplier = 10**18;
 

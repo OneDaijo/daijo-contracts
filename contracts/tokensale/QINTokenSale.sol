@@ -3,7 +3,8 @@ pragma solidity ^0.4.13;
 import '../token/interfaces/ERC223ReceivingContract.sol';
 import '../token/QINFrozen.sol';
 import '../token/QINToken.sol';
-import '../libs/SafeMath.sol';
+import '../libs/SafeMath256.sol';
+import '../libs/SafeMath8.sol';
 import '../permissions/Controllable.sol';
 import '../permissions/Testable.sol';
 import '../permissions/Ownable.sol';
@@ -13,10 +14,9 @@ import '../permissions/BuyerStore.sol';
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-
 contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
-    using SafeMath for uint8;
-    using SafeMath for uint;
+    using SafeMath8 for uint8;
+    using SafeMath256 for uint;
 
     /* QIN Token TokenSale */
 
@@ -147,9 +147,9 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
 
         uint time = getCurrentTime();
         if (time >= rsd.dailyReset.add(1 days)) { // will only evaluate to true on first sale each subsequent day
-            uint8 dayIncrement = uint8(time.sub(rsd.dailyReset).div(1 days));
-            rsd.dailyReset = rsd.dailyReset.add(dayIncrement.mul(1 days));
-            rsd.saleDay = uint8(rsd.saleDay.add(dayIncrement));
+            uint8 dayIncrement = time.sub(rsd.dailyReset).div(1 days).castToUint8();
+            rsd.dailyReset = rsd.dailyReset.add(uint(1 days).mul(dayIncrement));
+            rsd.saleDay = rsd.saleDay.add(dayIncrement);
             if (currentCrowdsaleState == State.SaleRestrictedDay) {
                 restrictedDayLimit = tokenSaleTokensRemaining.div(registeredUserCount);
             }
@@ -184,10 +184,6 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
 
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
-
-        // send ETH to the fund collection wallet
-        // Note: could consider a mutex-locking function modifier instead or in addition to doing the transfers at the end.
-        wallet.transfer(weiToSpend);
 
         // Refund any unspend wei.
         if (msg.value > weiToSpend) {
@@ -227,11 +223,17 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         }
     }
 
+    // Deposit the ETH received by the token sale to the designated wallet.  Must be run after the token sale has ended.
+    function depositFunds() onlyOwner external {
+        require(getState() == State.SaleComplete);
+        wallet.transfer(this.balance);
+    }
+
     function getState() public constant returns (State) {
         uint time = getCurrentTime();
         if (hasEnded()) {
             return State.SaleComplete;
-        } else if (time >= startTime.add(rsd.numRestrictedDays.mul(1 days))) {
+        } else if (time >= startTime.add(uint(1 days).mul(rsd.numRestrictedDays))) {
             return State.SaleFFA;
         } else if (time >= startTime) {
             return State.SaleRestrictedDay;

@@ -2,14 +2,14 @@ pragma solidity ^0.4.13;
 
 import "truffle/Assert.sol";
 import "../contracts/token/QINToken.sol";
-import "../contracts/libs/SafeMath.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN Token Test
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINToken {
-    using SafeMath for uint;
+    using SafeMath256 for uint;
 
     uint decimalMultiplier = 10**18;
 
