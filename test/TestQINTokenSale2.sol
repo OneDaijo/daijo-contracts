@@ -67,6 +67,10 @@ contract TestQINTokenSale2 {
     }
 
     function () public payable {
-        // This is here to allow this test contract to be paid (in ETH or QIN!) without throwing.
+        // This is here to allow this test contract to be paid in ETH without throwing.
+    }
+
+    function tokenFallback() public {
+        // This is here to allow this test contract to be paid in QIN without throwing.
     }
 }
