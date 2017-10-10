@@ -4,12 +4,14 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/tokensale/QINTokenSale.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN TokenSale Tests
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINTokenSale2 {
+    using SafeMath256 for uint;
 
     // Truffle will send the TestContract one Ether after deploying the contract.
     uint public initialBalance = 1 ether;
@@ -19,6 +21,7 @@ contract TestQINTokenSale2 {
         uint startTime = now + 1 days;
         uint endTime = now + 5 days;
         address wallet = 0x1234;
+        address extraParticipant = 0x5678;
         uint8 restrictedDays = 3;
         uint rate = 10;
         QINToken qin = new QINToken(true);
@@ -43,23 +46,36 @@ contract TestQINTokenSale2 {
         Assert.isTrue(ts.hasBeenSupplied(), "tokenFallback was not called.");
         Assert.equal(ts.registeredUserCount(), 0, "Should be Initialized with 0 users whitelisted");
 
-        Assert.equal(qin.balanceOf(this), 140000000 * decimalMultiplier, "Owner not granted the correct amount of reserve QIN");
+        Assert.equal(qin.balanceOf(this), qin.reserveSupply(), "Owner not granted the correct amount of reserve QIN");
 
         // Because this contract will also serve to be the purchaser, offload the QIN to the wallet for the sake
         // of simplicity of checks below.
-        qin.transfer(wallet, 140000000 * decimalMultiplier);
+        qin.transfer(wallet, qin.reserveSupply());
         Assert.equal(qin.balanceOf(this), 0, "Transfer function did not transfer the correct amount of QIN");
+        Assert.equal(ts.tokenSaleTokenSupply(), qin.tokenSaleSupply(), "tokenSaleTokenSupply not set correctly");
 
         // Check state transitions.
         Assert.isTrue(ts.getState() == QINTokenSale.State.BeforeSale, "BeforeSale expected");
 
         // Add this contract to the whitelist to allow QIN purchase.
         ts.addToWhitelist(this);
+        Assert.equal(ts.registeredUserCount(), 1, "Incorrect registered user count");
+        ts.addToWhitelist(extraParticipant);
+        Assert.equal(ts.registeredUserCount(), 2, "Incorrect registered user count");
 
         ts.setCurrentTime(startTime);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
-        Assert.isTrue(address(ts).call.value(1 ether)(), "QIN purchase failed");
-        Assert.equal(qin.balanceOf(this), rate * 1 ether, "Did not receive the expected amount of QIN");
+        Assert.isTrue(address(ts).call.value(500 finney)(), "QIN purchase failed");
+        uint testDayOneLimit = ts.tokenSaleTokenSupply().div(ts.registeredUserCount());
+        Assert.equal(ts.getRestrictedDayLimit(), testDayOneLimit, "First restricted day limit set incorrectly");
+        Assert.equal(ts.weiRaised(), 500 finney, "weiRaised increased incorrectly");
+        Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 500 finney), "Incorrect tokens remaining");
+        Assert.equal(qin.balanceOf(this), rate * 500 finney, "Did not receive the expected amount of QIN");
+        ts.setCurrentTime(startTime + 1 days);
+        Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
+        Assert.isTrue(address(ts).call.value(500 finney)(), "QIN purchase failed");
+        uint testDayTwoLimit = (ts.tokenSaleTokensRemaining().add(rate * 500 finney)).div(ts.registeredUserCount());
+        Assert.equal(ts.getRestrictedDayLimit(), testDayTwoLimit, "Second restricted day limit set incorrectly");
         ts.setCurrentTime(startTime + 3 days);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
         ts.setCurrentTime(endTime);

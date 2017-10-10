@@ -102,6 +102,10 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         return rsd.numRestrictedDays;
     }
 
+    function getRestrictedDayLimit() external onlyOwner constant returns (uint) {
+        return restrictedDayLimit;
+    }
+
     // TODO: This assumes ERC223 - which should be added
     function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
