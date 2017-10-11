@@ -14,7 +14,7 @@ contract TestQINTokenSale2 {
     using SafeMath256 for uint;
 
     // Truffle will send the TestContract one Ether after deploying the contract.
-    uint public initialBalance = 1 ether;
+    uint public initialBalance = 10000000 ether; // enough to buy out entire supply of QIN
     uint public decimalMultiplier = 10 ** 18;
 
     function testTokenSaleNormalInitialization() {
@@ -63,19 +63,41 @@ contract TestQINTokenSale2 {
         ts.addToWhitelist(extraParticipant);
         Assert.equal(ts.registeredUserCount(), 2, "Incorrect registered user count");
 
+        // Test Restricted Day 1: First transaction overshoots daily limit, expect
+        // restrictedDayLimit to be enforced, and for second transaction to throw
         ts.setCurrentTime(startTime);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
-        Assert.isTrue(address(ts).call.value(500 finney)(), "QIN purchase failed");
+        // First transaction, intentionally over intended daily limit
+        Assert.isTrue(address(ts).call.value(3100000 ether)(), "QIN purchase failed");
         uint testDayOneLimit = ts.tokenSaleTokenSupply().div(ts.registeredUserCount());
         Assert.equal(ts.getRestrictedDayLimit(), testDayOneLimit, "First restricted day limit set incorrectly");
-        Assert.equal(ts.weiRaised(), 500 finney, "weiRaised increased incorrectly");
-        Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 500 finney), "Incorrect tokens remaining");
-        Assert.equal(qin.balanceOf(this), rate * 500 finney, "Did not receive the expected amount of QIN");
+        Assert.equal(ts.weiRaised(), 3000000 ether, "weiRaised increased incorrectly");
+        Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 3000000 ether), "Incorrect first day tokens remaining");
+        Assert.equal(qin.balanceOf(this), rate * 3000000 ether, "Did not receive the expected amount of QIN");
+        // Second purchase, should throw due to maxed out purchase limit
+        Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase failed");
+
+        // Test Restricted Day 2: First transaction buys arbitrary amount of QIN under
+        // restrictedDailyLimit, second transaction expected to be limited by restrictedDailyLimit
+        // when combined with first transaction, third transaction expected to throw.
         ts.setCurrentTime(startTime + 1 days);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleRestrictedDay, "SaleRestrictedDay expected");
-        Assert.isTrue(address(ts).call.value(500 finney)(), "QIN purchase failed");
-        uint testDayTwoLimit = (ts.tokenSaleTokensRemaining().add(rate * 500 finney)).div(ts.registeredUserCount());
+        // First transaction, arbitrary amount under limit
+        Assert.isTrue(address(ts).call.value(1000000 ether)(), "QIN purchase failed");
+        uint testDayTwoLimit = (ts.tokenSaleTokensRemaining().add(rate * 1000000 ether)).div(ts.registeredUserCount());
         Assert.equal(ts.getRestrictedDayLimit(), testDayTwoLimit, "Second restricted day limit set incorrectly");
+        Assert.equal(ts.weiRaised(), 4000000 ether, "weiRaised increased incorrectly");
+        Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 4000000 ether), "Incorrect second day tokens remaining");
+        Assert.equal(qin.balanceOf(this), rate * 4000000 ether, "Did not receive the expected amount of QIN");
+        // Second transaction, expected to be limited by restrictedDailyLimit
+        Assert.isTrue(address(ts).call.value(2000000 ether)(), "QIN purchase failed");
+        Assert.equal(ts.weiRaised(), 4500000 ether, "weiRaised increased incorrectly");
+        Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 4500000 ether), "Incorrect second day tokens remaining");
+        Assert.equal(qin.balanceOf(this), rate * 4500000 ether, "Did not receive the expected amount of QIN");
+        // Third transaction, expected to throw
+        Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase failed");
+
+        // Test FFA Day:
         ts.setCurrentTime(startTime + 3 days);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
         ts.setCurrentTime(endTime);
