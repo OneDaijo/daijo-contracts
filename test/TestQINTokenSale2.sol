@@ -74,8 +74,10 @@ contract TestQINTokenSale2 {
         Assert.equal(ts.weiRaised(), 3000000 ether, "weiRaised increased incorrectly");
         Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 3000000 ether), "Incorrect first day tokens remaining");
         Assert.equal(qin.balanceOf(this), rate * 3000000 ether, "Did not receive the expected amount of QIN");
+        Assert.equal(this.balance, 7000000 ether, "Incorrect amount of ETH returned");
         // Second purchase, should throw due to maxed out purchase limit
         Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase failed");
+        Assert.equal(this.balance, 7000000 ether, "Incorrect amount of ETH returned");
 
         // Test Restricted Day 2: First transaction buys arbitrary amount of QIN under
         // restrictedDailyLimit, second transaction expected to be limited by restrictedDailyLimit
@@ -94,8 +96,10 @@ contract TestQINTokenSale2 {
         Assert.equal(ts.weiRaised(), 4500000 ether, "weiRaised increased incorrectly");
         Assert.equal(ts.tokenSaleTokensRemaining(), ts.tokenSaleTokenSupply().sub(rate * 4500000 ether), "Incorrect second day tokens remaining");
         Assert.equal(qin.balanceOf(this), rate * 4500000 ether, "Did not receive the expected amount of QIN");
+        Assert.equal(this.balance, 5500000 ether, "Incorrect amount of ETH returned");
         // Third transaction, expected to throw
         Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase failed");
+        Assert.equal(this.balance, 5500000 ether, "Incorrect amount of ETH returned");
 
         // Test FFA Day:
         ts.setCurrentTime(startTime + 3 days);

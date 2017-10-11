@@ -53,6 +53,7 @@ contract TestQINTokenSale3 {
         Assert.equal(ts.weiRaised(), 6000000 ether, "weiRaised increased incorrectly");
         Assert.equal(ts.tokenSaleTokensRemaining(), 0, "Incorrect FFA day tokens remaining");
         Assert.equal(qin.balanceOf(this), rate * 6000000 ether, "Did not receive the expected amount of QIN");
+        Assert.equal(this.balance, 4000000 ether, "Incorrect amount of ETH returned");
 
         ts.setCurrentTime(endTime);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleComplete, "SaleComplete expected");
