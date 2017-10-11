@@ -106,6 +106,9 @@ contract TestQINTokenSale2 {
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
         ts.setCurrentTime(endTime);
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleComplete, "SaleComplete expected");
+
+        ts.depositFunds();
+        Assert.equal(wallet.balance, 4500000 ether, "Incorrect amount of ether was deposited");
     }
 
     function () public payable {

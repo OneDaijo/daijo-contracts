@@ -222,7 +222,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         if (tokenSaleTokensRemaining > 0) {
             token.transfer(0x0, tokenSaleTokensRemaining);
             Burn(tokenSaleTokensRemaining);
-            assert(tokenSaleTokensRemaining == 0);
+            tokenSaleTokensRemaining = 0;
             assert(token.balanceOf(this) == 0);
         }
     }

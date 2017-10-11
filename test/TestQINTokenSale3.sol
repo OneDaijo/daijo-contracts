@@ -17,7 +17,7 @@ contract TestQINTokenSale3 {
     uint public initialBalance = 10000000 ether; // enough to buy out entire supply of QIN
     uint public decimalMultiplier = 10 ** 18;
 
-    function testTokenSaleNormalInitialization() {
+    function testTokenSaleFFASaleDays() {
         uint startTime = now + 1 days;
         uint endTime = now + 5 days;
         address wallet = 0x1234;
