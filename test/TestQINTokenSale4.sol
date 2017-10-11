@@ -19,7 +19,6 @@ contract TestQINTokenSale4 {
         uint startTime = now + 1 days;
         uint endTime = now + 5 days;
         address wallet = 0x1234;
-        address extraParticipant = 0x5678;
         uint8 restrictedDays = 3;
         uint rate = 10;
         QINToken qin = new QINToken(true);
@@ -27,7 +26,7 @@ contract TestQINTokenSale4 {
             startTime,
             endTime,
             restrictedDays,
-            10,
+            rate,
             wallet
         );
 
@@ -51,7 +50,6 @@ contract TestQINTokenSale4 {
         uint startTime = now + 1 days;
         uint endTime = now + 5 days;
         address wallet = 0x1234;
-        address extraParticipant = 0x5678;
         uint8 restrictedDays = 3;
         uint rate = 10;
         QINToken qin = new QINToken(true);
@@ -59,7 +57,7 @@ contract TestQINTokenSale4 {
             startTime,
             endTime,
             restrictedDays,
-            10,
+            rate,
             wallet
         );
 

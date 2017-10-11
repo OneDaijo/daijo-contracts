@@ -29,7 +29,7 @@ contract TestQINTokenSale2 {
             startTime,
             endTime,
             restrictedDays,
-            10,
+            rate,
             wallet
         );
 
