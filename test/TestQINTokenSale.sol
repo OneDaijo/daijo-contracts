@@ -4,16 +4,18 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/tokensale/QINTokenSale.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN TokenSale Tests
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINTokenSale {
+    using SafeMath256 for uint;
 
     function testTokenSaleManualInitialization() {
-        uint startTime = now + 100;
-        uint endTime = now + 200;
+        uint startTime = now.add(1 days);
+        uint endTime = now.add(5 days);
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
         uint rate = 10;

@@ -4,20 +4,22 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/token/QINToken.sol";
 import "../contracts/tokensale/QINTokenSale.sol";
+import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN TokenSale Tests
  *  @author DaijoLabs <info@daijolabs.com>
  */
 contract TestQINTokenSale4 {
+    using SafeMath256 for uint;
 
     // Truffle will send the TestContract one Ether after deploying the contract.
     uint public initialBalance = 10000000 ether; // enough to buy out entire supply of QIN
     uint public decimalMultiplier = 10 ** 18;
 
     function testTokenSaleHasEnded() {
-        uint startTime = now + 1 days;
-        uint endTime = now + 5 days;
+        uint startTime = now.add(1 days);
+        uint endTime = now.add(5 days);
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
         uint rate = 10;
@@ -38,7 +40,7 @@ contract TestQINTokenSale4 {
         Assert.isFalse(ts.hasEnded(), "Token sale should not have ended before it begins");
         ts.setCurrentTime(endTime);
         Assert.isTrue(ts.hasEnded(), "Token sale should have ended");
-        ts.setCurrentTime(startTime + 3 days);
+        ts.setCurrentTime(startTime.add(3 days));
         Assert.isFalse(ts.hasEnded(), "Token sale should not have ended during the sale with tokens remaining");
         Assert.isTrue(address(ts).call.value(3000000 ether)(), "QIN purchase failed");
         Assert.isFalse(ts.hasEnded(), "Token sale should not have ended with tokens remaining");
@@ -47,8 +49,8 @@ contract TestQINTokenSale4 {
     }
 
     function testTokenSaleBurnRemainder() {
-        uint startTime = now + 1 days;
-        uint endTime = now + 5 days;
+        uint startTime = now.add(1 days);
+        uint endTime = now.add(5 days);
         address wallet = 0x1234;
         uint8 restrictedDays = 3;
         uint rate = 10;

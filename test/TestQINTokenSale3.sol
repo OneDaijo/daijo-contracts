@@ -18,8 +18,8 @@ contract TestQINTokenSale3 {
     uint public decimalMultiplier = 10 ** 18;
 
     function testTokenSaleFFASaleDays() {
-        uint startTime = now + 1 days;
-        uint endTime = now + 5 days;
+        uint startTime = now.add(1 days);
+        uint endTime = now.add(5 days);
         address wallet = 0x1234;
         address extraParticipant = 0x5678;
         uint8 restrictedDays = 3;
@@ -47,12 +47,12 @@ contract TestQINTokenSale3 {
         ts.addToWhitelist(extraParticipant);
 
         // Test FFA Day:
-        ts.setCurrentTime(startTime + 3 days);
+        ts.setCurrentTime(startTime.add(3 days));
         Assert.isTrue(ts.getState() == QINTokenSale.State.SaleFFA, "SaleFFA expected");
         Assert.isTrue(address(ts).call.value(7000000 ether)(), "QIN purchase failed");
         Assert.equal(ts.weiRaised(), 6000000 ether, "weiRaised increased incorrectly");
         Assert.equal(ts.tokenSaleTokensRemaining(), 0, "Incorrect FFA day tokens remaining");
-        Assert.equal(qin.balanceOf(this), rate * 6000000 ether, "Did not receive the expected amount of QIN");
+        Assert.equal(qin.balanceOf(this), rate.mul(6000000 ether), "Did not receive the expected amount of QIN");
         Assert.equal(this.balance, 4000000 ether, "Incorrect amount of ETH returned");
 
         ts.setCurrentTime(endTime);

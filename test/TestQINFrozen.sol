@@ -16,7 +16,7 @@ contract TestQINFrozen {
     uint decimalMultiplier = 10**18;
 
     function testQINFrozenInit() {
-        uint releaseTime = now + 1000;
+        uint releaseTime = now.add(1000);
 
         QINToken qin = new QINToken(true);
 
@@ -27,7 +27,7 @@ contract TestQINFrozen {
     }
 
     function testTransferToFrozenQIN() {
-        uint releaseTime = now + 1000;
+        uint releaseTime = now.add(1000);
         QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -39,7 +39,7 @@ contract TestQINFrozen {
     }
 
     function testQINFrozenOwner() {
-        uint releaseTime = now + 1000;
+        uint releaseTime = now.add(1000);
         QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -47,7 +47,7 @@ contract TestQINFrozen {
     }
 
     function testQINFrozenSupportsToken() {
-        uint releaseTime = now + 1000;
+        uint releaseTime = now.add(1000);
         QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
@@ -57,13 +57,13 @@ contract TestQINFrozen {
     }
 
     function testReleaseFunction() {
-        uint releaseTime = now + 1000;
+        uint releaseTime = now.add(1000);
         QINToken qin = new QINToken(true);
         QINFrozen freeze = new QINFrozen(qin, releaseTime);
 
         qin.transfer(freeze, 140000000);
 
-        freeze.setCurrentTime(now + 1001);
+        freeze.setCurrentTime(now.add(1001));
         freeze.release(msg.sender);
         Assert.equal(qin.balanceOf(freeze), 0, "Frozen balance was not reset.");
 
