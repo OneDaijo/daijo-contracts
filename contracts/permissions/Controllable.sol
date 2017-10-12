@@ -26,18 +26,18 @@ contract Controllable is Ownable {
     }
 
     // Halt the token sale in case of an emergency
-    function haltCrowdsale() external onlyOwner {
+    function haltTokenSale() external onlyOwner {
         halted = true;
     }
 
     // Unhalt the token sale
-    function unhaltCrowdsale() external onlyOwner onlyIfHalted {
+    function unhaltTokenSale() external onlyOwner onlyIfHalted {
         halted = false;
     }
 
     // Sets manualEnd to true, making fxn hasEnded() return true, setting the token sale state to SaleComplete
     // This function is an option to prematurely end a halted token sale
-    function endCrowdsale() external onlyOwner onlyIfHalted {
+    function endTokenSale() external onlyOwner onlyIfHalted {
         manualEnd = true;
     }
 
