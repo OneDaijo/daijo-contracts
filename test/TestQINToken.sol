@@ -18,7 +18,7 @@ contract TestQINToken {
         QINToken qin = new QINToken(true);
         uint expected = qin.reserveSupply() + qin.tokenSaleSupply();
 
-        Assert.equal(qin.balanceOf(this), expected, "Owner should have fozenSupply + tokenSaleSupply initially.");
+        Assert.equal(qin.balanceOf(this), expected, "Owner should have reserveSupply + tokenSaleSupply initially.");
     }
 
     function testNewQINTokenOwner() {
