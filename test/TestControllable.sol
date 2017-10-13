@@ -14,8 +14,8 @@ import "../contracts/libs/SafeMath256.sol";
 contract TestControllable {
     using SafeMath256 for uint;
 
-    // Truffle will send the TestContract one Ether after deploying the contract.
-    uint public initialBalance = 10000000 ether; // enough to buy out entire supply of QIN
+    // Truffle will send the TestContract Ether after deploying the contract.
+    uint public initialBalance = 5 ether; // enough to buy out entire supply of QIN
     uint public decimalMultiplier = 10 ** 18;
 
     function testControllableHaltAndManualEnd() {
@@ -35,21 +35,21 @@ contract TestControllable {
 
         QINTokenSale ts = qin.getTokenSale();
         qin.transfer(wallet, qin.reserveSupply());
-
-        // Add this contract to the whitelist to allow QIN purchase.
         ts.addToWhitelist(this);
+        ts.setCurrentTime(startTime);
 
         // Test functions while halted = false
-        ts.setCurrentTime(startTime);
         Assert.isTrue(address(ts).call.value(1 ether)(), "QIN purchase failed");
         ts.haltTokenSale();
+        Assert.isTrue(ts.halted(), "halted should be true");
         Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase should have failed");
-        ts.unhaltTokenSale();
 
         // Test end token sale while halted = true
-        ts.haltTokenSale();
         ts.endTokenSale();
         Assert.isTrue(ts.hasEnded(), "Token sale should have been manually ended");
+        ts.unhaltTokenSale();
+        Assert.isFalse(ts.halted(), "halted should be false");
+        Assert.isFalse(address(ts).call.value(1 ether)(), "QIN purchase should have failed");
     }
 
     function () public payable {
