@@ -15,7 +15,7 @@
 * ###### ERC223Interface.sol (Interface): Interface for the ERC223 token standard.
 * ###### ERC20Interface.sol (Interface): Interface for the ERC20 token standard.
 * ###### SafeMath8.sol (Library): Protected arithmetic.
-* ###### SafeMath256.sol (Library): Protected arithmetic
+* ###### SafeMath256.sol (Library): Protected arithmetic.
 
 ### QINToken.sol
 //TODO
@@ -42,7 +42,7 @@
 
 
 ### Controllable.sol //TODO: Upate with fewer functions (some moved to BuyerStore)
-###### Controllable is a base contract that provides administrator control functionality for the crowdsale contract. It contains 3 modifiers:
+###### Controllable is a base contract that provides administrator control functionality for the crowdsale contract. It contains X modifiers:
 ###### `onlyIfActive`: Requires the crowdsale to be active
 ###### `onlyIfHalted`: Requires the crowdsale to be halted
 ###### `onlyWhitelisted`: Requires an address to be on the whitelist
@@ -58,9 +58,9 @@
 ### Buyerstore.sol //TODO: Fill in methods
 
 ### Ownable.so
-###### Ownable is a base contract that creates secure ownership of contracts. It contains 1 modifier:
+###### Ownable is a base contract that creates secure ownership of contracts. It contains X modifiers:
 ###### `onlyOwner()`: Requires an address to match the owner address
-###### Ownable contains 2 functions:
+###### Ownable contains X functions:
 ###### `Ownable()`: Sets the "owner" address to the message sender
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
