@@ -14,14 +14,15 @@
 * ###### ERC20Token.sol (Base Contract): Framework for the ERC20 token standard.
 * ###### ERC223Interface.sol (Interface): Interface for the ERC223 token standard.
 * ###### ERC20Interface.sol (Interface): Interface for the ERC20 token standard.
-* ###### SafeMath.sol (Library): Protected arithmetic.
+* ###### SafeMath8.sol (Library): Protected arithmetic.
+* ###### SafeMath256.sol (Library): Protected arithmetic
 
 ### QINToken.sol
 //TODO
 ### QINTokensale.sol
-###### QINTokensale is the contract that will execute the QIN Token crowdsale. It comprises 13 functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from both Controllable.sol and Ownable.sol, and imports SafeMath.sol The essential function of this contract is to accept Ethereum from whitelisted addresses ('buyers') and return to those addresses QIN Tokens at the rate of X QIN/ETH. The contract is designed to automatically implement the QIN tokensale structure, available <here>, by restricting the number of QIN a single address may purchase on each day of the crowdsale.  
+###### QINTokensale is the contract that will execute the QIN Token crowdsale. It comprises X functions, a state machine, and various public and private variables that enable control flow over the QIN crowdsale. It inherits from Controllable.sol, BuyerStore.sol, and Ownable.sol, and imports Both SafeMath8 and SafeMath256.sol. The essential function of this contract is to accept Ethereum from whitelisted addresses ('buyers') and return to those addresses QIN Tokens at the rate of X QIN/ETH. The contract is designed to automatically implement the QIN tokensale structure, available <here>, by restricting the number of QIN a single address may purchase on each day of the crowdsale.  
 
-###### The state machine `State` and associated function `getState()` enumerate the four states that the crowdsale will be in: `BeforeSale`, before the sale opens, `SaleRestrictedDay`, the first two days of the sale in which buy orders are limited, `SaleFFA`, the final day in which buy orders are uncapped, and `SaleComplete`, after the sale has 1) sold out, 2) timed out, or 3) been manually ended by WRF. Note that the `haltCrowdsale` and `unhaltCrowdsale` methods inherited from `Controllable.sol` do not affect the state. These methods merely  pause or unpause the crowdsale by enabling or disabling incoming orders.  
+###### The state machine `State` and associated function `getState()` enumerate the four states that the crowdsale will be in: `BeforeSale`, before the sale opens, `SaleRestrictedDay`, the first two days of the sale in which buy orders are limited, `SaleFFA`, the final day in which buy orders are uncapped, and `SaleComplete`, after the sale has 1) sold out, 2) timed out, or 3) been manually ended by WRF. Note that the `haltCrowdsale` and `unhaltCrowdsale` methods inherited from `Controllable.sol` do not affect the state. These methods merely pause or unpause the crowdsale by enabling or disabling incoming orders.  
 
 ###### The process by which a whitelisted address purchases QIN Tokens is as follows:
 #### //TODO: Some of the following is deprecated
@@ -46,13 +47,13 @@
 ###### `onlyIfHalted`: Requires the crowdsale to be halted
 ###### `onlyWhitelisted`: Requires an address to be on the whitelist
 
-###### Controllable contains 6 functions:
+###### Controllable contains X functions:
 ###### `haltCrowdsale()`: Halts the crowdsale
 ###### `unhaltCrowdsale()`: Resumes a halted crowdsale
 ###### `endCrowdsale()`: Completes a halted crowdsale in an emergency
 ###### `addToWhitelist(address _addr)`: Adds an address to the whitelist
 ###### `removeFromWhitelist(address _addr)`: Removes an address from the whitelist
-###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
+###### `getUserRegistrationState(address _addr)`: Requires that `msg.sender` be on the whitelist
 
 ### Buyerstore.sol //TODO: Fill in methods
 
@@ -71,15 +72,16 @@
 ###### ERC20Token is the base contract of the ERC20 token standard. The ERC20 standard is a set of 6 functions and 2 events that standardizes token implementation on the Ethereum blockchain. More info can be found at [the Ethereum Wiki](https://theethereum.wiki/w/index.php/ERC20_Token_Standard).
 
 ### ERC223Interface.sol
-###### ERC223Interface is the abstrac standardized interface that any ERC223 token contract inherits from.
+###### ERC223Interface is the abstract standardized interface that any ERC223 token contract inherits from.
 
 ### ERC20Interface.sol
 ###### ERC20Interface is the abstract standardized interface that any ERC20 token contract inherits from.
 
-### SafeMath.sol //TODO: Detail split into SafeMath8 + SafeMath256
+### SafeMath8.sol //TODO: Detail split into SafeMath8 + SafeMath256
 ###### SafeMath is a library written by OpenZeppelin that contains secure arithmetic operators. It contains 4 functions:
 ###### `mul`: Secure Multiplication, `div`: Secure Division , `sub`: Secure Subtraction, and `add`: Secure Addition
 
+### SafeMath256.sol //TODO: Detail split into SafeMath8 + SafeMath256
 
 ## Inheritance Map
 ###### The following is a map of the files in the contracts repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y represents 'Y inherits from X'. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
