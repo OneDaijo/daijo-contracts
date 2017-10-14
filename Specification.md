@@ -1,4 +1,6 @@
 # QIN Token Code Specification
+###### This document is last updated 13 October 2017
+
 ###### This a technical documentation of the smart contracts in the WRF public github repository. It is divided into three parts: A shortlist of the contracts and libraries associated with the QIN Token and the QIN Token Crowdsale, a more detailed discussion of each file including functions and modifiers, and an inheritance diagram.
 
 
