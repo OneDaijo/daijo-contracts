@@ -34,9 +34,6 @@
 7. ###### `buyQINTokensWithRegisteredAddress` now updates the total Ethereum contributed to the contract (`weiRaised`), subtracts the ordered QIN from `crowdsaleTokensRemaining`, and refunds the buyer any unspent wei from gas costs.  
 8. ###### Finally, `buyQINTokensWithRegisteredAddress` calls `sendQIN` to send the buyer their purchased QIN. This action is performed last to prevent reentry attacks, where the fallback function, and hence the 'send tokens' function, is called repeatedly before the contract updates the state variables that control token transfers, such as `crowdsaleTokensRemaining`.  
 
-#######
-//DETAILS OF BUY FUNCTIONS + VALIDPURCHASE, ALSO PENDING CLEANUP
-
 
 ######
 
@@ -46,8 +43,6 @@
 ###### `onlyIfActive`: Requires the crowdsale to be active
 ###### `onlyIfHalted`: Requires the crowdsale to be halted
 ###### `onlyWhitelisted`: Requires an address to be on the whitelist
-### Buyerstore.sol
-#### //TODO: Fill in methods
 
 ###### Controllable contains 6 functions:
 #### //TODO: Upate with fewer functions (some moved to BuyerStore)
@@ -57,6 +52,10 @@
 ###### `addToWhitelist(address _addr)`: Adds an address to the whitelist
 ###### `removeFromWhitelist(address _addr)`: Removes an address from the whitelist
 ###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
+
+### Buyerstore.sol
+#### //TODO: Fill in methods
+
 
 ### Ownable.so
 ###### Ownable is a base contract that creates secure ownership of contracts. It contains 1 modifier:
@@ -87,8 +86,8 @@
 ###### The following is a map of the files in the contracts repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y represents 'Y inherits from X'. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
 <br/><br/>
 
-Layout option 1:  
 #### TODO: Update diagrams. Original diagrams left in for illustrative purposes
+Layout option 1:  
 ![Inheritance Diagram](https://github.com/WorldRapidFinance/wrf/blob/Specification-Document/InheritanceLayout1.jpg "Inheritance Diagram") <br/>
 Layout option 2:  
 
