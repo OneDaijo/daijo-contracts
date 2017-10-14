@@ -38,14 +38,13 @@
 ######
 
 
-### Controllable.sol
+### Controllable.sol #### //TODO: Upate with fewer functions (some moved to BuyerStore)
 ###### Controllable is a base contract that provides administrator control functionality for the crowdsale contract. It contains 3 modifiers:
 ###### `onlyIfActive`: Requires the crowdsale to be active
 ###### `onlyIfHalted`: Requires the crowdsale to be halted
 ###### `onlyWhitelisted`: Requires an address to be on the whitelist
 
 ###### Controllable contains 6 functions:
-#### //TODO: Upate with fewer functions (some moved to BuyerStore)
 ###### `haltCrowdsale()`: Halts the crowdsale
 ###### `unhaltCrowdsale()`: Resumes a halted crowdsale
 ###### `endCrowdsale()`: Completes a halted crowdsale in an emergency
@@ -53,9 +52,7 @@
 ###### `removeFromWhitelist(address _addr)`: Removes an address from the whitelist
 ###### `getUserRegistrationState(address _addr)`: Checks if an address is on the whitelist
 
-### Buyerstore.sol
-#### //TODO: Fill in methods
-
+### Buyerstore.sol #### //TODO: Fill in methods
 
 ### Ownable.so
 ###### Ownable is a base contract that creates secure ownership of contracts. It contains 1 modifier:
@@ -64,9 +61,9 @@
 ###### `Ownable()`: Sets the "owner" address to the message sender
 ###### `transferOwnership(address newOwner)`: Sets a new address to be the owner address
 
-### ERC223Token.sol
+### ERC223Token.sol #### //TODO: Token standards are not final
 ###### ERC223Token is the base contract of the ERC223 token standard. The ERC223 standard is derived from and backwards-compatible with the ERC20 standard, and improves it in several key areas. Most importantly, ERC223 tokens cannot be sent to addresses that are not equipt to handle them, preventing their accidental loss. In addition, ERC223 has efficiency and uniformity improvements over the ERC20 standard: the token transfer process requires only one function call--`transfer`--as opposed to the two required in ERC20. The Ethereum Improvement Proposal (EIP) for the ERC223 standard can be found [here](https://github.com/ethereum/EIPs/issues/223).
-#### //TODO: Token standards are not final
+
 
 ### ERC20Token.sol
 ###### ERC20Token is the base contract of the ERC20 token standard. The ERC20 standard is a set of 6 functions and 2 events that standardizes token implementation on the Ethereum blockchain. More info can be found at [the Ethereum Wiki](https://theethereum.wiki/w/index.php/ERC20_Token_Standard).
@@ -77,10 +74,10 @@
 ### ERC20Interface.sol
 ###### ERC20Interface is the abstract standardized interface that any ERC20 token contract inherits from.
 
-### SafeMath.sol
+### SafeMath.sol #### //TODO: Detail split into SafeMath8 + SafeMath256
 ###### SafeMath is a library written by OpenZeppelin that contains secure arithmetic operators. It contains 4 functions:
 ###### `mul`: Secure Multiplication, `div`: Secure Division , `sub`: Secure Subtraction, and `add`: Secure Addition
-#### //TODO: Detail split into SafeMath8 + SafeMath256
+
 
 ## Inheritance Map
 ###### The following is a map of the files in the contracts repository. Each box represents a contract, interface, or library, and is color coded accordingly. Note that both green and blue refer to the same technical object--a contract--and are only seperated to represent contracts that are inherited from (blue) differently from contracts that only inherit others (green). An arrow drawn from file X pointing at file Y represents 'Y inherits from X'. The rounded arrows originating from the libraries indicate that a file imports that library, as opposed to contractual inheritance.  
