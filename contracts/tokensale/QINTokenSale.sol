@@ -14,7 +14,6 @@ import '../permissions/BuyerStore.sol';
 /** @title QIN Token TokenSale Contract
  *  @author DaijoLabs <info@daijolabs.com>
  */
-
 contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
     using SafeMath8 for uint8;
     using SafeMath256 for uint;
@@ -101,6 +100,10 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
 
     function getNumRestrictedDays() external constant returns (uint8) {
         return rsd.numRestrictedDays;
+    }
+
+    function getRestrictedDayLimit() external onlyOwner constant returns (uint) {
+        return restrictedDayLimit;
     }
 
     // TODO: This assumes ERC223 - which should be added
@@ -219,7 +222,7 @@ contract QINTokenSale is ERC223ReceivingContract, Controllable, Testable, BuyerS
         if (tokenSaleTokensRemaining > 0) {
             token.transfer(0x0, tokenSaleTokensRemaining);
             Burn(tokenSaleTokensRemaining);
-            assert(tokenSaleTokensRemaining == 0);
+            tokenSaleTokensRemaining = 0;
             assert(token.balanceOf(this) == 0);
         }
     }
