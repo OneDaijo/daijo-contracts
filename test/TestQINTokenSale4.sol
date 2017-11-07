@@ -13,7 +13,7 @@ import "../contracts/libs/SafeMath256.sol";
 contract TestQINTokenSale4 {
     using SafeMath256 for uint;
 
-    // Truffle will send the TestContract one Ether after deploying the contract.
+    // Truffle will send the TestContract Ether after deploying the contract.
     uint public initialBalance = 10000000 ether; // enough to buy out entire supply of QIN
     uint public decimalMultiplier = 10 ** 18;
 
