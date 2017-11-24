@@ -64,7 +64,6 @@ contract SAFT is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
         QINToken _token,
         uint _startTime,
         uint _endTime,
-        uint8 _days,
         uint _rate,
         address _wallet) Testable(_token.getTestState())
     {
@@ -77,11 +76,11 @@ contract SAFT is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
         token = _token;
         startTime = _startTime;
         endTime = _endTime;
-        rate = _rate; // Qin per ETH = 400, subject to change
+        rate = _rate;
         wallet = _wallet;
     }
 
-    // TODO: This assumes ERC223 - which should be added
+    // Contract (and token) currently assumes ERC223
     function tokenFallback(address _from, uint _value, bytes) external {
         // Require that the paid token is supported
         require(supportsToken(msg.sender));
@@ -111,14 +110,15 @@ contract SAFT is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
         buyQIN();
     }
 
-    // low level QIN token purchase function
+    // low level SAFT deposit function
     function buyQIN() onlyIfActive onlyWhitelisted public payable {
-        State currentCrowdsaleState = getState();
-        require(validPurchase(currentCrowdsaleState));
+        State currentSAFTState = getState();
+        require(validPurchase(currentSAFTState));
 
         address buyer = msg.sender;
         Buyer storage b = buyers[buyer];
         require(b.isRegistered);
+        require(msg.value == b.amountPledgedCurrent); // buyer must send pledged amount in its entirety
         uint weiToSpend = msg.value;
 
         // calculate token amount to be sent
@@ -138,7 +138,7 @@ contract SAFT is ERC223ReceivingContract, Controllable, Testable, BuyerStore {
         // update amount of wei raised
         weiRaised = weiRaised.add(weiToSpend);
 
-        // Refund any unspend wei.
+        // Refund any unspent wei
         if (msg.value > weiToSpend) {
             msg.sender.transfer(msg.value.sub(weiToSpend));
         }
