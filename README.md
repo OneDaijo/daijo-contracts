@@ -1,4 +1,4 @@
-OneDaijo<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/daijo_logo.png" width = "211" height = "132">
+<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/daijo_logo.png" width = "211" height = "132">
 
 # OneDaijo Project
 
