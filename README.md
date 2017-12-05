@@ -2,7 +2,7 @@ OneDaijo<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/daijo_l
 
 # OneDaijo Project
 
-Smart contracts for the QIN token.
+Smart contracts for the QIN token. For a more in-depth look at other aspects of the OneDaijo Project, visit https://www.onedaijo.com.
 
 ## Prerequisites
 
