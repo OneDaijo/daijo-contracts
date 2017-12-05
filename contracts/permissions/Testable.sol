@@ -4,7 +4,7 @@ import '../permissions/Ownable.sol';
 
 
 /** @title Testable
-  * @author DaijoLabs <info@daijolabs.com>
+  * @author OneDaijo <info@onedaijo.com>
   * @dev Base class that allows extra external controls when deployed as test.
 */
 contract Testable is Ownable {

@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 
  /** @title SafeMath Library
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  *  @notice source: OpenZeppelin
  *  @dev math operations with safety checks that throw on error for uint
  */

@@ -9,7 +9,7 @@ import "./interfaces/ERC223ReceivingContract.sol";
 
 
 /** @title Frozen QIN Tokens
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  *  @dev QIN Tokens that are locked in this contract until a given release time
  */
 contract QINFrozen is Ownable, Testable, ERC223ReceivingContract {
