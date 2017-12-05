@@ -1,12 +1,12 @@
-<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/wrf_logo.png" width = "211" height = "132">
+OneDaijo<img src = "https://github.com/WorldRapidFinance/wrf/blob/master/daijo_logo.png" width = "211" height = "132">
 
-# DaijoLabs Project
+# OneDaijo Project
 
-Smart contracts for the QIN token.
+Smart contracts for the QIN token. For a more in-depth look at other aspects of the OneDaijo Project, visit https://www.onedaijo.com.
 
 ## Prerequisites
 
-The following prerequisites will be necessary to build and run the DaijoLabs project smart contracts (Ubuntu examples provided):
+The following prerequisites will be necessary to build and run the OneDaijo project smart contracts (Ubuntu examples provided):
 
 1. [Install node](https://nodejs.org/en/) and [install npm](https://www.npmjs.com/get-npm):
 ```
@@ -18,7 +18,7 @@ sudo apt-get install node-gyp
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
-2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), [web3 (0.20.1)](https://github.com/ethereum/web3.js/), and [solium linter](https://github.com/duaraghav8/Solium). Note: to install to a local directory (the DaijoLabs project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
+2. Install [truffle (beta 4.0)](https://github.com/trufflesuite/truffle), [testrpc](https://github.com/ethereumjs/testrpc), [web3 (0.20.1)](https://github.com/ethereum/web3.js/), and [solium linter](https://github.com/duaraghav8/Solium). Note: to install to a local directory (the OneDaijo project folder, for instance), remove the -g (and sudo). This is helpful as to not have version collissions with other projects' requirements:
 ```
 sudo npm install -g truffle@beta
 sudo npm install -g ethereumjs-testrpc
@@ -31,15 +31,15 @@ sudo npm install xhr2
 
 ## Build and Test
 
-The DaijoLabs project uses truffle, so the typical truffle commands will work.  For full truffle documentation, see the [truffle docs](http://truffleframework.com/docs/) and the [truffle beta release](https://github.com/trufflesuite/truffle/releases/tag/v4.0.0-beta.0).
+The OneDaijo project uses truffle, so the typical truffle commands will work.  For full truffle documentation, see the [truffle docs](http://truffleframework.com/docs/) and the [truffle beta release](https://github.com/trufflesuite/truffle/releases/tag/v4.0.0-beta.0).
 
 To build the contracts and publish artifacts to the `build/` folder, run:
 ```
 truffle compile
 ```
-from the base of the DaijoLabs repo.
+from the base of the OneDaijo repo.
 
-For the rest of the sample commands, an ethereum network will be required. DaijoLabs uses testrpc to test against. For testing the DaijoLabs smart contracts, run testrpc in a separate shell session (or in the background). It must stay running while truffle as long as truffle is interacting with the network:
+For the rest of the sample commands, an ethereum network will be required. OneDaijo uses testrpc to test against. For testing the OneDaijo smart contracts, run testrpc in a separate shell session (or in the background). It must stay running while truffle as long as truffle is interacting with the network:
 ```
 # Increase the gas limit to allow larger Solidity tests to be deployed.
 testrpc --gasLimit 471238801

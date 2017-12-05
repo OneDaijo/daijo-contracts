@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 
 /** @title ERC20 Interface
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/20
  */
 contract ERC20Interface {

@@ -9,7 +9,7 @@ import "../libs/SafeMath256.sol";
 
 
 /** @title QIN Token
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  */
 contract QINToken is ERC223Token, Ownable, Testable {
     using SafeMath256 for uint;

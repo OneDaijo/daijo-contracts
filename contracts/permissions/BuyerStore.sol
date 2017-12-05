@@ -6,7 +6,7 @@ import '../permissions/Ownable.sol';
 
 
 /** @title User
-  * @author Daijo Labs <info@daijolabs.com>
+  * @author OneDaijo <info@onedaijo.com>
   * @dev Base class that provides user-related functionality
 */
 contract BuyerStore is Ownable {
