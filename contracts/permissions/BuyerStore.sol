@@ -20,6 +20,7 @@ contract BuyerStore is Ownable {
         uint8 lastRestrictedDayBought;
         uint amountBoughtCumulative;
         uint amountBoughtCurrentRestrictedDay;
+        uint amountPledgedCurrent;
     }
 
     mapping (address => Buyer) buyers;
@@ -31,9 +32,10 @@ contract BuyerStore is Ownable {
     }
 
     // Adds an address to the whitelist
-    function addToWhitelist(address _addr) external onlyOwner {
+    function addToWhitelist(address _addr, uint pledge) external onlyOwner {
         require(!buyers[_addr].isRegistered);
         buyers[_addr].isRegistered = true;
+        buyers[_addr].amountPledgedCurrent = pledge;
         registeredUserCount = registeredUserCount.add(1);
     }
 
@@ -42,6 +44,11 @@ contract BuyerStore is Ownable {
         require(buyers[_addr].isRegistered);
         buyers[_addr].isRegistered = false;
         registeredUserCount = registeredUserCount.sub(1);
+    }
+
+    function updatePledge(address _addr, uint pledge) external onlyOwner {
+        require(buyers[_addr].isRegistered);
+        buyers[_addr].amountPledgedCurrent = pledge;
     }
 
     // Returns true if address is on the whitelist
