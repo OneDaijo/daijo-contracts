@@ -8,7 +8,7 @@ import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title Frozen QIN Tests
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  */
 contract TestQINFrozen {
     using SafeMath256 for uint;

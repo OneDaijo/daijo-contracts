@@ -9,7 +9,7 @@ import "../contracts/libs/SafeMath256.sol";
 
 
 /** @title QIN TokenSale Tests
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  */
 contract TestControllable {
     using SafeMath256 for uint;

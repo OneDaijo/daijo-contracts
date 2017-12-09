@@ -6,7 +6,7 @@ import "../contracts/permissions/Ownable.sol";
 
 
 /** @title Ownable Test
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  */
 contract TestOwnable {
 

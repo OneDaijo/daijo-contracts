@@ -5,7 +5,7 @@ import "../libs/SafeMath256.sol";
 
 
 /** @title ERC20 Token Implementation
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  *  @notice source: https://theethereum.wiki/w/index.php/ERC20_Token_Standard
  *  @notice functions check against integer over and underflow
  *  TODO: make this use safemath instead

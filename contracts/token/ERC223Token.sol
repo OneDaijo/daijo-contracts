@@ -7,7 +7,7 @@ import "../libs/SafeMath256.sol";
 
 
 /** @title ERC223 Token Implementation
- *  @author DaijoLabs <info@daijolabs.com>
+ *  @author OneDaijo <info@onedaijo.com>
  *  @notice source: https://github.com/ethereum/EIPs/issues/223
  */
 contract ERC223Token is ERC223Interface, ERC20Token {
